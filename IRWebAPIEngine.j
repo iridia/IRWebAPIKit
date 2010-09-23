@@ -48,10 +48,16 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 	id delegate @accessors;
 	
-	CPMutableSet aliveConnections;				//	Collects connections
+	CPMutableSet aliveConnections;				//	Collects active connections for timeout check
+
+
+//	Note.  The global transformations could be overriding points for authentication purposes,
+//	But if you want to do something XSLT’y, do them in argument / response transformations for every method involved.
 	
+	CPMutableArray globalArgumentTransformations;		//	Called on all outgoing method invocations
 	CPMutableDictionary requestArgumentTransformations;	//	Key is method name
 	CPMutableDictionary responseTransformations;		//	Key is method name
+	CPMutableArray globalResponseTransformations;		//	Called on all incoming responses
 	
 	CPMutableDictionary successHandlersForConnections;	//	Key is connection UID
 	CPMutableDictionary failureHandlersForConnections;	//	Key is connection UID
@@ -98,12 +104,90 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	context = inContext;
 	serializationScheme = kIRWebAPIEngineSerializationSchemeKeyOrdinaryFlat;
 	
+	globalArgumentTransformations = [CPMutableArray array];
+	requestArgumentTransformations = [CPMutableDictionary dictionary];
+
+	globalResponseTransformations = [CPMutableArray array];
+	responseTransformations = [CPMutableDictionary dictionary];
+	
 	successHandlersForConnections = [CPMutableDictionary dictionary];
 	failureHandlersForConnections = [CPMutableDictionary dictionary];
 	
 	return self;
 	
 }
+
+
+
+
+
+- (void) enqueueGlobalArgumentTransformation:(Function)transformation {
+	
+	[globalArgumentTransformations addObject:transformation];
+	
+}
+
+- (void) enqueueArgumentTransformation:(Function)transformation forMethodNamed:(CPString)methodName {
+	
+	[requestArgumentTransformations setObject:transformation forKey:methodName];
+	
+}
+
+
+- (CPDictionary) transformedArguments:(CPDictionary)inArguments forMethodNamed:(CPString)methodName {
+	
+	CPLog(@"inArguments, %@", inArguments);
+	
+	var requestObject = [inArguments mutableCopy] || [CPMutableDictionary dictionary];
+	
+	CPLog(@"working in transformedArguments, global list is %@", globalArgumentTransformations);
+	
+	var enumerator = [globalArgumentTransformations objectEnumerator], globalArgumentTransformation = nil;
+	while (globalArgumentTransformation = [enumerator nextObject])
+	requestObject = globalArgumentTransformation(requestObject);
+	
+	CPLog(@"requestObject is now %@", requestObject);
+	
+	var specificArgumentTransformation = [requestArgumentTransformations valueForKey:methodName];
+	if (specificArgumentTransformation != nil)
+	requestObject = specificArgumentTransformation(requestObject);
+	
+	return requestObject;
+	
+}
+
+
+
+
+
+- (void) enqueueGlobalResponseTransformation:(Function)transformation {
+	
+	[globalResponseTransformations addObject:transformation];
+	
+}
+
+- (void) enqueueResponseTransformation:(Function)transformation forMethodNamed:(CPString)methodName {
+	
+	[responseTransformations setObject:transformation forKey:methodName];
+	
+}
+
+- (CPDictionary) transformedResponse:(CPDictionary)inResponse forMethodNamed:(CPString)methodName {
+	
+	var responseObject = [inResponse mutableCopy] || [CPMutableDictionary dictionary];
+	
+	var enumerator = [globalResponseTransformations objectEnumerator], globalResponseTransformation = nil;
+	while (globalResponseTransformation = [enumerator nextObject])
+	responseObject = globalResponseTransformation(responseObject);
+	
+	var specificResponseTransformation = [responseTransformations valueForKey:methodName];
+	if (specificResponseTransformation != nil)
+	responseObject = specificResponseTransformation(responseObject);
+	
+	return responseObject;
+	
+}
+
 
 
 
@@ -133,8 +217,7 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 - (void) fireAPIRequestNamed:(CPString)methodName withArguments:(CPDictionary)inArguments onSuccess:(Function)callbackOnSuccess failure:(Function)callbackOnFailure cacheResponse:(BOOL)cacheResponse notifyDelegate:(BOOL)notifyDelegate {
 	
-	var possibleArgumentTransformer = [requestArgumentTransformations valueForKey:methodName];
-	var argumentsToSend = (possibleArgumentTransformer != undefined) ? [possibleArgumentTransformer(inArguments) mutableCopy] : [inArguments mutableCopy];
+	var argumentsToSend = [self transformedArguments:inArguments forMethodNamed:methodName];
 	
 	var serializer = kIRWebAPIEngineSerializationSchemes[serializationScheme];
 	var serializedArguments = serializer(argumentsToSend) + "&callback=${JSONP_CALLBACK}";
@@ -143,6 +226,7 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	
 	var request = [CPURLRequest requestWithURL:urlToCall];
 	var connection = [[CPJSONPConnection alloc] initWithRequest:request callback:nil delegate:self startImmediately:NO];
+	connection.methodName = methodName;
 	
 	if (callbackOnSuccess != nil) [successHandlersForConnections setObject:callbackOnSuccess forKey:[connection UID]];
 	if (callbackOnFailure != nil) [failureHandlersForConnections setObject:callbackOnFailure forKey:[connection UID]];
@@ -164,20 +248,22 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 
 
-- (void) connection:(CPJSONPConnection)connection didReceiveData:(CPString)data {
+- (void) connection:(CPJSONPConnection)connection didReceiveData:(Object)data {
 
 	[self removeConnectionFromTheActiveSet:connection];
+	
+	var transformedResponse = [self transformedResponse:[CPDictionary dictionaryWithJSObject:data recursively:YES] forMethodNamed:connection.methodName];
 
 	var successHandler = [successHandlersForConnections objectForKey:[connection UID]];
 	
 	if (successHandler) {
 		
-		successHandler(data);
+		successHandler(transformedResponse);
 		[successHandlersForConnections removeObjectForKey:[connection UID]];
 		
 	} else {
 				
-		[[CPNotificationCenter defaultCenter] postNotificationName:kIRWebAPIEngineConnectionDidReceiveDataNotification object:nil userInfo:data];
+		[[CPNotificationCenter defaultCenter] postNotificationName:kIRWebAPIEngineConnectionDidReceiveDataNotification object:nil userInfo:transformedResponse];
 		
 	}
 
