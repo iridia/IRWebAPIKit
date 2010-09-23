@@ -25,6 +25,8 @@ var kIRWebAPIEngineSerializationSchemes = {
 	
 };
 
+var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebAPIEngineConnectionTimeoutTimeInterval";
+
 var 	kIRWebAPIEngineSerializationSchemeKeyOrdinaryFlat = "IRWebAPIEngineSerializationSchemeOrdinaryFlat";
 
 var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnectionDidReceiveDataNotification",
@@ -44,14 +46,15 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 	IRWebAPIContext context;
 
-	BOOL isBusy @accessors;
 	id delegate @accessors;
 	
-	CPMutableDictionary requestArgumentTransformations;
-	CPMutableDictionary responseTransformations;
+	CPMutableSet aliveConnections;				//	Collects connections
 	
-	CPMutableDictionary successHandlersForConnections;	//	Key is Connection UID;
-	CPMutableDictionary failureHandlersForConnections;	//	Key is Connection UID;
+	CPMutableDictionary requestArgumentTransformations;	//	Key is method name
+	CPMutableDictionary responseTransformations;		//	Key is method name
+	
+	CPMutableDictionary successHandlersForConnections;	//	Key is connection UID
+	CPMutableDictionary failureHandlersForConnections;	//	Key is connection UID
 	
 	/* (CPString) */ IRWebAPIEngineSerializationSchemeKey serializationScheme @accessors;
 
@@ -144,7 +147,16 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	if (callbackOnSuccess != nil) [successHandlersForConnections setObject:callbackOnSuccess forKey:[connection UID]];
 	if (callbackOnFailure != nil) [failureHandlersForConnections setObject:callbackOnFailure forKey:[connection UID]];
 	
+	[self addConnectionToTheActiveSet:connection];
 	[connection start];
+	
+	var connectionTimeout /* (CPTimeinterval) */ = parseFloat(
+		
+			[[[CPBundle mainBundle] infoDictionary] objectForKey:kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey]
+			
+	) || 10.0;
+	
+	[self performSelector:@selector(purgeConnectionAndSendFailureNotificationIfAppropriate:) withObject:connection afterDelay:connectionTimeout];
 	
 }
 
@@ -153,6 +165,8 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 
 - (void) connection:(CPJSONPConnection)connection didReceiveData:(CPString)data {
+
+	[self removeConnectionFromTheActiveSet:connection];
 
 	var successHandler = [successHandlersForConnections objectForKey:[connection UID]];
 	
@@ -174,20 +188,68 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 
 
-- (void) connection:(CPJSONPConnection)aConnection didFailWithError:(CPString)error {
+- (void) connection:(CPJSONPConnection)connection didFailWithError:(CPString)error {
+	
+	[self removeConnectionFromTheActiveSet:connection];
 
 	var failureHandler = [failureHandlersForConnections objectForKey:[connection UID]];
 	
 	if (failureHandler) {
 		
-		failureHandler(data);
+		failureHandler(error);
 		[failureHandlersForConnections removeObjectForKey:[connection UID]];
 		
 	} else {
 				
-		[[CPNotificationCenter defaultCenter] postNotificationName:kIRWebAPIEngineConnectionDidFailNotification object:nil userInfo:data];
+		[[CPNotificationCenter defaultCenter] postNotificationName:kIRWebAPIEngineConnectionDidFailNotification object:nil userInfo:nil];
 		
 	}
+	
+}
+
+
+
+
+
+- (void) addConnectionToTheActiveSet:(CPJSONPConnection)connection {
+
+	if (aliveConnections == nil)
+	aliveConnections = [CPMutableSet set];
+	
+	[aliveConnections addObject:connection];
+	
+}
+
+
+
+
+- (void) removeConnectionFromTheActiveSet:(CPJSONPConnection)connection {
+	
+	//	Remove.  Notice that messaging nil is okay
+	
+	[aliveConnections removeObject:connection];
+	
+}
+
+
+
+
+
+- (void) purgeConnectionAndSendFailureNotificationIfAppropriate:(CPTimer)sender {
+	
+	var connection = [sender userInfo];
+		
+//	If this connection is not in the active set, it has already been inactive
+//	That means so this method is called by a leftover timer
+	
+	if (![aliveConnections containsObject:connection]) return;
+
+
+//	Pose as the connection itself and send ourself a delegate message
+//	Because we have already implemented the handling here	
+
+	[connection cancel];
+	[self connection:connection didFailWithError:null];
 	
 }
 
