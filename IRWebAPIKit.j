@@ -16,3 +16,13 @@
 	
 	
 	
+	//	Time to talk about how this tool works:
+	//
+	//	1.	Be flat in what you send, be three-dimensional in what you get.
+	//	2.	Give JSON, take JSON.  Give Objects, take Objects.
+	//	3.	Register transformations in your initializer.  Don’t do ad-hoc transformations.
+	
+	
+	
+	
+	

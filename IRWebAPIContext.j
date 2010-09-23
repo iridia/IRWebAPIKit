@@ -15,17 +15,17 @@
 
 	CPURL baseURL @accessors;
 
-}
+}	
 
 + (IRWebAPIContext) contextWithBaseURL:(CPURL)inURL {
 
-	CPLog(@"IRWebAPIContext contextWithBaseURL called");
-	
 	return [[[self class] alloc] initWithBaseURL:inURL];
 	
 }
 
-//- (CPURL) absoluteURLForRequest:()
+
+
+
 
 - (IRWebAPIContext) initWithBaseURL:(CPURL)inURL {
 	
@@ -34,6 +34,29 @@
 	[self setBaseURL:inURL];
 	
 	return self;
+	
+}
+
+
+
+
+
+- (CPURL) connectionURLForMethodNamed:(CPString)methodName additions:(CPString)additions {
+	
+	var baseURLString = String([[self baseURL] absoluteString]);
+	baseURLString = baseURLString.replace("#{methodName}", (methodName || ""));
+	baseURLString = baseURLString.replace("#{methodArguments}", (additions || ""));
+	
+	return [CPURL URLWithString:baseURLString];
+	
+}
+
+
+
+
+- (CPString) description {
+	
+	return [super description] + @" — " + [baseURL description];
 	
 }
 
