@@ -136,17 +136,11 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 - (CPDictionary) transformedArguments:(CPDictionary)inArguments forMethodNamed:(CPString)methodName {
 	
-	CPLog(@"inArguments, %@", inArguments);
-	
 	var requestObject = [inArguments mutableCopy] || [CPMutableDictionary dictionary];
-	
-	CPLog(@"working in transformedArguments, global list is %@", globalArgumentTransformations);
 	
 	var enumerator = [globalArgumentTransformations objectEnumerator], globalArgumentTransformation = nil;
 	while (globalArgumentTransformation = [enumerator nextObject])
 	requestObject = globalArgumentTransformation(requestObject);
-	
-	CPLog(@"requestObject is now %@", requestObject);
 	
 	var specificArgumentTransformation = [requestArgumentTransformations valueForKey:methodName];
 	if (specificArgumentTransformation != nil)
