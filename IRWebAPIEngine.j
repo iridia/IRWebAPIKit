@@ -320,9 +320,7 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 
 
-- (void) purgeConnectionAndSendFailureNotificationIfAppropriate:(CPTimer)sender {
-	
-	var connection = [sender userInfo];
+- (void) purgeConnectionAndSendFailureNotificationIfAppropriate:(CPJSONPConnection)connection {
 		
 //	If this connection is not in the active set, it has already been inactive
 //	That means so this method is called by a leftover timer
