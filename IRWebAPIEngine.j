@@ -63,6 +63,8 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	CPMutableDictionary failureHandlersForConnections;	//	Key is connection UID
 	
 	/* (CPString) */ IRWebAPIEngineSerializationSchemeKey serializationScheme @accessors;
+	
+	Class connectionClass @accessors;
 
 }
 
@@ -112,6 +114,9 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	
 	successHandlersForConnections = [CPMutableDictionary dictionary];
 	failureHandlersForConnections = [CPMutableDictionary dictionary];
+
+//	connectionClass = [IRJSONPMockConnection class];
+	connectionClass = [CPJSONPConnection class];
 	
 	return self;
 	
@@ -219,7 +224,7 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	var urlToCall = [context connectionURLForMethodNamed:methodName additions:serializedArguments];
 	
 	var request = [CPURLRequest requestWithURL:urlToCall];
-	var connection = [[CPJSONPConnection alloc] initWithRequest:request callback:nil delegate:self startImmediately:NO];
+	var connection = [[connectionClass alloc] initWithRequest:request callback:nil delegate:self startImmediately:NO];
 	connection.methodName = methodName;
 	
 	if (callbackOnSuccess != nil) [successHandlersForConnections setObject:callbackOnSuccess forKey:[connection UID]];
@@ -230,7 +235,7 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	
 	var connectionTimeout /* (CPTimeinterval) */ = parseFloat(
 		
-			[[[CPBundle mainBundle] infoDictionary] objectForKey:kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey]
+		[[[CPBundle mainBundle] infoDictionary] objectForKey:kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey]
 			
 	) || 10.0;
 	
