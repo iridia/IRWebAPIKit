@@ -61,6 +61,8 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	
 	CPMutableDictionary successHandlersForConnections;	//	Key is connection UID
 	CPMutableDictionary failureHandlersForConnections;	//	Key is connection UID
+
+	CPMutableDictionary mockResponses;			//	Key is method name, contains mock JS Objects
 	
 	/* (CPString) */ IRWebAPIEngineSerializationSchemeKey serializationScheme @accessors;
 	
@@ -117,6 +119,8 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 //	connectionClass = [IRJSONPMockConnection class];
 	connectionClass = [CPJSONPConnection class];
+	
+	mockResponses = [CPMutableDictionary dictionary];
 	
 	return self;
 	
@@ -192,6 +196,31 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 
 
+
+
+
+
+- (void) enqueueMockResponse:(Object)response forMethodNamed:(CPString)methodName {
+	
+	[mockResponses setObject:response forKey:methodName];
+	
+}
+
+- (id) mockResponseForMethodNamed:(CPString)methodName {
+	
+	return [mockResponses objectForKey:methodName];
+	
+}
+
+
+
+
+
+
+
+
+
+
 - (void) fireAPIRequestNamed:(CPString)methodName withArguments:(CPDictionary)inArguments {
 
 	[self fireAPIRequestNamed:methodName withArguments:inArguments onSuccess:nil failure:nil];
@@ -230,7 +259,22 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	if (callbackOnSuccess != nil) [successHandlersForConnections setObject:callbackOnSuccess forKey:[connection UID]];
 	if (callbackOnFailure != nil) [failureHandlersForConnections setObject:callbackOnFailure forKey:[connection UID]];
 	
+
 	[self addConnectionToTheActiveSet:connection];
+	
+	var mockResponseOrNil = [self mockResponseForMethodNamed:methodName];
+	if (mockResponseOrNil != null) {
+		
+		CPLog(@"Returned mocked response for method named %@ — mockResponseOrNil %@", methodName, mockResponseOrNil);
+		
+		console.log(mockResponseOrNil);
+		
+		[self connection:methodName didReceiveData:mockResponseOrNil];
+		
+		return;
+		
+	}
+	
 	[connection start];
 	
 	var connectionTimeout /* (CPTimeinterval) */ = parseFloat(
@@ -252,6 +296,8 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	[self removeConnectionFromTheActiveSet:connection];
 	
 	var transformedResponse = [self transformedResponse:[CPDictionary dictionaryWithJSObject:data recursively:YES] forMethodNamed:connection.methodName];
+	
+	CPLog(@"Connection %@ did receive transformed data: %@", connection, transformedResponse);
 
 	var successHandler = [successHandlersForConnections objectForKey:[connection UID]];
 	
