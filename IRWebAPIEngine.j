@@ -296,8 +296,6 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 	[self removeConnectionFromTheActiveSet:connection];
 	
 	var transformedResponse = [self transformedResponse:[CPDictionary dictionaryWithJSObject:data recursively:YES] forMethodNamed:connection.methodName];
-	
-	CPLog(@"Connection %@ did receive transformed data: %@", connection, transformedResponse);
 
 	var successHandler = [successHandlersForConnections objectForKey:[connection UID]];
 	
