@@ -7,29 +7,30 @@
 	
 var kIRWebAPIEngineSerializationSchemes = {
 	
+//	TODO: Reference http://www.w3.org/TR/html401/interact/forms.html
+	
 	"IRWebAPIEngineSerializationSchemeOrdinaryFlat": function (inDictionary) {
 		
 		var	returnString = @"",
 			enumerator = [inDictionary keyEnumerator],
-			key = null;
-		
-		if (key = [enumerator nextObject])
-		returnString = key + @"=" + encodeURI([inDictionary objectForKey:key]);
+			key = nil;
 		
 		while (key = [enumerator nextObject])
-		returnString = returnString + @"&" + key + @"=" + encodeURI([inDictionary objectForKey:key]);
+		returnString += @"&" + encodeURIComponent(key) + @"=" + encodeURIComponent([inDictionary objectForKey:key]);
 		
-		return returnString;
+		return returnString.replace(/^&/, "");
 		
 	}
 	
 };
 
-var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebAPIEngineConnectionTimeoutTimeInterval";
 
-var 	kIRWebAPIEngineSerializationSchemeKeyOrdinaryFlat = "IRWebAPIEngineSerializationSchemeOrdinaryFlat";
 
-var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnectionDidReceiveDataNotification",
+
+
+var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebAPIEngineConnectionTimeoutTimeInterval",
+	kIRWebAPIEngineSerializationSchemeKeyOrdinaryFlat = "IRWebAPIEngineSerializationSchemeOrdinaryFlat",
+	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnectionDidReceiveDataNotification",
 	kIRWebAPIEngineConnectionDidFailNotification = @"IRWebAPIEngineConnectionDidFailNotification";
 
 
@@ -45,10 +46,8 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 @implementation IRWebAPIEngine : CPObject {
 
 	IRWebAPIContext context;
-
 	id delegate @accessors;
-	
-	CPMutableSet aliveConnections;				//	Collects active connections for timeout check
+	CPMutableSet aliveConnections;
 
 
 //	Note.  The global transformations could be overriding points for authentication purposes,
@@ -245,29 +244,28 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 - (void) fireAPIRequestNamed:(CPString)methodName withArguments:(CPDictionary)inArguments onSuccess:(Function)callbackOnSuccess failure:(Function)callbackOnFailure cacheResponse:(BOOL)cacheResponse notifyDelegate:(BOOL)notifyDelegate {
 	
-	var argumentsToSend = [self transformedArguments:inArguments forMethodNamed:methodName];
-	
-	var serializer = kIRWebAPIEngineSerializationSchemes[serializationScheme];
+	var	argumentsToSend = [self transformedArguments:inArguments forMethodNamed:methodName],
+		serializer = kIRWebAPIEngineSerializationSchemes[serializationScheme];
+
 	var serializedArguments = serializer(argumentsToSend) + "&callback=${JSONP_CALLBACK}";
-	
 	var urlToCall = [context connectionURLForMethodNamed:methodName additions:serializedArguments];
 	
 	var request = [CPURLRequest requestWithURL:urlToCall];
 	var connection = [[connectionClass alloc] initWithRequest:request callback:nil delegate:self startImmediately:NO];
+	
 	connection.methodName = methodName;
 	
-	if (callbackOnSuccess != nil) [successHandlersForConnections setObject:callbackOnSuccess forKey:[connection UID]];
-	if (callbackOnFailure != nil) [failureHandlersForConnections setObject:callbackOnFailure forKey:[connection UID]];
+	if (callbackOnSuccess != nil)
+	[successHandlersForConnections setObject:callbackOnSuccess forKey:[connection UID]];
+	
+	if (callbackOnFailure != nil)
+	[failureHandlersForConnections setObject:callbackOnFailure forKey:[connection UID]];
 	
 
 	[self addConnectionToTheActiveSet:connection];
 	
 	var mockResponseOrNil = [self mockResponseForMethodNamed:methodName];
 	if (mockResponseOrNil != null) {
-		
-		CPLog(@"Returned mocked response for method named %@ — mockResponseOrNil %@", methodName, mockResponseOrNil);
-		
-		console.log(mockResponseOrNil);
 		
 		[self connection:methodName didReceiveData:mockResponseOrNil];
 		
@@ -354,8 +352,6 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 - (void) removeConnectionFromTheActiveSet:(CPJSONPConnection)connection {
 	
-	//	Remove.  Notice that messaging nil is okay
-	
 	[aliveConnections removeObject:connection];
 	
 }
@@ -366,14 +362,12 @@ var	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnec
 
 - (void) purgeConnectionAndSendFailureNotificationIfAppropriate:(CPJSONPConnection)connection {
 		
-//	If this connection is not in the active set, it has already been inactive
-//	That means so this method is called by a leftover timer
+//	If this connection is not in the active set, it has already finished, or failed
 	
 	if (![aliveConnections containsObject:connection]) return;
 
 
-//	Pose as the connection itself and send ourself a delegate message
-//	Because we have already implemented the handling here	
+//	Pose as the connection itself and send ourself a delegate message to clean up residue
 
 	[connection cancel];
 	[self connection:connection didFailWithError:null];
