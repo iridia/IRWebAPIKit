@@ -96,11 +96,7 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 + (IRWebAPIEngine) engineWithContext:(IRWebAPIContext)inContext {
 	
 	self = [[self alloc] initWithContext:inContext]; if (self == nil) return nil;
-	
-	debugMode = ([[[CPBundle bundleForClass:[[[CPApplication sharedApplication] delegate] class]] infoDictionary] objectForKey:kIRWebAPIEnginePrintDebuggingInfoDictionaryKey] || NO);
-	
-	CPLog(@"debugMode is %@", debugMode);
-	
+
 	return self;
 	
 }
@@ -130,6 +126,8 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 	
 	mockResponses = [CPMutableDictionary dictionary];
 	
+	debugMode = ([[[CPBundle bundleForClass:[[[CPApplication sharedApplication] delegate] class]] infoDictionary] objectForKey:kIRWebAPIEnginePrintDebuggingInfoDictionaryKey] || NO);
+	
 	return self;
 	
 }
@@ -157,7 +155,9 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 	
 	[globalArgumentTransformations enumerate: function (inGlobalArgumentTransformation) {
 
+		if (debugMode) CPLog(@"%@: Transforming request: %@", self, requestObject);
 		requestObject = inGlobalArgumentTransformation(requestObject);
+		if (debugMode) CPLog(@"%@: Transformed request: %@", self, requestObject);
 
 	}];
 	
@@ -189,9 +189,15 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 	
 	var responseObject = [inResponse mutableCopy] || [CPMutableDictionary dictionary];
 	
-	var enumerator = [globalResponseTransformations objectEnumerator], globalResponseTransformation = nil;
-	while (globalResponseTransformation = [enumerator nextObject])
-	responseObject = globalResponseTransformation(responseObject);
+	[globalResponseTransformations enumerate: function (inGlobalResponseTransformation) {
+
+		if (debugMode) CPLog(@"%@: Transforming response: %@", self, responseObject);		
+		responseObject = inGlobalResponseTransformation(responseObject);
+		if (debugMode) CPLog(@"%@: Transformed response: %@", self, responseObject);
+
+	}];
+	
+	
 	
 	var specificResponseTransformation = [responseTransformations valueForKey:methodName];
 	if (specificResponseTransformation != nil)
