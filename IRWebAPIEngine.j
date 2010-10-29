@@ -1,5 +1,7 @@
 //	IRWebAPIEngine.j
 //	Evadne Wu at Iridia, 2010
+	
+@import <IRBlockEnumeration/IRBlockEnumeration.j>
 
 
 
@@ -29,6 +31,7 @@ var kIRWebAPIEngineSerializationSchemes = {
 
 
 var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebAPIEngineConnectionTimeoutTimeInterval",
+	kIRWebAPIEnginePrintDebuggingInfoDictionaryKey = @"IRWebAPIEnginePrintDebuggingInfo",
 	kIRWebAPIEngineSerializationSchemeKeyOrdinaryFlat = "IRWebAPIEngineSerializationSchemeOrdinaryFlat",
 	kIRWebAPIEngineConnectionDidReceiveDataNotification = @"IRWebAPIEngineConnectionDidReceiveDataNotification",
 	kIRWebAPIEngineConnectionDidFailNotification = @"IRWebAPIEngineConnectionDidFailNotification";
@@ -65,6 +68,8 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 	
 	/* (CPString) */ IRWebAPIEngineSerializationSchemeKey serializationScheme @accessors;
 	
+	BOOL debugMode;
+	
 	Class connectionClass @accessors;
 
 }
@@ -91,6 +96,10 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 + (IRWebAPIEngine) engineWithContext:(IRWebAPIContext)inContext {
 	
 	self = [[self alloc] initWithContext:inContext]; if (self == nil) return nil;
+	
+	debugMode = ([[[CPBundle bundleForClass:[[[CPApplication sharedApplication] delegate] class]] infoDictionary] objectForKey:kIRWebAPIEnginePrintDebuggingInfoDictionaryKey] || NO);
+	
+	CPLog(@"debugMode is %@", debugMode);
 	
 	return self;
 	
@@ -146,9 +155,11 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 	
 	var requestObject = [inArguments mutableCopy] || [CPMutableDictionary dictionary];
 	
-	var enumerator = [globalArgumentTransformations objectEnumerator], globalArgumentTransformation = nil;
-	while (globalArgumentTransformation = [enumerator nextObject])
-	requestObject = globalArgumentTransformation(requestObject);
+	[globalArgumentTransformations enumerate: function (inGlobalArgumentTransformation) {
+
+		requestObject = inGlobalArgumentTransformation(requestObject);
+
+	}];
 	
 	var specificArgumentTransformation = [requestArgumentTransformations valueForKey:methodName];
 	if (specificArgumentTransformation != nil)
@@ -290,10 +301,14 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 
 
 - (void) connection:(CPJSONPConnection)connection didReceiveData:(Object)data {
+	
+	if (debugMode) CPLog(@"%@: Connection %@ did receive data %@", self, connection, data);
 
 	[self removeConnectionFromTheActiveSet:connection];
 	
 	var transformedResponse = [self transformedResponse:[CPDictionary dictionaryWithJSObject:data recursively:YES] forMethodNamed:connection.methodName];
+	
+	if (debugMode) CPLog(@"%@: Connection data is transformed to %@", self, transformedResponse);
 
 	var successHandler = [successHandlersForConnections objectForKey:[connection UID]];
 	
@@ -316,6 +331,8 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 
 
 - (void) connection:(CPJSONPConnection)connection didFailWithError:(CPString)error {
+	
+	if (debugMode) CPLog(@"%@: Connection %@ did fail with error %@.", self, connection, error);
 	
 	[self removeConnectionFromTheActiveSet:connection];
 
@@ -366,6 +383,7 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 	
 	if (![aliveConnections containsObject:connection]) return;
 
+	if (debugMode) CPLog(@"%@: Purging connection %@.", self, connection);
 
 //	Pose as the connection itself and send ourself a delegate message to clean up residue
 
