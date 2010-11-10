@@ -262,13 +262,36 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 - (void) fireAPIRequestNamed:(CPString)methodName withArguments:(CPDictionary)inArguments onSuccess:(Function)callbackOnSuccess failure:(Function)callbackOnFailure cacheResponse:(BOOL)cacheResponse notifyDelegate:(BOOL)notifyDelegate {
 	
 	var	argumentsToSend = [self transformedArguments:inArguments forMethodNamed:methodName],
-		serializer = kIRWebAPIEngineSerializationSchemes[serializationScheme];
+		serializer = kIRWebAPIEngineSerializationSchemes[serializationScheme],
+		isPOSTRequest = ([inArguments valueForKey:@"IRWebAPIKitPOST"] === YES);
 
-	var serializedArguments = serializer(argumentsToSend) + "&callback=${JSONP_CALLBACK}";
-	var urlToCall = [context connectionURLForMethodNamed:methodName additions:serializedArguments];
+	var	serializedArguments = serializer(argumentsToSend) + "&callback=${JSONP_CALLBACK}";
+		urlToCall = isPOSTRequest ? [context connectionURLForPOSTMethodNamed:methodName] : [context connectionURLForMethodNamed:methodName additions:serializedArguments],
+		request = [CPURLRequest requestWithURL:urlToCall];
 	
-	var request = [CPURLRequest requestWithURL:urlToCall];
-	var connection = [[connectionClass alloc] initWithRequest:request callback:nil delegate:self startImmediately:NO];
+		if (isPOSTRequest) {
+		
+			[request setHTTPMethod:@"POST"];
+			[request setValue:"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+			[request setHTTPBody:serializer(argumentsToSend)];
+					
+		}
+		
+		if (debugMode) CPLog(@"%@: Using URL %@", self, urlToCall);
+		
+		
+	var	connection = nil;
+
+		if (isPOSTRequest){
+		
+			connection = [[CPURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+			connection.irWebAPIEngineShallDeserializeResults = YES;
+		
+		} else {
+		
+			connection = [[connectionClass alloc] initWithRequest:request callback:nil delegate:self startImmediately:NO];
+		
+		}
 	
 	connection.methodName = methodName;
 	
@@ -290,6 +313,7 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 		
 	}
 	
+	
 	[connection start];
 	
 	var connectionTimeout /* (CPTimeinterval) */ = parseFloat(
@@ -306,9 +330,13 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 
 
 
-- (void) connection:(CPJSONPConnection)connection didReceiveData:(Object)data {
+- (void) connection:(id)connection didReceiveData:(Object)data {
 	
 	if (debugMode) CPLog(@"%@: Connection %@ did receive data %@", self, connection, data);
+	
+//	Since we might also grab stuff using POST…
+	if (connection.irWebAPIEngineShallDeserializeResults === YES)
+	data = [data objectFromJSON];
 
 	[self removeConnectionFromTheActiveSet:connection];
 	
@@ -330,7 +358,6 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 	}
 
 }
-
 
 
 

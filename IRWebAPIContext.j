@@ -51,6 +51,17 @@
 	
 }
 
+- (CPURL) connectionURLForPOSTMethodNamed:(CPString)methodName {
+	
+	var baseURLString = String([[self baseURL] absoluteString]);
+	baseURLString = baseURLString.replace("#{methodName}", (methodName || ""));
+	baseURLString = baseURLString.replace("#{methodArguments}", "");
+	baseURLString = baseURLString.replace("?", "");
+	
+	return [CPURL URLWithString:baseURLString];
+	
+}
+
 
 
 
