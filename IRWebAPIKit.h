@@ -19,7 +19,9 @@
 
 
 
-typedef NSDictionary * (^IRWebAPITransformer) (NSDictionary *inOriginalContent);
+typedef NSDictionary * (^IRWebAPIResponseParser) (NSData *inData);
+
+typedef NSDictionary * (^IRWebAPITransformer) (NSDictionary *inOriginalContext);
 
 typedef void (^IRWebAPICallback) (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry);
 
@@ -27,6 +29,31 @@ typedef void (^IRWebAPICallback) (IRWebAPIEngine *inEngine, NSDictionary *inResp
 
 
 
+//	The dictionary that a IRWebAPITransformer block gets will contain these keys:
+
+#define kIRWebAPIEngineRequestHTTPBaseURL @"IRWebAPIEngineRequestHTTPBaseURL"
+//	Expected to be a NSURL, and well it should be there
+
+#define kIRWebAPIEngineRequestHTTPHeaderFields @"IRWebAPIEngineHTTPHeaderFields"
+//	Expected to be a dictionary
+
+#define kIRWebAPIEngineRequestHTTPBody @"IRWebAPIEngineHTTPBody"
+//	Expected to be NSData or nil
+
+#define kIRWebAPIEngineRequestHTTPQueryParameters @"IRWebAPIEngineHTTPQueryParameters"
+//	Expected to be a dictionary
+
+#define kIRWebAPIEngineRequestHTTPMethod @"IRWebAPIEngineRequestHTTPMethod"
+//	Expected to be POST, GET, whatever
+
+#define kIRWebAPIEngineParser @"IRWebAPIEngineParser"
+//	Expected to be a IRWebAPIResponseParser.  Exposed to allow custom response parsing for “some methods”.
+
+
+
+
+
+#import "IRWebAPIResponseParser.h"
 #import "IRWebAPIEngine.h"
 #import "IRWebAPIContext.h"
 

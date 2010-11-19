@@ -12,6 +12,7 @@
 		FF7408481296A94900571D46 /* IRWebAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408461296A94900571D46 /* IRWebAPIEngine.m */; };
 		FF7408991296B06F00571D46 /* IRWebAPIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408971296B06F00571D46 /* IRWebAPIContext.h */; };
 		FF74089A1296B06F00571D46 /* IRWebAPIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408981296B06F00571D46 /* IRWebAPIContext.m */; };
+		FF740CAA1296EB0C00571D46 /* IRWebAPIResponseParser.h in Headers */ = {isa = PBXBuildFile; fileRef = FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		FF7408461296A94900571D46 /* IRWebAPIEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIEngine.m; sourceTree = "<group>"; };
 		FF7408971296B06F00571D46 /* IRWebAPIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIContext.h; sourceTree = "<group>"; };
 		FF7408981296B06F00571D46 /* IRWebAPIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIContext.m; sourceTree = "<group>"; };
+		FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIResponseParser.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +48,7 @@
 				FF7408291296A8E000571D46 /* IRWebAPIKit.h */,
 				FF7408451296A94900571D46 /* IRWebAPIEngine.h */,
 				FF7408461296A94900571D46 /* IRWebAPIEngine.m */,
+				FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */,
 				FF7408971296B06F00571D46 /* IRWebAPIContext.h */,
 				FF7408981296B06F00571D46 /* IRWebAPIContext.m */,
 				FF7408191296A88B00571D46 /* Cappuccino */,
@@ -84,6 +87,7 @@
 				FF74082B1296A8E000571D46 /* IRWebAPIKit.h in Headers */,
 				FF7408471296A94900571D46 /* IRWebAPIEngine.h in Headers */,
 				FF7408991296B06F00571D46 /* IRWebAPIContext.h in Headers */,
+				FF740CAA1296EB0C00571D46 /* IRWebAPIResponseParser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

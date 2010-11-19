@@ -15,25 +15,43 @@
 
 @interface IRWebAPIEngine : NSObject {
 
-//	endpoint
-//	methods
-//	authenticator
+	IRWebAPIResponseParser parser;
 
 	CFMutableDictionaryRef successHandlers;
 	CFMutableDictionaryRef failureHandlers;
+	CFMutableDictionaryRef dataStore;
+	
+	NSMutableArray *globalRequestTransformers;
+	NSMutableDictionary *requestTransformers;
+
+	NSMutableArray *globalResponseTransformers;
+	NSMutableDictionary *responseTransformers;
 
 }
 
+@property (nonatomic, readwrite, retain) IRWebAPIResponseParser parser;
 @property (nonatomic, readonly, retain) IRWebAPIContext *context;
 
+@property (nonatomic, retain, readonly) NSMutableArray *globalRequestTransformers;
+@property (nonatomic, retain, readonly) NSMutableDictionary *requestTransformers;
+
+@property (nonatomic, retain, readonly) NSMutableArray *globalResponseTransformers;
+@property (nonatomic, retain, readonly) NSMutableDictionary *responseTransformers;
+
+
+
+
+
 - (id) initWithContext:(IRWebAPIContext *)inContext;
-
-//	@property (nonatomic, retain, readwrite) NSMutableArray *globalRequestTransformers;
-//	@property (nonatomic, retain, readwrite) NSMutableDictionary *requestTransformers;
-//	@property (nonatomic, assign, readwrite) id delegate;
-
+	
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler;
 
+
+
+
+
 @end
+
+
 
 
