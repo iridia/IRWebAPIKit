@@ -1,0 +1,213 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FF74082B1296A8E000571D46 /* IRWebAPIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408291296A8E000571D46 /* IRWebAPIKit.h */; };
+		FF7408471296A94900571D46 /* IRWebAPIEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408451296A94900571D46 /* IRWebAPIEngine.h */; };
+		FF7408481296A94900571D46 /* IRWebAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408461296A94900571D46 /* IRWebAPIEngine.m */; };
+		FF7408991296B06F00571D46 /* IRWebAPIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408971296B06F00571D46 /* IRWebAPIContext.h */; };
+		FF74089A1296B06F00571D46 /* IRWebAPIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408981296B06F00571D46 /* IRWebAPIContext.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FF74081A1296A89500571D46 /* IRSiteReachability.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRSiteReachability.j; sourceTree = "<group>"; };
+		FF74081B1296A89500571D46 /* IRWebAPIContext.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIContext.j; sourceTree = "<group>"; };
+		FF74081C1296A89500571D46 /* IRWebAPIEngine.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIEngine.j; sourceTree = "<group>"; };
+		FF74081D1296A89500571D46 /* IRWebAPIKit.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIKit.j; sourceTree = "<group>"; };
+		FF74081E1296A89500571D46 /* IRWebAPIMockJSONPConnection.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIMockJSONPConnection.j; sourceTree = "<group>"; };
+		FF74081F1296A89500571D46 /* IRWebAPIModel.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIModel.j; sourceTree = "<group>"; };
+		FF7408241296A8D200571D46 /* libIRWebAPIKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libIRWebAPIKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF7408291296A8E000571D46 /* IRWebAPIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIKit.h; sourceTree = "<group>"; };
+		FF7408451296A94900571D46 /* IRWebAPIEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIEngine.h; sourceTree = "<group>"; };
+		FF7408461296A94900571D46 /* IRWebAPIEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIEngine.m; sourceTree = "<group>"; };
+		FF7408971296B06F00571D46 /* IRWebAPIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIContext.h; sourceTree = "<group>"; };
+		FF7408981296B06F00571D46 /* IRWebAPIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIContext.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FF7408221296A8D200571D46 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FF74080C1296A88400571D46 = {
+			isa = PBXGroup;
+			children = (
+				FF7408291296A8E000571D46 /* IRWebAPIKit.h */,
+				FF7408451296A94900571D46 /* IRWebAPIEngine.h */,
+				FF7408461296A94900571D46 /* IRWebAPIEngine.m */,
+				FF7408971296B06F00571D46 /* IRWebAPIContext.h */,
+				FF7408981296B06F00571D46 /* IRWebAPIContext.m */,
+				FF7408191296A88B00571D46 /* Cappuccino */,
+				FF7408251296A8D200571D46 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FF7408191296A88B00571D46 /* Cappuccino */ = {
+			isa = PBXGroup;
+			children = (
+				FF74081A1296A89500571D46 /* IRSiteReachability.j */,
+				FF74081B1296A89500571D46 /* IRWebAPIContext.j */,
+				FF74081C1296A89500571D46 /* IRWebAPIEngine.j */,
+				FF74081D1296A89500571D46 /* IRWebAPIKit.j */,
+				FF74081E1296A89500571D46 /* IRWebAPIMockJSONPConnection.j */,
+				FF74081F1296A89500571D46 /* IRWebAPIModel.j */,
+			);
+			name = Cappuccino;
+			sourceTree = "<group>";
+		};
+		FF7408251296A8D200571D46 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FF7408241296A8D200571D46 /* libIRWebAPIKit.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		FF7408201296A8D200571D46 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF74082B1296A8E000571D46 /* IRWebAPIKit.h in Headers */,
+				FF7408471296A94900571D46 /* IRWebAPIEngine.h in Headers */,
+				FF7408991296B06F00571D46 /* IRWebAPIContext.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		FF7408231296A8D200571D46 /* IRWebAPIKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF7408281296A8D400571D46 /* Build configuration list for PBXNativeTarget "IRWebAPIKit" */;
+			buildPhases = (
+				FF7408201296A8D200571D46 /* Headers */,
+				FF7408211296A8D200571D46 /* Sources */,
+				FF7408221296A8D200571D46 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IRWebAPIKit;
+			productName = IRWebAPIKit;
+			productReference = FF7408241296A8D200571D46 /* libIRWebAPIKit.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FF74080E1296A88400571D46 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = FF7408111296A88400571D46 /* Build configuration list for PBXProject "IRWebAPIKit" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = FF74080C1296A88400571D46;
+			productRefGroup = FF7408251296A8D200571D46 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FF7408231296A8D200571D46 /* IRWebAPIKit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FF7408211296A8D200571D46 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF7408481296A94900571D46 /* IRWebAPIEngine.m in Sources */,
+				FF74089A1296B06F00571D46 /* IRWebAPIContext.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FF74080F1296A88400571D46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+		FF7408101296A88400571D46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Release;
+		};
+		FF7408261296A8D400571D46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PREBINDING = NO;
+				PRODUCT_NAME = IRWebAPIKit;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		FF7408271296A8D400571D46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PREBINDING = NO;
+				PRODUCT_NAME = IRWebAPIKit;
+				SDKROOT = iphoneos;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FF7408111296A88400571D46 /* Build configuration list for PBXProject "IRWebAPIKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF74080F1296A88400571D46 /* Debug */,
+				FF7408101296A88400571D46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF7408281296A8D400571D46 /* Build configuration list for PBXNativeTarget "IRWebAPIKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF7408261296A8D400571D46 /* Debug */,
+				FF7408271296A8D400571D46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FF74080E1296A88400571D46 /* Project object */;
+}
