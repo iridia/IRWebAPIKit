@@ -111,8 +111,6 @@
 		
 		nil];
 		
-		NSLog(@"pre");
-		
 		for (IRWebAPITransformer transformerBlock in self.globalRequestTransformers)
 		transformedContext = [transformerBlock(transformedContext) mutableCopy];
 		
