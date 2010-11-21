@@ -153,10 +153,9 @@
 
 	void (^returnedBlock) (void) = ^ {
 	
-		NSLog(@"Ongoing.");
-	
-		NSMutableDictionary *arguments = [inArgumentsOrNil mutableCopy];
-		if (!arguments) arguments = [NSMutableDictionary dictionary];
+		NSMutableDictionary *arguments;
+		
+		arguments = (!inArgumentsOrNil) ? [NSMutableDictionary dictionary] : [inArgumentsOrNil mutableCopy];
 		
 	
 	//	Transform Context.
