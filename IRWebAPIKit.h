@@ -14,6 +14,7 @@
 
 @class IRWebAPIEngine;
 @class IRWebAPIContext;
+@class IRWebAPIAuthenticator;
 
 
 
@@ -24,6 +25,8 @@ typedef NSDictionary * (^IRWebAPIResponseParser) (NSData *inData);
 typedef NSDictionary * (^IRWebAPITransformer) (NSDictionary *inOriginalContext);
 
 typedef void (^IRWebAPICallback) (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry);
+
+typedef void (^IRWebAPIAuthenticatorCallback) (IRWebAPIAuthenticator *inAuthenticator, BOOL isAuthenticated, BOOL *inShouldRetry);
 
 
 
@@ -56,6 +59,14 @@ typedef void (^IRWebAPICallback) (IRWebAPIEngine *inEngine, NSDictionary *inResp
 #import "IRWebAPIResponseParser.h"
 #import "IRWebAPIEngine.h"
 #import "IRWebAPIContext.h"
+#import "IRWebAPIAuthenticator.h"
+#import "IRWebAPICredentials.h"
+
+
+
+
+
+#import "IRWebAPIGoogleReaderAuthenticator.h"
 
 
 
