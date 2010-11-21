@@ -22,7 +22,7 @@
 
 - (void) createTransformerBlocks {
 
-	self.globalRequestTransformerBlock = [[^ (NSDictionary *inOriginalContext) {
+	self.globalRequestPreTransformerBlock = [[^ (NSDictionary *inOriginalContext) {
 	
 		if (!self.currentCredentials) return inOriginalContext;
 		if (!self.authToken) return inOriginalContext;
@@ -38,7 +38,7 @@
 	
 	} copy] retain];
 
-	self.globalResponseTransformerBlock = [[^ (NSDictionary *inOriginalContext) {
+	self.globalResponsePreTransformerBlock = [[^ (NSDictionary *inOriginalContext) {
 	
 	//	FIXME: Probably add code to handle possible authentication failure and trigger synchronous, blocking reauthentication?
 	
@@ -46,19 +46,17 @@
 	
 	} copy] retain];
 
-
 }
 
 - (void) associateWithEngine:(IRWebAPIEngine *)inEngine {
 
 	[self disassociateEngine];
-
+		
 	self.authToken = nil;
 	self.engine = inEngine;
 	
-	[self.engine.globalRequestTransformers addObject:self.globalRequestTransformerBlock];
-	[self.engine.globalResponseTransformers addObject:self.globalResponseTransformerBlock];
-
+	[super associateWithEngine:inEngine];
+	
 }
 
 - (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler {
