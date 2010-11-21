@@ -117,6 +117,8 @@
 			arguments, kIRWebAPIEngineRequestHTTPQueryParameters,
 			[NSNull null], kIRWebAPIEngineRequestHTTPBody,
 			@"GET", kIRWebAPIEngineRequestHTTPMethod,
+
+			self.parser, kIRWebAPIEngineParser,
 		
 		nil];
 		
@@ -177,11 +179,12 @@
 		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 		
 		CFDictionaryAddValue(successHandlers, connection, [[^ (NSData *inResponse) {
-		
+				
 			BOOL shouldRetry = NO;
 			BOOL notifyDelegate = NO;
 			
-			NSDictionary *parsedResponse = self.parser([[inResponse retain] autorelease]);
+			IRWebAPIResponseParser parserBlock = [transformedContext objectForKey:kIRWebAPIEngineParser];
+			NSDictionary *parsedResponse = parserBlock([[inResponse retain] autorelease]);
 			
 			for (IRWebAPITransformer transformerBlock in self.globalResponseTransformers)
 			parsedResponse = transformerBlock(parsedResponse);
