@@ -14,8 +14,11 @@
 
 //	In -associateWithEngine, these blocks are made and injected into a particular engine.
 
-	IRWebAPITransformer globalRequestTransformerBlock;
-	IRWebAPITransformer globalResponseTransformerBlock;
+	IRWebAPITransformer globalRequestPreTransformerBlock;
+	IRWebAPITransformer globalRequestPostTransformerBlock;
+	
+	IRWebAPITransformer globalResponsePreTransformerBlock;
+	IRWebAPITransformer globalResponsePostTransformerBlock;
 	
 	IRWebAPICredentials *currentCredentials;
 
@@ -42,8 +45,10 @@
 - (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler;
 
 @property (nonatomic, assign, readwrite) IRWebAPIEngine *engine;
-@property (nonatomic, assign, readwrite) IRWebAPITransformer globalRequestTransformerBlock;
-@property (nonatomic, assign, readwrite) IRWebAPITransformer globalResponseTransformerBlock;
+@property (nonatomic, assign, readwrite) IRWebAPITransformer globalRequestPreTransformerBlock;
+@property (nonatomic, assign, readwrite) IRWebAPITransformer globalRequestPostTransformerBlock;
+@property (nonatomic, assign, readwrite) IRWebAPITransformer globalResponsePreTransformerBlock;
+@property (nonatomic, assign, readwrite) IRWebAPITransformer globalResponsePostTransformerBlock;
 @property (nonatomic, assign, readwrite) IRWebAPICredentials *currentCredentials;
 
 @end

@@ -14,7 +14,7 @@
 
 
 @implementation IRWebAPIAuthenticator
-@synthesize engine, globalRequestTransformerBlock, globalResponseTransformerBlock, currentCredentials;
+@synthesize engine, globalRequestPreTransformerBlock, globalRequestPostTransformerBlock, globalResponsePreTransformerBlock, globalResponsePostTransformerBlock, currentCredentials;
 
 - (id) initWithEngine:(IRWebAPIEngine *)inEngine {
 
@@ -39,21 +39,33 @@
 
 - (void) associateWithEngine:(IRWebAPIEngine *)inEngine {
 
-	if (self.globalRequestTransformerBlock)
-	[self.engine.globalRequestTransformers addObject:self.globalRequestTransformerBlock];
+	if (self.globalRequestPreTransformerBlock)
+	[self.engine.globalRequestPreTransformers addObject:self.globalRequestPreTransformerBlock];
+	
+	if (self.globalRequestPostTransformerBlock)
+	[self.engine.globalRequestPostTransformers addObject:self.globalRequestPostTransformerBlock];
 
-	if (self.globalResponseTransformerBlock)
-	[self.engine.globalResponseTransformers addObject:self.globalResponseTransformerBlock];	
+	if (self.globalResponsePreTransformerBlock)
+	[self.engine.globalResponsePreTransformers addObject:self.globalResponsePreTransformerBlock];
+	
+	if (self.globalResponsePostTransformerBlock)
+	[self.engine.globalResponsePostTransformers addObject:self.globalResponsePostTransformerBlock];
 
 }
 
 - (void) disassociateEngine {
 
-	if (self.globalRequestTransformerBlock)
-	[self.engine.globalRequestTransformers removeObject:self.globalRequestTransformerBlock];
+	if (self.globalRequestPreTransformerBlock)
+	[self.engine.globalRequestPreTransformers removeObject:self.globalRequestPreTransformerBlock];
+	
+	if (self.globalRequestPostTransformerBlock)
+	[self.engine.globalRequestPostTransformers removeObject:self.globalRequestPostTransformerBlock];
 
-	if (self.globalResponseTransformerBlock)
-	[self.engine.globalResponseTransformers removeObject:self.globalResponseTransformerBlock];
+	if (self.globalResponsePreTransformerBlock)
+	[self.engine.globalResponsePreTransformers removeObject:self.globalResponsePreTransformerBlock];
+	
+	if (self.globalResponsePostTransformerBlock)
+	[self.engine.globalResponsePostTransformers removeObject:self.globalResponsePostTransformerBlock];
 	
 	self.engine = nil;
 

@@ -21,11 +21,13 @@
 	CFMutableDictionaryRef failureHandlers;
 	CFMutableDictionaryRef dataStore;
 	
-	NSMutableArray *globalRequestTransformers;
+	NSMutableArray *globalRequestPreTransformers;
 	NSMutableDictionary *requestTransformers;
+	NSMutableArray *globalRequestPostTransformers;
 
-	NSMutableArray *globalResponseTransformers;
+	NSMutableArray *globalResponsePreTransformers;
 	NSMutableDictionary *responseTransformers;
+	NSMutableArray *globalResponsePostTransformers;
 	
 	dispatch_queue_t sharedDispatchQueue;
 
@@ -34,11 +36,13 @@
 @property (nonatomic, readwrite, retain) IRWebAPIResponseParser parser;
 @property (nonatomic, readonly, retain) IRWebAPIContext *context;
 
-@property (nonatomic, retain, readonly) NSMutableArray *globalRequestTransformers;
+@property (nonatomic, retain, readonly) NSMutableArray *globalRequestPreTransformers;
 @property (nonatomic, retain, readonly) NSMutableDictionary *requestTransformers;
+@property (nonatomic, retain, readonly) NSMutableArray *globalRequestPostTransformers;
 
-@property (nonatomic, retain, readonly) NSMutableArray *globalResponseTransformers;
+@property (nonatomic, retain, readonly) NSMutableArray *globalResponsePreTransformers;
 @property (nonatomic, retain, readonly) NSMutableDictionary *responseTransformers;
+@property (nonatomic, retain, readonly) NSMutableArray *globalResponsePostTransformers;
 
 
 

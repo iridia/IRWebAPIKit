@@ -26,7 +26,7 @@
 @implementation IRWebAPIEngine
 
 @synthesize parser, context, successHandlers, failureHandlers, dataStore;
-@synthesize globalRequestTransformers, requestTransformers, globalResponseTransformers, responseTransformers;
+@synthesize globalRequestPreTransformers, globalRequestPostTransformers, requestTransformers, globalResponsePreTransformers, globalResponsePostTransformers, responseTransformers;
 
 
 
@@ -47,11 +47,13 @@
 	dataStore = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
 	CFRetain(dataStore);
 	
-	globalRequestTransformers = [[NSMutableArray array] retain];
+	globalRequestPreTransformers = [[NSMutableArray array] retain];
 	requestTransformers = [[NSMutableDictionary dictionary] retain];
+	globalRequestPostTransformers = [[NSMutableArray array] retain];
 
-	globalResponseTransformers = [[NSMutableArray array] retain];
+	globalResponsePreTransformers = [[NSMutableArray array] retain];
 	responseTransformers = [[NSMutableDictionary dictionary] retain];
+	globalResponsePostTransformers = [[NSMutableArray array] retain];
 	
 	sharedDispatchQueue = dispatch_queue_create("com.iridia.WebAPIEngine.queue.main", NULL);
 	
@@ -73,11 +75,13 @@
 	CFRelease(failureHandlers);
 	CFRelease(dataStore);
 
-	[globalRequestTransformers release];
+	[globalRequestPreTransformers release];
 	[requestTransformers release];
+	[globalRequestPostTransformers release];
 
-	[globalResponseTransformers release];
+	[globalResponsePreTransformers release];
 	[responseTransformers release];
+	[globalResponsePostTransformers release];
 	
 	dispatch_release(sharedDispatchQueue);
 
@@ -172,10 +176,13 @@
 		for (id optionValueKey in inOptionsOrNil)
 		[transformedContext setValue:[inOptionsOrNil valueForKey:optionValueKey] forKey:optionValueKey];
 		
-		for (IRWebAPITransformer transformerBlock in self.globalRequestTransformers)
+		for (IRWebAPITransformer transformerBlock in self.globalRequestPreTransformers)
 		transformedContext = [transformerBlock(transformedContext) mutableCopy];
 		
 		for (IRWebAPITransformer transformerBlock in [self requestTransformersForMethodNamed:inMethodName])
+		transformedContext = [transformerBlock(transformedContext) mutableCopy];
+
+		for (IRWebAPITransformer transformerBlock in self.globalRequestPostTransformers)
 		transformedContext = [transformerBlock(transformedContext) mutableCopy];
 		
 	
@@ -234,10 +241,13 @@
 				IRWebAPIResponseParser parserBlock = [transformedContext objectForKey:kIRWebAPIEngineParser];
 				NSDictionary *parsedResponse = parserBlock([[inResponse retain] autorelease]);
 				
-				for (IRWebAPITransformer transformerBlock in self.globalResponseTransformers)
+				for (IRWebAPITransformer transformerBlock in self.globalResponsePreTransformers)
 				parsedResponse = transformerBlock(parsedResponse);
 				
 				for (IRWebAPITransformer transformerBlock in [self responseTransformersForMethodNamed:inMethodName])
+				parsedResponse = transformerBlock(parsedResponse);
+				
+				for (IRWebAPITransformer transformerBlock in self.globalResponsePostTransformers)
 				parsedResponse = transformerBlock(parsedResponse);
 				
 				if (inSuccessHandler)
