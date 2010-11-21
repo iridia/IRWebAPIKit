@@ -26,6 +26,8 @@
 
 	NSMutableArray *globalResponseTransformers;
 	NSMutableDictionary *responseTransformers;
+	
+	dispatch_queue_t sharedDispatchQueue;
 
 }
 

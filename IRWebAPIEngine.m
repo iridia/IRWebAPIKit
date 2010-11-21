@@ -18,6 +18,8 @@
 @property (nonatomic, assign, readwrite) CFMutableDictionaryRef failureHandlers;
 @property (nonatomic, assign, readwrite) CFMutableDictionaryRef dataStore;
 
+- (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler;
+
 @end
 
 
@@ -51,6 +53,8 @@
 	globalResponseTransformers = [[NSMutableArray array] retain];
 	responseTransformers = [[NSMutableDictionary dictionary] retain];
 	
+	sharedDispatchQueue = dispatch_queue_create("com.iridia.WebAPIEngine.queue.main", NULL);
+	
 	return self;
 
 }
@@ -74,6 +78,8 @@
 
 	[globalResponseTransformers release];
 	[responseTransformers release];
+	
+	dispatch_release(sharedDispatchQueue);
 
 	[super dealloc];
 
@@ -101,8 +107,49 @@
 		self.parser = IRWebAPIResponseDefaultParserMake();
 	
 	}
+	
+	dispatch_async(
+	
+		dispatch_get_global_queue(0, 0), 
+	
+		[[self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler] copy]
+		
+	);
+	
+}
 
-	dispatch_async(dispatch_get_main_queue(), ^{
+
+
+
+
+- (void) enqueueAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
+
+	if (!self.parser) {
+
+		NSLog(@"Warning: IRWebAPIEngine is designed to work with a parser.  Without one, the response will be sent as a default dictionary.");
+		self.parser = IRWebAPIResponseDefaultParserMake();
+	
+	}
+	
+	dispatch_async(
+	
+		sharedDispatchQueue, 
+	
+		[[self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler] copy]
+		
+	);
+	
+}
+
+
+
+
+	
+- (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
+
+	void (^returnedBlock) (void) = ^ {
+	
+		NSLog(@"Ongoing.");
 	
 		NSMutableDictionary *arguments = [inArgumentsOrNil mutableCopy];
 		if (!arguments) arguments = [NSMutableDictionary dictionary];
@@ -175,56 +222,62 @@
 			[request setHTTPMethod:[transformedContext objectForKey:kIRWebAPIEngineRequestHTTPMethod]];
 		
 		
-		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+		dispatch_async(dispatch_get_main_queue(), ^{
 		
-		CFDictionaryAddValue(successHandlers, connection, [[^ (NSData *inResponse) {
+			NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+			
+			CFDictionaryAddValue(successHandlers, connection, [[^ (NSData *inResponse) {
+					
+				BOOL shouldRetry = NO;
+				BOOL notifyDelegate = NO;
 				
-			BOOL shouldRetry = NO;
-			BOOL notifyDelegate = NO;
-			
-			IRWebAPIResponseParser parserBlock = [transformedContext objectForKey:kIRWebAPIEngineParser];
-			NSDictionary *parsedResponse = parserBlock([[inResponse retain] autorelease]);
-			
-			for (IRWebAPITransformer transformerBlock in self.globalResponseTransformers)
-			parsedResponse = transformerBlock(parsedResponse);
-			
-			for (IRWebAPITransformer transformerBlock in [self responseTransformersForMethodNamed:inMethodName])
-			parsedResponse = transformerBlock(parsedResponse);
-			
-			if (inSuccessHandler)
-			inSuccessHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);
-			
-			if (shouldRetry)
-			NSLog(@"Should Retry");
-		//	FIXME: WHEN?
+				IRWebAPIResponseParser parserBlock = [transformedContext objectForKey:kIRWebAPIEngineParser];
+				NSDictionary *parsedResponse = parserBlock([[inResponse retain] autorelease]);
 				
-			if (notifyDelegate)
-			NSLog(@"Should Notify Delegate");
-		//	FIXME: HOW?
+				for (IRWebAPITransformer transformerBlock in self.globalResponseTransformers)
+				parsedResponse = transformerBlock(parsedResponse);
+				
+				for (IRWebAPITransformer transformerBlock in [self responseTransformersForMethodNamed:inMethodName])
+				parsedResponse = transformerBlock(parsedResponse);
+				
+				if (inSuccessHandler)
+				inSuccessHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);
+				
+				if (shouldRetry)
+				NSLog(@"Should Retry");
+			//	FIXME: WHEN?
+					
+				if (notifyDelegate)
+				NSLog(@"Should Notify Delegate");
+			//	FIXME: HOW?
 
-		} copy] retain]);
-		
-		CFDictionaryAddValue(failureHandlers, connection, [[^ {
-		
-			BOOL shouldRetry = NO;
-			BOOL notifyDelegate = NO;
+			} copy] retain]);
 			
-			if (inFailureHandler)
-			inFailureHandler(self, [NSDictionary dictionaryWithObject:@"TEST FAIL" forKey:@"FOO"], &notifyDelegate, &shouldRetry);
+			CFDictionaryAddValue(failureHandlers, connection, [[^ {
 			
-			if (shouldRetry)
-			NSLog(@"Should Retry");
+				BOOL shouldRetry = NO;
+				BOOL notifyDelegate = NO;
+				
+				if (inFailureHandler)
+				inFailureHandler(self, [NSDictionary dictionaryWithObject:@"TEST FAIL" forKey:@"FOO"], &notifyDelegate, &shouldRetry);
+				
+				if (shouldRetry)
+				NSLog(@"Should Retry");
+				
+				if (notifyDelegate)
+				NSLog(@"Should Notify Delegate");
 			
-			if (notifyDelegate)
-			NSLog(@"Should Notify Delegate");
+			} copy] retain]);
+			
+			CFDictionaryAddValue(dataStore, connection, [NSMutableData data]);
+			
+			[connection start];
 		
-		} copy] retain]);
-		
-		CFDictionaryAddValue(dataStore, connection, [NSMutableData data]);
-		
-		[connection start];
+		});
 	
-	});
+	};
+	
+	return [[returnedBlock copy] autorelease];
 
 }
 

@@ -28,6 +28,8 @@ typedef void (^IRWebAPICallback) (IRWebAPIEngine *inEngine, NSDictionary *inResp
 
 typedef void (^IRWebAPIAuthenticatorCallback) (IRWebAPIAuthenticator *inAuthenticator, BOOL isAuthenticated, BOOL *inShouldRetry);
 
+typedef void (^IRWebAPIEngineExecutionBlock) (void);
+
 
 
 
