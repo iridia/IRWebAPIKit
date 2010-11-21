@@ -59,6 +59,8 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 
 
 #import "IRWebAPIResponseParser.h"
+#import "IRWebAPIHelpers.h"
+
 #import "IRWebAPIEngine.h"
 #import "IRWebAPIContext.h"
 #import "IRWebAPIAuthenticator.h"

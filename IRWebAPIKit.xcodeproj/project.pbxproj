@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,6 +15,10 @@
 		FF25FA80129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FA7E129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.m */; };
 		FF25FCCA12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FCC812996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h */; };
 		FF25FCCB12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FCC912996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m */; };
+		FF25FD7E129971EC00975BE3 /* IRWebAPIHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FD7D129971EC00975BE3 /* IRWebAPIHelpers.h */; };
+		FF25FF27129984AF00975BE3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF25FF26129984AF00975BE3 /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FF25FF29129984AF00975BE3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF25FF28129984AF00975BE3 /* Foundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FF25FF88129986F600975BE3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF25FF87129986F600975BE3 /* Security.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FF74082B1296A8E000571D46 /* IRWebAPIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408291296A8E000571D46 /* IRWebAPIKit.h */; };
 		FF7408471296A94900571D46 /* IRWebAPIEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408451296A94900571D46 /* IRWebAPIEngine.h */; };
 		FF7408481296A94900571D46 /* IRWebAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408461296A94900571D46 /* IRWebAPIEngine.m */; };
@@ -32,6 +36,10 @@
 		FF25FA7E129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIGoogleReaderAuthenticator.m; sourceTree = "<group>"; };
 		FF25FCC812996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIXOAuthAuthenticator.h; sourceTree = "<group>"; };
 		FF25FCC912996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIXOAuthAuthenticator.m; sourceTree = "<group>"; };
+		FF25FD7D129971EC00975BE3 /* IRWebAPIHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIHelpers.h; sourceTree = "<group>"; };
+		FF25FF26129984AF00975BE3 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		FF25FF28129984AF00975BE3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FF25FF87129986F600975BE3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		FF74081A1296A89500571D46 /* IRSiteReachability.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRSiteReachability.j; sourceTree = "<group>"; };
 		FF74081B1296A89500571D46 /* IRWebAPIContext.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIContext.j; sourceTree = "<group>"; };
 		FF74081C1296A89500571D46 /* IRWebAPIEngine.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIEngine.j; sourceTree = "<group>"; };
@@ -52,18 +60,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF25FF27129984AF00975BE3 /* CoreFoundation.framework in Frameworks */,
+				FF25FF29129984AF00975BE3 /* Foundation.framework in Frameworks */,
+				FF25FF88129986F600975BE3 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		FF25FA79129944A900975BE3 /* Response Parsers */ = {
+		FF25FA79129944A900975BE3 /* Response Parsers and Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				FF25FD7D129971EC00975BE3 /* IRWebAPIHelpers.h */,
 				FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */,
 			);
-			name = "Response Parsers";
+			name = "Response Parsers and Helpers";
 			sourceTree = "<group>";
 		};
 		FF25FA7A129944B300975BE3 /* Credentials and Authenticators */ = {
@@ -113,10 +125,13 @@
 			children = (
 				FF7408291296A8E000571D46 /* IRWebAPIKit.h */,
 				FF25FA7B129944C200975BE3 /* Foundation */,
-				FF25FA79129944A900975BE3 /* Response Parsers */,
+				FF25FA79129944A900975BE3 /* Response Parsers and Helpers */,
 				FF25FA7A129944B300975BE3 /* Credentials and Authenticators */,
 				FF7408191296A88B00571D46 /* Cappuccino */,
 				FF7408251296A8D200571D46 /* Products */,
+				FF25FF26129984AF00975BE3 /* CoreFoundation.framework */,
+				FF25FF28129984AF00975BE3 /* Foundation.framework */,
+				FF25FF87129986F600975BE3 /* Security.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -156,6 +171,7 @@
 				FF25FA331299406800975BE3 /* IRWebAPIAuthenticator.h in Headers */,
 				FF25FA7F129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.h in Headers */,
 				FF25FCCA12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h in Headers */,
+				FF25FD7E129971EC00975BE3 /* IRWebAPIHelpers.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,7 +201,7 @@
 		FF74080E1296A88400571D46 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = FF7408111296A88400571D46 /* Build configuration list for PBXProject "IRWebAPIKit" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -225,6 +241,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
 			};
 			name = Debug;
 		};
@@ -232,6 +249,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
 			};
 			name = Release;
 		};
