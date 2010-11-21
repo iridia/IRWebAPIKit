@@ -48,6 +48,9 @@
 
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler;
 
+- (NSMutableArray *) requestTransformersForMethodNamed:(NSString *)inMethodName;
+- (NSMutableArray *) responseTransformersForMethodNamed:(NSString *)inMethodName;
+
 
 
 

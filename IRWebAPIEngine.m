@@ -128,8 +128,7 @@
 		for (IRWebAPITransformer transformerBlock in self.globalRequestTransformers)
 		transformedContext = [transformerBlock(transformedContext) mutableCopy];
 		
-		if ([self.requestTransformers objectForKey:inMethodName])
-		for (IRWebAPITransformer transformerBlock in [self.requestTransformers objectForKey:inMethodName])
+		for (IRWebAPITransformer transformerBlock in [self requestTransformersForMethodNamed:inMethodName])
 		transformedContext = [transformerBlock(transformedContext) mutableCopy];
 		
 	
@@ -187,6 +186,9 @@
 			NSDictionary *parsedResponse = parserBlock([[inResponse retain] autorelease]);
 			
 			for (IRWebAPITransformer transformerBlock in self.globalResponseTransformers)
+			parsedResponse = transformerBlock(parsedResponse);
+			
+			for (IRWebAPITransformer transformerBlock in [self responseTransformersForMethodNamed:inMethodName])
 			parsedResponse = transformerBlock(parsedResponse);
 			
 			if (inSuccessHandler)
@@ -299,5 +301,48 @@
 	});
 
 }
+
+
+
+
+
+
+
+
+
+
+- (NSMutableArray *) requestTransformersForMethodNamed:(NSString *)inMethodName {
+
+	NSMutableArray *returnedArray = [self.requestTransformers objectForKey:inMethodName];
+	
+	if (!returnedArray) {
+	
+		returnedArray = [NSMutableArray array];
+		[self.requestTransformers setObject:returnedArray forKey:inMethodName];
+		
+	}
+	
+	return returnedArray;
+
+}
+
+- (NSMutableArray *) responseTransformersForMethodNamed:(NSString *)inMethodName {
+
+	NSMutableArray *returnedArray = [self.responseTransformers objectForKey:inMethodName];
+	
+	if (!returnedArray) {
+	
+		returnedArray = [NSMutableArray array];
+		[self.responseTransformers setObject:returnedArray forKey:inMethodName];
+		
+	}
+	
+	return returnedArray;
+
+}
+
+
+
+
 
 @end
