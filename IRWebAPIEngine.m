@@ -85,6 +85,16 @@
 
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
 
+	[self fireAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:nil onSuccess:inSuccessHandler onFailure:inFailureHandler];
+
+}
+
+
+
+
+
+- (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
+
 	if (!self.parser) {
 
 		NSLog(@"Warning: IRWebAPIEngine is designed to work with a parser.  Without one, the response will be sent as a default dictionary.");
@@ -98,10 +108,9 @@
 		if (!arguments) arguments = [NSMutableDictionary dictionary];
 		
 	
-	//	Transform
-	//	TODO: Support custom parser block for method
+	//	Transform Context.
 		
-		NSDictionary *transformedContext = [NSDictionary dictionaryWithObjectsAndKeys:
+		NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 		
 			[self.context baseURLForMethodNamed:inMethodName], kIRWebAPIEngineRequestHTTPBaseURL,
 			[NSMutableDictionary dictionary], kIRWebAPIEngineRequestHTTPHeaderFields,
@@ -110,6 +119,9 @@
 			@"GET", kIRWebAPIEngineRequestHTTPMethod,
 		
 		nil];
+		
+		for (id optionValueKey in inOptionsOrNil)
+		[transformedContext setValue:[inOptionsOrNil valueForKey:optionValueKey] forKey:optionValueKey];
 		
 		for (IRWebAPITransformer transformerBlock in self.globalRequestTransformers)
 		transformedContext = [transformerBlock(transformedContext) mutableCopy];
