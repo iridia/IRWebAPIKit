@@ -11,7 +11,7 @@
 
 @implementation IRWebAPICredentials
 
-@synthesize identifier, identifierPlaceholder, qualifier, qualifierPlaceholder, displayName, notes;
+@synthesize identifier, identifierPlaceholder, qualifier, qualifierPlaceholder, displayName, notes, userInfo;
 
 - (id) init {
 
@@ -23,8 +23,25 @@
 	qualifierPlaceholder = nil;
 	displayName = nil;
 	notes = nil;
+	userInfo = [[NSMutableDictionary dictionary] retain];
 	
 	return self;
+
+}
+
+- (void) dealloc {
+
+	[identifier release];
+	[identifierPlaceholder release];
+	
+	[qualifier release];
+	[qualifierPlaceholder release];
+	
+	[displayName release];
+	[notes release];
+	[userInfo release];
+	
+	[super dealloc];
 
 }
 
@@ -38,6 +55,7 @@
 	qualifierPlaceholder = [inCoder decodeObjectForKey:@"qualifierPlaceholder"];
 	displayName = [inCoder decodeObjectForKey:@"displayName"];
 	notes = [inCoder decodeObjectForKey:@"notes"];
+	userInfo = [inCoder decodeObjectForKey:@"userInfo"];
 	
 	return self;
 
@@ -51,6 +69,7 @@
 	[inCoder encodeObject:qualifierPlaceholder forKey:@"qualifierPlaceholder"];
 	[inCoder encodeObject:displayName forKey:@"displayName"];
 	[inCoder encodeObject:notes forKey:@"notes"];
+	[inCoder encodeObject:userInfo forKey:@"userInfo"];
 
 }
 

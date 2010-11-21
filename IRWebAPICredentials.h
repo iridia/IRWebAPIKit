@@ -19,6 +19,8 @@
 	
 	NSString *displayName;
 	NSString *notes;
+	
+	NSMutableDictionary *userInfo;
 
 }
 
@@ -28,5 +30,6 @@
 @property (nonatomic, readwrite, retain) NSString *qualifierPlaceholder;
 @property (nonatomic, readwrite, retain) NSString *displayName;
 @property (nonatomic, readwrite, retain) NSString *notes;
+@property (nonatomic, readonly, retain) NSMutableDictionary *userInfo;
 
 @end
