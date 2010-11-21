@@ -12,13 +12,21 @@
 @class IRWebAPIAuthenticator;
 @interface IRWebAPIXOAuthAuthenticator : IRWebAPIAuthenticator {
 
-	NSString *realm;
 	NSString *consumerKey;
 	NSString *consumerSecret;
+
+	NSString *retrievedToken;
+	NSString *retrievedTokenSecret;
 	
 	NSURL *xAuthAccessTokenBaseURL;
 	NSURL *authorizeURL;
 
 }
 
+@property (nonatomic, readwrite, retain) NSString *consumerKey;
+@property (nonatomic, readwrite, retain) NSString *consumerSecret;
+
+@property (nonatomic, readwrite, retain) NSString *retrievedToken;
+@property (nonatomic, readwrite, retain) NSString *retrievedTokenSecret;
+	
 @end
