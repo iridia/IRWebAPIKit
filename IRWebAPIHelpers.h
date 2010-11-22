@@ -75,7 +75,8 @@ static inline NSString * IRWebAPIKitOAuthSignatureBaseStringMake (NSString *inHT
 
 	NSString * (^uriEncode) (NSString *) = ^ NSString * (NSString *inString) {
 
-		return IRWebAPIKitRFC3986EncodedStringMake(inString);
+		return IRWebAPIKitOAuthParameterStringMake(inString);
+	//	return IRWebAPIKitRFC3986EncodedStringMake(inString);
 	//	return [inString stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
 	
 	};
