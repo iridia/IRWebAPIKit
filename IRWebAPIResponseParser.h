@@ -35,7 +35,7 @@ static inline IRWebAPIResponseParser IRWebAPIResponseDefaultParserMake () {
 		return [NSDictionary dictionaryWithObjectsAndKeys:
 		
 			inData, @"response",
-			[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease], @"responseText",
+			[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding], @"responseText",
 			
 		nil];
 	
