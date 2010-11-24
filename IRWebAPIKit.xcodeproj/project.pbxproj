@@ -25,6 +25,8 @@
 		FF7408991296B06F00571D46 /* IRWebAPIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408971296B06F00571D46 /* IRWebAPIContext.h */; };
 		FF74089A1296B06F00571D46 /* IRWebAPIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408981296B06F00571D46 /* IRWebAPIContext.m */; };
 		FF740CAA1296EB0C00571D46 /* IRWebAPIResponseParser.h in Headers */ = {isa = PBXBuildFile; fileRef = FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */; };
+		FF7A7AAE129CD8210004890B /* IRWebAPIKeychainedCredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7A7AAC129CD8210004890B /* IRWebAPIKeychainedCredentials.h */; };
+		FF7A7AAF129CD8210004890B /* IRWebAPIKeychainedCredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7A7AAD129CD8210004890B /* IRWebAPIKeychainedCredentials.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +55,8 @@
 		FF7408971296B06F00571D46 /* IRWebAPIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIContext.h; sourceTree = "<group>"; };
 		FF7408981296B06F00571D46 /* IRWebAPIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIContext.m; sourceTree = "<group>"; };
 		FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIResponseParser.h; sourceTree = "<group>"; };
+		FF7A7AAC129CD8210004890B /* IRWebAPIKeychainedCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIKeychainedCredentials.h; sourceTree = "<group>"; };
+		FF7A7AAD129CD8210004890B /* IRWebAPIKeychainedCredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIKeychainedCredentials.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +91,7 @@
 				FF25FA321299406800975BE3 /* IRWebAPIAuthenticator.m */,
 				FF25FCC712996A2C00975BE3 /* Specific Authenticators */,
 				FF25FA7C129944D000975BE3 /* Applied Implementations */,
+				FF7A7AB1129CD8C80004890B /* Keychain Integration */,
 			);
 			name = "Credentials and Authenticators";
 			sourceTree = "<group>";
@@ -156,6 +161,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FF7A7AB1129CD8C80004890B /* Keychain Integration */ = {
+			isa = PBXGroup;
+			children = (
+				FF7A7AAC129CD8210004890B /* IRWebAPIKeychainedCredentials.h */,
+				FF7A7AAD129CD8210004890B /* IRWebAPIKeychainedCredentials.m */,
+			);
+			name = "Keychain Integration";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -172,6 +186,7 @@
 				FF25FA7F129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.h in Headers */,
 				FF25FCCA12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h in Headers */,
 				FF25FD7E129971EC00975BE3 /* IRWebAPIHelpers.h in Headers */,
+				FF7A7AAE129CD8210004890B /* IRWebAPIKeychainedCredentials.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,6 +246,7 @@
 				FF25FA341299406800975BE3 /* IRWebAPIAuthenticator.m in Sources */,
 				FF25FA80129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.m in Sources */,
 				FF25FCCB12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m in Sources */,
+				FF7A7AAF129CD8210004890B /* IRWebAPIKeychainedCredentials.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

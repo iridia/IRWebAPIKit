@@ -20,8 +20,6 @@
 	NSString *displayName;
 	NSString *notes;
 	
-	NSMutableDictionary *userInfo;
-
 }
 
 @property (nonatomic, readwrite, retain) NSString *identifier;
