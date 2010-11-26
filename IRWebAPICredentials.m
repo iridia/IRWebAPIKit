@@ -11,7 +11,7 @@
 
 @implementation IRWebAPICredentials
 
-@synthesize identifier, identifierPlaceholder, qualifier, qualifierPlaceholder, displayName, notes, userInfo;
+@synthesize identifier, identifierPlaceholder, identifierLabelText, qualifier, qualifierPlaceholder, qualifierLabelText, displayName, notes, userInfo;
 
 - (id) init {
 
