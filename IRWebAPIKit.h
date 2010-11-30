@@ -15,6 +15,7 @@
 @class IRWebAPIEngine;
 @class IRWebAPIContext;
 @class IRWebAPIAuthenticator;
+@class IRWebAPIInterface;
 
 
 
@@ -65,13 +66,13 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 #import "IRWebAPIContext.h"
 #import "IRWebAPIAuthenticator.h"
 #import "IRWebAPICredentials.h"
-
-
-
-
+#import "IRWebAPIInterface.h"
 
 #import "IRWebAPIGoogleReaderAuthenticator.h"
 #import "IRWebAPIXOAuthAuthenticator.h"
+
+#import "IRWebAPIInterfaceXOAuthInterfaceProtocol.h"
+#import "IRWebAPITwitterInterface.h"
 
 
 
