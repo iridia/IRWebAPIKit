@@ -25,4 +25,6 @@
 @property (nonatomic, readwrite, retain) NSString *notes;
 @property (nonatomic, readonly, retain) NSMutableDictionary *userInfo;
 
+- (id) initWithIdentifier:(NSString *)inIdentifier qualifier:(NSString *)inQualifier;
+
 @end

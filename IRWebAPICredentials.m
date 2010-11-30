@@ -29,6 +29,17 @@
 
 }
 
+- (id) initWithIdentifier:(NSString *)inIdentifier qualifier:(NSString *)inQualifier {
+
+	self = [self init]; if (!self) return nil;
+	
+	self.identifier = inIdentifier;
+	self.qualifier = inQualifier;
+	
+	return self;
+
+}
+
 - (void) dealloc {
 
 	[identifier release];
