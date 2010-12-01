@@ -1,5 +1,5 @@
 //
-//  IRWebAPIInterfaceXOAuthInterfaceProtocol.h
+//  IRWebAPIInterfaceXOAuthAuthenticating.h
 //  IRWebAPIKit
 //
 //  Created by Evadne Wu on 12/1/10.
@@ -9,7 +9,7 @@
 #import "IRWebAPIKit.h"
 
 
-@protocol IRWebAPIInterfaceXOAuthInterfaceProtocol
+@protocol IRWebAPIInterfaceXOAuthAuthenticating <IRWebAPIInterfaceAuthenticating>
 
 - (void) setConsumerKey:(NSString *)inConsumerKey;
 - (NSString *) consumerKey;

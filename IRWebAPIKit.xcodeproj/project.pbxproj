@@ -34,7 +34,7 @@
 		FF896CD412A566BF00AE2AF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF896CD312A566BF00AE2AF3 /* Security.framework */; };
 		FF896DD512A567FA00AE2AF3 /* IRWebAPITwitterInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */; };
 		FF896DD612A567FA00AE2AF3 /* IRWebAPITwitterInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */; };
-		FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthInterfaceProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthInterfaceProtocol.h */; };
+		FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h in Headers */ = {isa = PBXBuildFile; fileRef = FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,7 +72,7 @@
 		FF896CD312A566BF00AE2AF3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPITwitterInterface.h; sourceTree = "<group>"; };
 		FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPITwitterInterface.m; sourceTree = "<group>"; };
-		FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthInterfaceProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterfaceXOAuthInterfaceProtocol.h; sourceTree = "<group>"; };
+		FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterfaceXOAuthAuthenticating.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,8 +192,8 @@
 			children = (
 				FF896A6912A5666D00AE2AF3 /* IRWebAPIInterface.h */,
 				FF896A6A12A5666D00AE2AF3 /* IRWebAPIInterface.m */,
-				FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthInterfaceProtocol.h */,
 				FF47A29A12A6486900AF729F /* IRWebAPIInterfaceAuthenticating.h */,
+				FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h */,
 				FF896DD212A567ED00AE2AF3 /* Applied Implementations */,
 			);
 			name = "Interfacing Wrapper";
@@ -229,7 +229,7 @@
 				FF7A7AAE129CD8210004890B /* IRWebAPIKeychainedCredentials.h in Headers */,
 				FF896A6B12A5666D00AE2AF3 /* IRWebAPIInterface.h in Headers */,
 				FF896DD512A567FA00AE2AF3 /* IRWebAPITwitterInterface.h in Headers */,
-				FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthInterfaceProtocol.h in Headers */,
+				FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h in Headers */,
 				FF48661612A6329900B75591 /* IRWebAPIGoogleReaderInterface.h in Headers */,
 				FF47A29B12A6486900AF729F /* IRWebAPIInterfaceAuthenticating.h in Headers */,
 			);
