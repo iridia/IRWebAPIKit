@@ -21,11 +21,17 @@
 
 	IRWebAPIAuthenticator *googleReaderAuthenticator = [[IRWebAPIGoogleReaderAuthenticator alloc] initWithEngine:googleReaderEngine];
 		
-	self = [self initWithEngine:googleReaderEngine authenticator:googleReaderContext];
+	self = [self initWithEngine:googleReaderEngine authenticator:googleReaderAuthenticator];
 
 	if (!self) return nil;
 
 	return self;
+
+}
+
+- (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler {
+
+	[self.authenticator authenticateCredentials:inCredentials onSuccess:successHandler onFailure:failureHandler];
 
 }
 

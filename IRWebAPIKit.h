@@ -76,6 +76,8 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 
 #import "IRWebAPITwitterInterface.h"
 
+#import "IRWebAPIGoogleReaderInterface.h"
+
 
 
 

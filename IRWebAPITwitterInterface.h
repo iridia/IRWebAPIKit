@@ -8,6 +8,6 @@
 
 #import "IRWebAPIKit.h"
 
-@interface IRWebAPITwitterInterface : IRWebAPIInterface <IRWebAPIInterfaceXOAuthInterfaceProtocol>
+@interface IRWebAPITwitterInterface : IRWebAPIInterface <IRWebAPIInterfaceAuthenticating, IRWebAPIInterfaceXOAuthAuthenticating>
 
 @end

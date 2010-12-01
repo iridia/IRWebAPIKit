@@ -61,4 +61,10 @@
 
 }
 
+- (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler {
+
+	[self.authenticator authenticateCredentials:inCredentials onSuccess:successHandler onFailure:failureHandler];
+
+}
+
 @end
