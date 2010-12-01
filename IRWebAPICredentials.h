@@ -9,7 +9,7 @@
 #import "IRWebAPIKit.h"
 
 
-@interface IRWebAPICredentials : NSObject {
+@interface IRWebAPICredentials : NSObject <NSCopying> {
 
 }
 
@@ -23,7 +23,9 @@
 
 @property (nonatomic, readwrite, retain) NSString *displayName;
 @property (nonatomic, readwrite, retain) NSString *notes;
-@property (nonatomic, readonly, retain) NSMutableDictionary *userInfo;
+@property (nonatomic, readwrite, retain) NSMutableDictionary *userInfo;
+
+@property (nonatomic, readwrite, assign) BOOL authenticated;
 
 - (id) initWithIdentifier:(NSString *)inIdentifier qualifier:(NSString *)inQualifier;
 

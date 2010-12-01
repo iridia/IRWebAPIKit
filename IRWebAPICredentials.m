@@ -11,7 +11,7 @@
 
 @implementation IRWebAPICredentials
 
-@synthesize identifier, identifierPlaceholder, identifierLabelText, qualifier, qualifierPlaceholder, qualifierLabelText, displayName, notes, userInfo;
+@synthesize identifier, identifierPlaceholder, identifierLabelText, qualifier, qualifierPlaceholder, qualifierLabelText, displayName, notes, userInfo, authenticated;
 
 - (id) init {
 
@@ -24,6 +24,7 @@
 	displayName = nil;
 	notes = nil;
 	userInfo = [[NSMutableDictionary dictionary] retain];
+	authenticated = NO;
 	
 	return self;
 
@@ -67,6 +68,7 @@
 	displayName = [inCoder decodeObjectForKey:@"displayName"];
 	notes = [inCoder decodeObjectForKey:@"notes"];
 	userInfo = [inCoder decodeObjectForKey:@"userInfo"];
+	authenticated = [(NSNumber *)[inCoder decodeObjectForKey:@"authenticated"] boolValue];
 	
 	return self;
 
@@ -81,6 +83,28 @@
 	[inCoder encodeObject:displayName forKey:@"displayName"];
 	[inCoder encodeObject:notes forKey:@"notes"];
 	[inCoder encodeObject:userInfo forKey:@"userInfo"];
+	[inCoder encodeObject:[NSNumber numberWithBool:authenticated] forKey:@"authenticated"];
+
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+
+	return self;
+
+//	Although copying sounds good, it breaks our hash in an authentication manager
+
+	IRWebAPICredentials *copy = [[[self class] allocWithZone: zone] init];
+	
+	copy.identifier = self.identifier;
+	copy.identifierPlaceholder = self.identifierPlaceholder;
+	copy.qualifier = self.qualifier;
+	copy.qualifierPlaceholder = self.qualifierPlaceholder;
+	copy.displayName = self.displayName;
+	copy.notes = self.notes;
+	copy.userInfo = [[self.userInfo copy] autorelease];
+	copy.authenticated = self.authenticated;
+
+	return copy;
 
 }
 
