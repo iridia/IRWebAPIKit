@@ -16,6 +16,8 @@
 		FF25FCCA12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FCC812996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h */; };
 		FF25FCCB12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FCC912996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m */; };
 		FF25FD7E129971EC00975BE3 /* IRWebAPIHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FD7D129971EC00975BE3 /* IRWebAPIHelpers.h */; };
+		FF48661612A6329900B75591 /* IRWebAPIGoogleReaderInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF48661412A6329900B75591 /* IRWebAPIGoogleReaderInterface.h */; };
+		FF48661712A6329900B75591 /* IRWebAPIGoogleReaderInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */; };
 		FF74082B1296A8E000571D46 /* IRWebAPIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408291296A8E000571D46 /* IRWebAPIKit.h */; };
 		FF7408471296A94900571D46 /* IRWebAPIEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408451296A94900571D46 /* IRWebAPIEngine.h */; };
 		FF7408481296A94900571D46 /* IRWebAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408461296A94900571D46 /* IRWebAPIEngine.m */; };
@@ -44,6 +46,8 @@
 		FF25FCC812996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIXOAuthAuthenticator.h; sourceTree = "<group>"; };
 		FF25FCC912996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIXOAuthAuthenticator.m; sourceTree = "<group>"; };
 		FF25FD7D129971EC00975BE3 /* IRWebAPIHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIHelpers.h; sourceTree = "<group>"; };
+		FF48661412A6329900B75591 /* IRWebAPIGoogleReaderInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIGoogleReaderInterface.h; sourceTree = "<group>"; };
+		FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIGoogleReaderInterface.m; sourceTree = "<group>"; };
 		FF74081A1296A89500571D46 /* IRSiteReachability.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRSiteReachability.j; sourceTree = "<group>"; };
 		FF74081B1296A89500571D46 /* IRWebAPIContext.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIContext.j; sourceTree = "<group>"; };
 		FF74081C1296A89500571D46 /* IRWebAPIEngine.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIEngine.j; sourceTree = "<group>"; };
@@ -197,6 +201,8 @@
 			children = (
 				FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */,
 				FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */,
+				FF48661412A6329900B75591 /* IRWebAPIGoogleReaderInterface.h */,
+				FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */,
 			);
 			name = "Applied Implementations";
 			sourceTree = "<group>";
@@ -221,6 +227,7 @@
 				FF896A6B12A5666D00AE2AF3 /* IRWebAPIInterface.h in Headers */,
 				FF896DD512A567FA00AE2AF3 /* IRWebAPITwitterInterface.h in Headers */,
 				FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthInterfaceProtocol.h in Headers */,
+				FF48661612A6329900B75591 /* IRWebAPIGoogleReaderInterface.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,6 +290,7 @@
 				FF25FA80129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.m in Sources */,
 				FF25FCCB12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m in Sources */,
 				FF7408481296A94900571D46 /* IRWebAPIEngine.m in Sources */,
+				FF48661712A6329900B75591 /* IRWebAPIGoogleReaderInterface.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
