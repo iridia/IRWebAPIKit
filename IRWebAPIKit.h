@@ -72,6 +72,8 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 #import "IRWebAPIXOAuthAuthenticator.h"
 
 #import "IRWebAPIInterfaceXOAuthInterfaceProtocol.h"
+#import "IRWebAPIInterfaceAuthenticating.h"
+
 #import "IRWebAPITwitterInterface.h"
 
 

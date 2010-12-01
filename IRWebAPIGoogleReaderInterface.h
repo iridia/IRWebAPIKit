@@ -8,7 +8,7 @@
 
 #import "IRWebAPIKit.h"
 
-@interface IRWebAPIGoogleReaderInterface : IRWebAPIInterface {
+@interface IRWebAPIGoogleReaderInterface : IRWebAPIInterface <IRWebAPIInterfaceAuthenticating> {
 
 }
 
