@@ -116,7 +116,7 @@
 	
 		dispatch_get_global_queue(0, 0), 
 	
-		[[self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler] copy]
+		[self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler]
 		
 	);
 	
@@ -139,7 +139,7 @@
 	
 		sharedDispatchQueue, 
 	
-		[[self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler] copy]
+		[self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler]
 		
 	);
 	
@@ -155,7 +155,15 @@
 	
 		NSMutableDictionary *arguments;
 		
-		arguments = (!inArgumentsOrNil) ? [NSMutableDictionary dictionary] : [inArgumentsOrNil mutableCopy];
+		if (inArgumentsOrNil) {
+		
+			[arguments = [inArgumentsOrNil mutableCopy] autorelease];
+		
+		} else {
+		
+			arguments = [NSMutableDictionary dictionary];
+		
+		}
 		
 	
 	//	Transform Context.
@@ -176,13 +184,13 @@
 		[transformedContext setValue:[inOptionsOrNil valueForKey:optionValueKey] forKey:optionValueKey];
 		
 		for (IRWebAPITransformer transformerBlock in self.globalRequestPreTransformers)
-		transformedContext = [transformerBlock(transformedContext) mutableCopy];
+		transformedContext = [[transformerBlock(transformedContext) mutableCopy] autorelease];
 		
 		for (IRWebAPITransformer transformerBlock in [self requestTransformersForMethodNamed:inMethodName])
-		transformedContext = [transformerBlock(transformedContext) mutableCopy];
+		transformedContext = [[transformerBlock(transformedContext) mutableCopy] autorelease];
 
 		for (IRWebAPITransformer transformerBlock in self.globalRequestPostTransformers)
-		transformedContext = [transformerBlock(transformedContext) mutableCopy];
+		transformedContext = [[transformerBlock(transformedContext) mutableCopy] autorelease];
 		
 	
 	//	Create Request
@@ -230,7 +238,7 @@
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
 		
-			NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+			NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
 			
 			CFDictionaryAddValue(successHandlers, connection, [[^ (NSData *inResponse) {
 					
@@ -260,7 +268,7 @@
 				NSLog(@"Should Notify Delegate");
 			//	FIXME: HOW?
 
-			} copy] retain]);
+			} copy] autorelease]);
 			
 			CFDictionaryAddValue(failureHandlers, connection, [[^ {
 			
@@ -276,7 +284,7 @@
 				if (notifyDelegate)
 				NSLog(@"Should Notify Delegate");
 			
-			} copy] retain]);
+			} copy] autorelease]);
 			
 			CFDictionaryAddValue(dataStore, connection, [NSMutableData data]);
 			
