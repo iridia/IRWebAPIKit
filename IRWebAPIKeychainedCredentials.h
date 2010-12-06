@@ -22,7 +22,7 @@
 @property (nonatomic, readwrite, retain) NSString *keychainIdentifier;
 @property (nonatomic, readwrite, retain) NSString *keychainSecret;
 
-- (void) persistKeychainPayloadWithError:(NSError **)inErrorOrNil;
+- (BOOL) persistKeychainPayloadWithError:(NSError **)inErrorOrNil;
 - (void) restoreKeychainPayload;
 
 @end

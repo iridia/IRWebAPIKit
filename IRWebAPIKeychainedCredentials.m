@@ -13,7 +13,7 @@
 
 @synthesize keychainIdentifier, keychainSecret;
 
-- (void) persistKeychainPayloadWithError:(NSError **)inErrorOrNil {
+- (BOOL) persistKeychainPayloadWithError:(NSError **)inErrorOrNil {
 
 //	Throw an error if the identifier exists already
 
