@@ -36,3 +36,27 @@
 }
 
 @end
+
+
+
+
+
+//		googleReaderEngine = [[IRWebAPIEngine alloc] initWithContext:[[IRWebAPIContext alloc] initWithBaseURL:[NSURL URLWithString:@"https://www.google.com"]]];
+//		
+//		googleReaderEngine.parser = IRWebAPIResponseDefaultJSONParserMake();
+//		
+//		IRWebAPIAuthenticator *googleReaderAuthenticator = [[IRWebAPIGoogleReaderAuthenticator alloc] initWithEngine:googleReaderEngine];
+//		
+//		[googleReaderAuthenticator authenticateCredentials:[[[IRWebAPICredentials alloc] initWithIdentifier:MILK_DEVELOPMENT_GOOGLE_USER_IDENTIFIER qualifier:MILK_DEVELOPMENT_GOOGLE_USER_QUALIFIER] autorelease] onSuccess:^(IRWebAPIAuthenticator *inAuthenticator, BOOL isAuthenticated, BOOL *inShouldRetry) {
+//			
+//			[googleReaderEngine fireAPIRequestNamed:@"reader/api/0/user-info" withArguments:nil onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) { 
+//			
+//				NSLog(@"reader/api/0/user-info: %@", inResponseOrNil);
+//			
+//			} onFailure:nil];
+//			
+//		 } onFailure:nil];
+
+
+
+
