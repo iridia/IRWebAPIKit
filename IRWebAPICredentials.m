@@ -108,4 +108,21 @@
 
 }
 
+- (NSString *) description {
+
+	return [[NSDictionary dictionaryWithObjectsAndKeys:
+	
+		self.identifier, @"identifier",
+		self.identifierPlaceholder, @"identifierPlaceholder",
+		self.qualifier, @"qualifier",
+		self.qualifierPlaceholder, @"qualifierPlaceholder",
+		self.displayName, @"displayName",
+		self.notes, @"notes",
+		self.userInfo, @"userInfo",
+		[NSNumber numberWithBool:self.authenticated], @"authenticated",
+	
+	nil] description];
+
+}
+
 @end
