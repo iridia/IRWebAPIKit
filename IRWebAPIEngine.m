@@ -260,10 +260,12 @@
 				if (inSuccessHandler)
 				inSuccessHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);
 				
-				if (shouldRetry)
-				NSLog(@"Should Retry");
-			//	FIXME: WHEN?
+				if (shouldRetry) {
+
+					[self enqueueAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler];
 					
+				}
+
 				if (notifyDelegate)
 				NSLog(@"Should Notify Delegate");
 			//	FIXME: HOW?
@@ -278,8 +280,11 @@
 				if (inFailureHandler)
 				inFailureHandler(self, [NSDictionary dictionaryWithObject:@"TEST FAIL" forKey:@"FOO"], &notifyDelegate, &shouldRetry);
 				
-				if (shouldRetry)
-				NSLog(@"Should Retry");
+				if (shouldRetry) {
+				
+					[self enqueueAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler];
+					
+				}
 				
 				if (notifyDelegate)
 				NSLog(@"Should Notify Delegate");

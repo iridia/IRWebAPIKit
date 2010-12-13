@@ -84,6 +84,8 @@
 			if (failureHandler)
 			failureHandler(self, NO, inShouldRetry);
 			
+			*inShouldRetry = YES;
+			
 			return;
 		
 		}
@@ -94,9 +96,11 @@
 		if (successHandler) successHandler(self, YES, inShouldRetry);
 	
 	} onFailure: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
-	
+		
 		if (failureHandler)
 		failureHandler(self, NO, inShouldRetry);
+		
+		*inShouldRetry = YES;
 	
 	}];
 
