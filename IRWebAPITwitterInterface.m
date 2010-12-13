@@ -63,7 +63,37 @@
 
 - (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler {
 
+	NSLog(@"twitter interface %@, authenticator %@, going to authenticate the credentials", self, self.authenticator);
+
 	[self.authenticator authenticateCredentials:inCredentials onSuccess:successHandler onFailure:failureHandler];
+
+}
+
+
+
+
+
+- (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userinfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPICallback)inSuccessCallback onFailure:(IRWebAPICallback)inFailureCallback {
+
+	NSLog(@"current credentials %@", self.authenticator.currentCredentials);
+
+	[self.engine fireAPIRequestNamed:@"/1/statuses/update.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+
+		inContents, @"status",
+
+	nil] options:[NSDictionary dictionaryWithObjectsAndKeys:
+
+		@"POST", kIRWebAPIEngineRequestHTTPMethod,
+
+	nil] onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+
+		NSLog(@"statuses/update response: %@", inResponseOrNil);
+
+	} onFailure: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	
+		NSLog(@"Failed. %@");
+	
+	}];
 
 }
 
