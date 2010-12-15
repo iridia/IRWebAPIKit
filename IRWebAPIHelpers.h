@@ -19,6 +19,21 @@
 
 
 
+static inline NSString * IRWebAPIKitStringValue (id<NSObject> inObject) {
+
+	if (!inObject)
+	return [[NSString alloc] initWithString:@""];
+	
+	if ([inObject isKindOfClass:[NSString class]])
+	return (NSString *)inObject;
+		
+	if ([inObject isKindOfClass:[NSNumber class]])
+	return [(NSNumber *)inObject stringValue];
+	
+	return [inObject description];
+
+}
+
 static inline NSString * IRWebAPIKitRFC3986EncodedStringMake (NSString *inString) {
 
 //	http://mesh.typepad.com/blog/2007/10/url-encoding-wi.html
@@ -43,7 +58,9 @@ static inline NSString * IRWebAPIKitRFC3986EncodedStringMake (NSString *inString
 
 
 
-static inline NSString * IRWebAPIKitOAuthParameterStringMake (NSString *inString) {
+static inline NSString * IRWebAPIKitOAuthParameterStringMake (id<NSObject> inObject) {
+
+	NSString *inString = IRWebAPIKitStringValue(inObject);
 
 //	From Google’s GData Toolkit
 //	http://oauth.net/core/1.0a/#encoding_parameters

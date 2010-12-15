@@ -109,8 +109,12 @@
 		
 		NSMutableArray *oAuthHeaderContents = [NSMutableArray array];
 		
-		for (id key in oAuthParameters)
-		[oAuthHeaderContents addObject:[NSString stringWithFormat:@"%@=\"%@\"", key, IRWebAPIKitOAuthParameterStringMake([oAuthParameters objectForKey:key])]];
+		for (id key in oAuthParameters) {
+		
+			NSLog(@"adding key %@ and object %@", key, [oAuthParameters objectForKey:key]);
+			[oAuthHeaderContents addObject:[NSString stringWithFormat:@"%@=\"%@\"", key, IRWebAPIKitOAuthParameterStringMake([oAuthParameters objectForKey:key])]];
+		
+		}
 		
 		[(NSMutableDictionary *)[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields] setObject:[NSString stringWithFormat:@"OAuth %@", [oAuthHeaderContents componentsJoinedByString:@", "]] forKey:@"Authorization"];
 			

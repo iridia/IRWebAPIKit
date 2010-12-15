@@ -208,7 +208,7 @@
 				@"%@=%@",
 				
 				[queryParameterKey stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-				[(NSString *)[queryParameters objectForKey:queryParameterKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+				[IRWebAPIKitStringValue([queryParameters objectForKey:queryParameterKey]) stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
 				
 			]];
 			
