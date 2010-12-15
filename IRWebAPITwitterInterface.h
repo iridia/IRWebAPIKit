@@ -13,3 +13,13 @@
 - (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userinfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPICallback)inSuccessCallback onFailure:(IRWebAPICallback)inFailureCallback;
 
 @end
+
+
+
+
+
+#import "IRWebAPITwitterInterface+Geo.h"
+
+
+
+

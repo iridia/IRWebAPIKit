@@ -75,8 +75,6 @@
 
 - (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userinfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPICallback)inSuccessCallback onFailure:(IRWebAPICallback)inFailureCallback {
 
-	NSLog(@"current credentials %@", self.authenticator.currentCredentials);
-
 	[self.engine fireAPIRequestNamed:@"/1/statuses/update.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 
 		inContents, @"status",
@@ -96,5 +94,9 @@
 	}];
 
 }
+
+
+
+
 
 @end
