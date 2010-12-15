@@ -157,7 +157,7 @@
 		
 		if (inArgumentsOrNil) {
 		
-			[arguments = [inArgumentsOrNil mutableCopy] autorelease];
+			arguments = [[inArgumentsOrNil mutableCopy] autorelease];
 		
 		} else {
 		
