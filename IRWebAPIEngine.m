@@ -153,18 +153,7 @@
 
 	void (^returnedBlock) (void) = ^ {
 	
-		NSMutableDictionary *arguments;
-		
-		if (inArgumentsOrNil) {
-		
-			arguments = [[inArgumentsOrNil mutableCopy] autorelease];
-		
-		} else {
-		
-			arguments = [NSMutableDictionary dictionary];
-		
-		}
-		
+		NSMutableDictionary *arguments = inArgumentsOrNil ? [[inArgumentsOrNil mutableCopy] autorelease] : [NSMutableDictionary dictionary];
 	
 	//	Transform Context.
 		
