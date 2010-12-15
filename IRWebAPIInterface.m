@@ -27,12 +27,8 @@
 
 	self = [super init]; if (!self) return nil;
 	
-	NSLog(@"inAuthenticator %@", inAuthenticator);
-	
 	engine = [inEngine retain];
 	authenticator = [inAuthenticator retain];
-	
-	NSLog(@"authenticator %@", authenticator);
 	
 	return self;
 
