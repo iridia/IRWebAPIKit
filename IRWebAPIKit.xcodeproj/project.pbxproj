@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF0E874112B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0E874012B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h */; };
 		FF25FA2F1299406200975BE3 /* IRWebAPICredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FA2D1299406200975BE3 /* IRWebAPICredentials.h */; };
 		FF25FA301299406200975BE3 /* IRWebAPICredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FA2E1299406200975BE3 /* IRWebAPICredentials.m */; };
 		FF25FA331299406800975BE3 /* IRWebAPIAuthenticator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FA311299406800975BE3 /* IRWebAPIAuthenticator.h */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FF0E874012B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterfaceURLShortening.h; sourceTree = "<group>"; };
 		FF25FA2D1299406200975BE3 /* IRWebAPICredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPICredentials.h; sourceTree = "<group>"; };
 		FF25FA2E1299406200975BE3 /* IRWebAPICredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPICredentials.m; sourceTree = "<group>"; };
 		FF25FA311299406800975BE3 /* IRWebAPIAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIAuthenticator.h; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 		FF896B5812A5667A00AE2AF3 /* Interfacing Wrapper */ = {
 			isa = PBXGroup;
 			children = (
+				FF0E874012B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h */,
 				FF896A6912A5666D00AE2AF3 /* IRWebAPIInterface.h */,
 				FF896A6A12A5666D00AE2AF3 /* IRWebAPIInterface.m */,
 				FF47A29A12A6486900AF729F /* IRWebAPIInterfaceAuthenticating.h */,
@@ -239,6 +242,7 @@
 				FF48661612A6329900B75591 /* IRWebAPIGoogleReaderInterface.h in Headers */,
 				FF47A29B12A6486900AF729F /* IRWebAPIInterfaceAuthenticating.h in Headers */,
 				FFC41B9112B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h in Headers */,
+				FF0E874112B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

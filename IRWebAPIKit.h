@@ -68,14 +68,15 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 #import "IRWebAPICredentials.h"
 #import "IRWebAPIInterface.h"
 
-#import "IRWebAPIGoogleReaderAuthenticator.h"
-#import "IRWebAPIXOAuthAuthenticator.h"
-
 #import "IRWebAPIInterfaceAuthenticating.h"
 #import "IRWebAPIInterfaceXOAuthAuthenticating.h"
 
-#import "IRWebAPITwitterInterface.h"
+#import "IRWebAPIInterfaceURLShortening.h"
 
+#import "IRWebAPIGoogleReaderAuthenticator.h"
+#import "IRWebAPIXOAuthAuthenticator.h"
+
+#import "IRWebAPITwitterInterface.h"
 #import "IRWebAPIGoogleReaderInterface.h"
 
 
