@@ -153,9 +153,20 @@
 
 	void (^returnedBlock) (void) = ^ {
 	
-		NSMutableDictionary *arguments = inArgumentsOrNil ? [[inArgumentsOrNil mutableCopy] autorelease] : [NSMutableDictionary dictionary];
+	//	Remove [NSNull null] argument values
 	
-	//	Transform Context.
+		NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
+		
+		NSLog(@"inArgumentsOrNil is %@", inArgumentsOrNil);
+		
+		if (inArgumentsOrNil)
+		for (id argumentKey in inArgumentsOrNil)
+		if (![[inArgumentsOrNil objectForKey:argumentKey] isEqual:@""])
+		if (![[inArgumentsOrNil objectForKey:argumentKey] isEqual:[NSNull null]])
+		[arguments setObject:[inArgumentsOrNil objectForKey:argumentKey] forKey:argumentKey];
+		
+		NSLog(@"arguments is %@", arguments);
+		
 		
 		NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 		

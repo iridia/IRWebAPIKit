@@ -13,7 +13,7 @@
 
 - (id) init {
 
-	IRWebAPIContext *twitterContext = [[[IRWebAPIContext alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.twitter.com"]] autorelease];
+	IRWebAPIContext *twitterContext = [[[IRWebAPIContext alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.twitter.com/1"]] autorelease];
 
 	IRWebAPIEngine *twitterEngine = [[[IRWebAPIEngine alloc] initWithContext:twitterContext] autorelease];
 	
@@ -73,7 +73,7 @@
 
 - (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userinfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPICallback)inSuccessCallback onFailure:(IRWebAPICallback)inFailureCallback {
 
-	[self.engine fireAPIRequestNamed:@"/1/statuses/update.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	[self.engine fireAPIRequestNamed:@"/statuses/update.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 
 		inContents, @"status",
 
@@ -84,10 +84,16 @@
 	nil] onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 
 		NSLog(@"statuses/update response: %@", inResponseOrNil);
+		
+		if (inSuccessCallback)
+		inSuccessCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
 
 	} onFailure: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		NSLog(@"Failed. %@");
+		
+		if (inFailureCallback)
+		inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
 	
 	}];
 

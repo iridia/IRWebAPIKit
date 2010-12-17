@@ -66,7 +66,7 @@
 
 	return;
 
-	[self.engine fireAPIRequestNamed:@"/1/geo/reverse_geocode.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	[self.engine fireAPIRequestNamed:@"/geo/reverse_geocode.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 
 		[NSNumber numberWithFloat:inLocation.coordinate.latitude], @"lat",
 		[NSNumber numberWithFloat:inLocation.coordinate.longitude], @"long",

@@ -8,6 +8,18 @@
 
 #import "IRWebAPIKit.h"
 
+#ifndef __IRWebAPIInterface__
+#define __IRWebAPIInterface__
+
+typedef NSUInteger IRWebAPITwitterStatusIdentifier;
+#define IRWebAPITwitterStatusIdentifierNotApplicable 0;
+
+#endif
+
+
+
+
+
 @interface IRWebAPITwitterInterface : IRWebAPIInterface <IRWebAPIInterfaceAuthenticating, IRWebAPIInterfaceXOAuthAuthenticating>
 
 - (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userinfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPICallback)inSuccessCallback onFailure:(IRWebAPICallback)inFailureCallback;
@@ -18,6 +30,7 @@
 
 
 
+#import "IRWebAPITwitterInterface+TImeline.h"
 #import "IRWebAPITwitterInterface+Geo.h"
 
 
