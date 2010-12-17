@@ -111,7 +111,6 @@
 		
 		for (id key in oAuthParameters) {
 		
-			NSLog(@"adding key %@ and object %@", key, [oAuthParameters objectForKey:key]);
 			[oAuthHeaderContents addObject:[NSString stringWithFormat:@"%@=\"%@\"", key, IRWebAPIKitOAuthParameterStringMake([oAuthParameters objectForKey:key])]];
 		
 		}

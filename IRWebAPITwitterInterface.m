@@ -63,8 +63,6 @@
 
 - (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler {
 
-	NSLog(@"twitter interface %@, authenticator %@, going to authenticate the credentials", self, self.authenticator);
-
 	[self.authenticator authenticateCredentials:inCredentials onSuccess:successHandler onFailure:failureHandler];
 
 }
