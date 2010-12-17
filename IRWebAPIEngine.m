@@ -157,16 +157,11 @@
 	
 		NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
 		
-		NSLog(@"inArgumentsOrNil is %@", inArgumentsOrNil);
-		
 		if (inArgumentsOrNil)
 		for (id argumentKey in inArgumentsOrNil)
 		if (![[inArgumentsOrNil objectForKey:argumentKey] isEqual:@""])
 		if (![[inArgumentsOrNil objectForKey:argumentKey] isEqual:[NSNull null]])
-		[arguments setObject:[inArgumentsOrNil objectForKey:argumentKey] forKey:argumentKey];
-		
-		NSLog(@"arguments is %@", arguments);
-		
+		[arguments setObject:[inArgumentsOrNil objectForKey:argumentKey] forKey:argumentKey];		
 		
 		NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 		
