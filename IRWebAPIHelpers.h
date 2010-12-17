@@ -235,17 +235,15 @@ static inline NSString *IRWebAPIKitTimestamp () {
 static inline NSString *IRWebAPIKitNonce () {
 
 	NSString *uuid = nil;
+	
 	CFUUIDRef theUUID = CFUUIDCreate(kCFAllocatorDefault);
-
 	if (!theUUID) return nil;
-
-	uuid = NSMakeCollectable(CFUUIDCreateString(kCFAllocatorDefault, theUUID));
+	
+	uuid = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, theUUID) autorelease];
 	CFRelease(theUUID);
 	
-	return [NSString stringWithFormat:@"%@-%@", IRWebAPIKitTimestamp(), uuid, [UIDevice currentDevice].uniqueIdentifier];
+	return [NSString stringWithFormat:@"%@-%@-%@", IRWebAPIKitTimestamp(), uuid, [UIDevice currentDevice].uniqueIdentifier];
 	
-	return uuid;
-
 }
 
 
