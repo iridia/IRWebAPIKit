@@ -43,14 +43,20 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 #define kIRWebAPIEngineRequestHTTPHeaderFields @"IRWebAPIEngineHTTPHeaderFields"
 //	Expected to be a dictionary
 
+#define kIRWebAPIEngineRequestHTTPPOSTParameters @"IRWebAPIEngineRequestHTTPPOSTParameters"
+//	Expected to be a dictionary, that contains NSString / NSData objects.  Everything is in utf-8 or octet.
+//	If not blank, IRWebAPIEngine makes the HTTP body from the parameters.
+//	Notice that to use POST parameters, a new transformer block that grabs the correct stuff under this key from the context and adds it to the 
+
 #define kIRWebAPIEngineRequestHTTPBody @"IRWebAPIEngineHTTPBody"
-//	Expected to be NSData or nil
+//	Expected to be NSData, or [NSNull null] for custom HTTP body handling.
+//	If used with IRWebAPIEngineRequestHTTPPOSTParameters, an exception will be thrown.
 
 #define kIRWebAPIEngineRequestHTTPQueryParameters @"IRWebAPIEngineHTTPQueryParameters"
 //	Expected to be a dictionary
 
 #define kIRWebAPIEngineRequestHTTPMethod @"IRWebAPIEngineRequestHTTPMethod"
-//	Expected to be POST, GET, whatever
+//	Expected to be POST, GET, whatever.  Must be POST if IRWebAPIEngineHTTPPOSTParameters is defined.
 
 #define kIRWebAPIEngineParser @"IRWebAPIEngineParser"
 //	Expected to be a IRWebAPIResponseParser.  Exposed to allow custom response parsing for “some methods”.
