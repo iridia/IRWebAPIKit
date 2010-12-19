@@ -193,16 +193,12 @@
 	
 	//	Create Request
 		
-	//	NSURL *requestBaseURL = (NSURL *)[transformedContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL];
-		
 		NSURL *requestBaseURL = IRWebAPIRequestURLWithQueryParameters(
 		
 			(NSURL *)[transformedContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL],
 			[transformedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters]
 		
 		);
-		
-		NSLog(@"new requestBaseURL %@", requestBaseURL);
 		
 		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestBaseURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
