@@ -26,6 +26,8 @@
 
 - (NSURLRequest *) requestWithContext:(NSDictionary *)inContext;
 
+- (void) ensureResponseParserExistence;
+
 @end
 
 
@@ -102,6 +104,19 @@
 
 
 
+- (void) ensureResponseParserExistence {
+	
+	if (self.parser) return;
+	
+	NSLog(@"Warning: IRWebAPIEngine is designed to work with a parser.  Without one, the response will be sent as a default dictionary.");
+	self.parser = IRWebAPIResponseDefaultParserMake();
+	
+}
+
+
+
+
+
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
 
 	[self fireAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:nil onSuccess:inSuccessHandler onFailure:inFailureHandler];
@@ -159,6 +174,8 @@
 
 	
 - (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
+
+	[self ensureResponseParserExistence];
 
 	void (^retryHandler)(void) = ^ {
 	
