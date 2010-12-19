@@ -224,7 +224,7 @@ static inline NSString *IRWebAPIKitNonce () {
 
 
 
-static inline NSString *IRWebAPIQueryParametersStringMake (NSDictionary *inQueryParameters) {
+static inline NSString *IRWebAPIQueryParametersStringMake (NSDictionary *inQueryParameters, NSString *inSeparator) {
 
 	if ((!inQueryParameters) || ([inQueryParameters count] == 0))
 	return @"";
@@ -239,7 +239,7 @@ static inline NSString *IRWebAPIQueryParametersStringMake (NSDictionary *inQuery
 		
 	]];
 
-	return [returnedStringParts componentsJoinedByString:@"&"];
+	return [returnedStringParts componentsJoinedByString:inSeparator];
 
 }
 
@@ -251,7 +251,7 @@ static inline NSURL *IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NS
 
 	if (inQueryParametersOrNil == nil) return inBaseURL;
 	
-	return [NSURL URLWithString:[[inBaseURL absoluteString] stringByAppendingFormat:@"?%@", IRWebAPIQueryParametersStringMake(inQueryParametersOrNil)]];
+	return [NSURL URLWithString:[[inBaseURL absoluteString] stringByAppendingFormat:@"?%@", IRWebAPIQueryParametersStringMake(inQueryParametersOrNil, @"&")]];
 
 }
 
