@@ -20,9 +20,11 @@
 
 - (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler;
 
-
+- (NSDictionary *) baseRequestContextWithMethodName:(NSString *)inMethodName arguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil;
 - (NSDictionary *) requestContextByTransformingContext:(NSDictionary *)inContext forMethodNamed:(NSString *)inMethodName;
 - (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse forMethodNamed:(NSString *)inMethodName;
+
+- (NSURLRequest *) requestWithContext:(NSDictionary *)inContext;
 
 @end
 
@@ -160,69 +162,9 @@
 
 	void (^returnedBlock) (void) = ^ {
 	
-		NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
+		NSDictionary *finalizedContext = [self requestContextByTransformingContext:[self baseRequestContextWithMethodName:inMethodName arguments:inArgumentsOrNil options:inOptionsOrNil] forMethodNamed:inMethodName];
 		
-		
-	//	Remove [NSNull null] argument values
-	
-		if (inArgumentsOrNil) for (id argumentKey in [inArgumentsOrNil keysOfEntriesPassingTest:^(id key, id object, BOOL *stop) {
-		
-			if ([object isEqual:@""]) return NO;
-			if ([object isEqual:[NSNull null]]) return NO;
-			
-			return YES;
-		
-		}]) [arguments setObject:[inArgumentsOrNil objectForKey:argumentKey] forKey:argumentKey];		
-		
-		
-	//	Create initial context to be transformed
-		
-		NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-		
-			[self.context baseURLForMethodNamed:inMethodName], kIRWebAPIEngineRequestHTTPBaseURL,
-			[NSMutableDictionary dictionary], kIRWebAPIEngineRequestHTTPHeaderFields,
-			arguments, kIRWebAPIEngineRequestHTTPQueryParameters,
-			[NSNull null], kIRWebAPIEngineRequestHTTPBody,
-			@"GET", kIRWebAPIEngineRequestHTTPMethod,
-
-			self.parser, kIRWebAPIEngineParser,
-		
-		nil];
-		
-		
-	//	Put all options in the root
-		
-		for (id optionValueKey in inOptionsOrNil)
-		[transformedContext setValue:[inOptionsOrNil valueForKey:optionValueKey] forKey:optionValueKey];
-		
-		
-	//	Finalize the context
-		
-		NSDictionary *finalizedContext = [self requestContextByTransformingContext:transformedContext forMethodNamed:inMethodName];
-		
-		
-	//	Create Request
-		
-		NSURL *requestBaseURL = IRWebAPIRequestURLWithQueryParameters(
-		
-			(NSURL *)[finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL],
-			[finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters]
-		
-		);
-		
-		
-		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestBaseURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
-		
-			NSDictionary *headerFields;
-			if (headerFields = [finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields])
-			for (NSString *headerFieldKey in headerFields)
-			[request setValue:[headerFields objectForKey:headerFieldKey] forHTTPHeaderField:headerFieldKey];
-			
-			NSData *httpBody = [finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPBody];
-			if (![httpBody isEqual:[NSNull null]])
-			[request setHTTPBody:httpBody];
-			
-			[request setHTTPMethod:[finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPMethod]];
+		NSURLRequest *request = [self requestWithContext:finalizedContext];
 		
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -398,6 +340,40 @@
 
 
 
+- (NSDictionary *) baseRequestContextWithMethodName:(NSString *)inMethodName arguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil {
+
+	NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
+
+	if (inArgumentsOrNil) for (id argumentKey in [inArgumentsOrNil keysOfEntriesPassingTest:^(id key, id object, BOOL *stop) {
+	
+		if ([object isEqual:@""]) return NO;
+		if ([object isEqual:[NSNull null]]) return NO;
+		
+		return YES;
+	
+	}]) [arguments setObject:[inArgumentsOrNil objectForKey:argumentKey] forKey:argumentKey];		
+
+	
+	NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+	
+		[self.context baseURLForMethodNamed:inMethodName], kIRWebAPIEngineRequestHTTPBaseURL,
+		[NSMutableDictionary dictionary], kIRWebAPIEngineRequestHTTPHeaderFields,
+		arguments, kIRWebAPIEngineRequestHTTPQueryParameters,
+		[NSNull null], kIRWebAPIEngineRequestHTTPBody,
+		@"GET", kIRWebAPIEngineRequestHTTPMethod,
+
+		self.parser, kIRWebAPIEngineParser,
+	
+	nil];
+			
+
+	for (id optionValueKey in inOptionsOrNil)
+	[transformedContext setValue:[inOptionsOrNil valueForKey:optionValueKey] forKey:optionValueKey];
+
+	return [[transformedContext copy] autorelease];
+
+}
+
 - (NSDictionary *) requestContextByTransformingContext:(NSDictionary *)inContext forMethodNamed:(NSString *)inMethodName {
 
 	return IRWebAPITransformedContextFromTransformerArraysGet(inContext, [NSArray arrayWithObjects:
@@ -419,6 +395,34 @@
 		self.globalResponsePostTransformers,
 
 	nil]);
+
+}
+
+
+
+
+
+- (NSURLRequest *) requestWithContext:(NSDictionary *)inContext {
+
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:IRWebAPIRequestURLWithQueryParameters(
+	
+		(NSURL *)[inContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL],
+		[inContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters]
+	
+	) cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
+	
+	NSDictionary *headerFields;
+	if (headerFields = [inContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields])
+	for (NSString *headerFieldKey in headerFields)
+	[request setValue:[headerFields objectForKey:headerFieldKey] forHTTPHeaderField:headerFieldKey];
+	
+	NSData *httpBody = [inContext objectForKey:kIRWebAPIEngineRequestHTTPBody];
+	if (![httpBody isEqual:[NSNull null]])
+	[request setHTTPBody:httpBody];
+	
+	[request setHTTPMethod:[inContext objectForKey:kIRWebAPIEngineRequestHTTPMethod]];
+	
+	return [[request copy] autorelease];
 
 }
 
