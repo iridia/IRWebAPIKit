@@ -160,36 +160,41 @@
 	
 - (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
 
-	void (^returnedBlock) (void) = ^ {
+	void (^retryHandler)(void) = ^ {
 	
-		NSDictionary *finalizedContext = [self requestContextByTransformingContext:[self baseRequestContextWithMethodName:inMethodName arguments:inArgumentsOrNil options:inOptionsOrNil] forMethodNamed:inMethodName];
+	//	FIXME: Actually, the block doesn’t know if it is enqueued or fired
+		[self enqueueAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler];
+	
+	};
+	
+	void (^notifyDelegateHandler)(void) = ^ {
+	
+		NSLog(@"Notifying delegate of connection finalization");
+	
+	};
+	
+	NSDictionary *finalizedContext = [self requestContextByTransformingContext:[self baseRequestContextWithMethodName:inMethodName arguments:inArgumentsOrNil options:inOptionsOrNil] forMethodNamed:inMethodName];
 		
-		NSURLRequest *request = [self requestWithContext:finalizedContext];
-		
-		
+	NSURLRequest *request = [self requestWithContext:finalizedContext];
+
+	void (^returnedBlock) (void) = ^ {
+			
 		dispatch_async(dispatch_get_main_queue(), ^{
 		
 			NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
-			
+						
 			CFDictionaryAddValue(successHandlers, connection, [[^ (NSData *inResponse) {
 					
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
 				IRWebAPIResponseParser parserBlock = [finalizedContext objectForKey:kIRWebAPIEngineParser];
 				NSDictionary *parsedResponse = [self responseByTransformingResponse:parserBlock([[inResponse retain] autorelease]) forMethodNamed:inMethodName];
-								
+				
 				if (inSuccessHandler)
 				inSuccessHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);
 				
-				if (shouldRetry) {
-
-					[self enqueueAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler];
-					
-				}
-
-				if (notifyDelegate)
-				NSLog(@"Should Notify Delegate");
-			//	FIXME: HOW?
+				if (shouldRetry) retryHandler();
+				if (notifyDelegate) notifyDelegateHandler();
 
 			} copy] autorelease]);
 			
@@ -198,16 +203,10 @@
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
 				if (inFailureHandler)
-				inFailureHandler(self, [NSDictionary dictionaryWithObject:@"TEST FAIL" forKey:@"FOO"], &notifyDelegate, &shouldRetry);
+				inFailureHandler(self, [NSDictionary dictionary], &notifyDelegate, &shouldRetry);
 				
-				if (shouldRetry) {
-				
-					[self enqueueAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler];
-					
-				}
-				
-				if (notifyDelegate)
-				NSLog(@"Should Notify Delegate");
+				if (shouldRetry) retryHandler();
+				if (notifyDelegate) notifyDelegateHandler();
 			
 			} copy] autorelease]);
 			
