@@ -22,13 +22,13 @@
 static inline NSString * IRWebAPIKitStringValue (id<NSObject> inObject) {
 
 	if (!inObject)
-	return [[NSString alloc] initWithString:@""];
+	return @"";
 	
 	if ([inObject isKindOfClass:[NSString class]])
 	return (NSString *)inObject;
 		
-	if ([inObject isKindOfClass:[NSNumber class]])
-	return [(NSNumber *)inObject stringValue];
+	if ([inObject respondsToSelector:@selector(stringValue)])
+	return IRWebAPIKitStringValue([inObject performSelector:@selector(stringValue)]);
 	
 	return [inObject description];
 
