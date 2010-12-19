@@ -38,31 +38,7 @@ static inline NSString * IRWebAPIKitStringValue (id<NSObject> inObject) {
 
 
 
-static inline NSString * IRWebAPIKitRFC3986EncodedStringMake (NSString *inString) {
-
-//	http://mesh.typepad.com/blog/2007/10/url-encoding-wi.html
-
-	NSArray *escapeChars = [NSArray arrayWithObjects:@";" , @"/" , @"?" , @":" , @"@" , @"&" , @"=" , @"+" , @"$" , @"," , @"[" , @"]", @"#", @"!", @"'", @"(", @")", @"*", nil];
-
-	NSArray *replaceChars = [NSArray arrayWithObjects:@"%3B" , @"%2F" , @"%3F" , @"%3A" , @"%40" , @"%26" , @"%3D" , @"%2B" , @"%24" , @"%2C" , @"%5B" , @"%5D",  @"%23", @"%21", @"%27", @"%28", @"%29", @"%2A", nil];
-
-	int len = [escapeChars count];
-	NSMutableString *temp = [inString mutableCopy];
-
-	int i;
-	
-	for(i = 0; i < len; i++)
-        [temp replaceOccurrencesOfString: [escapeChars objectAtIndex:i] withString:[replaceChars objectAtIndex:i] options:NSLiteralSearch range:NSMakeRange(0, [temp length])];
-
-	return [NSString stringWithString:temp];
-
-}
-
-
-
-
-
-static inline NSString * IRWebAPIKitOAuthParameterStringMake (id<NSObject> inObject) {
+static inline NSString * IRWebAPIKitRFC3986EncodedStringMake (id<NSObject> inObject) {
 
 	NSString *inString = IRWebAPIKitStringValue(inObject);
 
@@ -96,7 +72,7 @@ static inline NSString * IRWebAPIKitOAuthSignatureBaseStringMake (NSString *inHT
 
 	NSString * (^uriEncode) (NSString *) = ^ NSString * (NSString *inString) {
 
-		return IRWebAPIKitOAuthParameterStringMake(inString);
+		return IRWebAPIKitRFC3986EncodedStringMake(inString);
 	//	return IRWebAPIKitRFC3986EncodedStringMake(inString);
 	//	return [inString stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
 	
@@ -192,8 +168,8 @@ static inline NSString *IRWebAPIKitHMACSHA1 (NSString *inConsumerSecret, NSStrin
 
 //	From Google’s GData Toolkit
 
-	NSString *encodedConsumerSecret = IRWebAPIKitOAuthParameterStringMake(inConsumerSecret);
-	NSString *encodedTokenSecret = IRWebAPIKitOAuthParameterStringMake(inTokenSecret);
+	NSString *encodedConsumerSecret = IRWebAPIKitRFC3986EncodedStringMake(inConsumerSecret);
+	NSString *encodedTokenSecret = IRWebAPIKitRFC3986EncodedStringMake(inTokenSecret);
 
 	NSString *key = [NSString stringWithFormat:@"%@&%@",
 	

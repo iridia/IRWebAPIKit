@@ -58,7 +58,7 @@
 			NSMutableDictionary *queryParams = [mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters];
 
 			for (id key in queryParams)
-			[POSTBodyElements addObject:[NSString stringWithFormat:@"%@=%@", key, IRWebAPIKitOAuthParameterStringMake([queryParams objectForKey:key])]];
+			[POSTBodyElements addObject:[NSString stringWithFormat:@"%@=%@", key, IRWebAPIKitRFC3986EncodedStringMake([queryParams objectForKey:key])]];
 			
 			POSTBody = [POSTBodyElements componentsJoinedByString:@"&"];
 			
@@ -101,7 +101,7 @@
 		
 			@"%26",
 		
-			IRWebAPIKitOAuthParameterStringMake([[NSString alloc] initWithData:[mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPBody] encoding:NSUTF8StringEncoding])
+			IRWebAPIKitRFC3986EncodedStringMake([[NSString alloc] initWithData:[mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPBody] encoding:NSUTF8StringEncoding])
 			
 		];
 		
@@ -111,7 +111,7 @@
 		
 		for (id key in oAuthParameters) {
 		
-			[oAuthHeaderContents addObject:[NSString stringWithFormat:@"%@=\"%@\"", key, IRWebAPIKitOAuthParameterStringMake([oAuthParameters objectForKey:key])]];
+			[oAuthHeaderContents addObject:[NSString stringWithFormat:@"%@=\"%@\"", key, IRWebAPIKitRFC3986EncodedStringMake([oAuthParameters objectForKey:key])]];
 		
 		}
 		
