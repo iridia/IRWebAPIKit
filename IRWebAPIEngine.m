@@ -18,7 +18,7 @@
 @property (nonatomic, assign, readwrite) CFMutableDictionaryRef failureHandlers;
 @property (nonatomic, assign, readwrite) CFMutableDictionaryRef dataStore;
 
-- (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler;
+- (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil validator:(IRWebAPIResposeValidator)inValidator successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler;
 
 - (NSDictionary *) baseRequestContextWithMethodName:(NSString *)inMethodName arguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil;
 - (NSDictionary *) requestContextByTransformingContext:(NSDictionary *)inContext forMethodNamed:(NSString *)inMethodName;
@@ -127,15 +127,21 @@
 
 
 
+- (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil validator:(IRWebAPIResposeValidator)inValidator successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler {
+
+	dispatch_async(dispatch_get_global_queue(0, 0), [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:inValidator successHandler:inSuccessHandler failureHandler:inFailureHandler]);
+
+}
+
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
 
-	dispatch_async(dispatch_get_global_queue(0, 0), [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler]);
+	dispatch_async(dispatch_get_global_queue(0, 0), [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:nil successHandler:inSuccessHandler failureHandler:inFailureHandler]);
 	
 }
 
 - (void) enqueueAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
 
-	dispatch_async(sharedDispatchQueue, [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil onSuccess:inSuccessHandler onFailure:inFailureHandler]);
+	dispatch_async(sharedDispatchQueue, [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:nil successHandler:inSuccessHandler failureHandler:inFailureHandler]);
 		
 }
 
@@ -143,7 +149,7 @@
 
 
 	
-- (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler {
+- (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil validator:(IRWebAPIResposeValidator)inValidator successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler {
 
 	[self ensureResponseParserExistence];
 
@@ -176,6 +182,18 @@
 				
 				IRWebAPIResponseParser parserBlock = [finalizedContext objectForKey:kIRWebAPIEngineParser];
 				NSDictionary *parsedResponse = [self responseByTransformingResponse:parserBlock([[inResponse retain] autorelease]) forMethodNamed:inMethodName];
+				
+				if ((inValidator != nil) && (!inValidator(self, parsedResponse))) {
+
+					if (inFailureHandler)
+					inFailureHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);
+					
+					if (shouldRetry) retryHandler();
+					if (notifyDelegate) notifyDelegateHandler();
+					
+					return;
+				
+				}
 				
 				if (inSuccessHandler)
 				inSuccessHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);

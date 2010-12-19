@@ -32,7 +32,7 @@
 
 - (id) initWithContext:(IRWebAPIContext *)inContext;
 
-//	- (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil validator:(IRWebAPIResposeValidator)inValidator successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler;
+- (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil validator:(IRWebAPIResposeValidator)inValidator successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler;
 
 - (NSMutableArray *) requestTransformersForMethodNamed:(NSString *)inMethodName;
 - (NSMutableArray *) responseTransformersForMethodNamed:(NSString *)inMethodName;
