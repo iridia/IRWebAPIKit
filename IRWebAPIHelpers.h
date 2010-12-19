@@ -226,4 +226,39 @@ static inline NSString *IRWebAPIKitNonce () {
 
 
 
+static inline NSString *IRWebAPIQueryParametersStringMake (NSDictionary *inQueryParameters) {
+
+	if ((!inQueryParameters) || ([inQueryParameters count] == 0))
+	return @"";
+	
+	NSMutableArray *returnedStringParts = [NSMutableArray array];
+
+	for (NSString *queryParameterKey in inQueryParameters)
+	[returnedStringParts addObject:[NSString stringWithFormat:@"%@=%@", 
+			
+		IRWebAPIKitRFC3986EncodedStringMake(queryParameterKey), 
+		IRWebAPIKitRFC3986EncodedStringMake([inQueryParameters objectForKey:queryParameterKey])
+		
+	]];
+
+	return [returnedStringParts componentsJoinedByString:@"&"];
+
+}
+
+
+
+
+
+static inline NSURL *IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NSDictionary *inQueryParametersOrNil) {
+
+	if (inQueryParametersOrNil == nil) return inBaseURL;
+	
+	return [NSURL URLWithString:[[inBaseURL absoluteString] stringByAppendingFormat:@"?%@", IRWebAPIQueryParametersStringMake(inQueryParametersOrNil)]];
+
+}
+
+
+
+
+
 #endif
