@@ -259,4 +259,31 @@ static inline NSURL *IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NS
 
 
 
+static inline NSDictionary *IRWebAPITransformedContextFromTransformersGet (NSDictionary *inContext, NSArray *inTransformersArray) {
+
+	NSDictionary *transformedContext = [[inContext copy] autorelease];
+
+	for (IRWebAPITransformer transformerBlock in inTransformersArray)
+	transformedContext = transformerBlock(transformedContext);
+
+	return transformedContext;
+
+}
+
+static inline NSDictionary *IRWebAPITransformedContextFromTransformerArraysGet (NSDictionary *inContext, NSArray *inTransformersArray) {
+
+	NSDictionary *transformedContext = [[inContext copy] autorelease];
+
+	for (NSArray *transformerBlocksArray in inTransformersArray)
+	transformedContext = IRWebAPITransformedContextFromTransformersGet(inContext, transformerBlocksArray);
+
+	return transformedContext;
+
+}
+
+
+
+
+
+
 #endif
