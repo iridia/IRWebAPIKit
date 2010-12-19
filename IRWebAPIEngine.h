@@ -14,20 +14,6 @@
 
 
 @interface IRWebAPIEngine : NSObject {
-
-	IRWebAPIResponseParser parser;
-
-	CFMutableDictionaryRef successHandlers;
-	CFMutableDictionaryRef failureHandlers;
-	CFMutableDictionaryRef dataStore;
-	
-	NSMutableArray *globalRequestPreTransformers;
-	NSMutableDictionary *requestTransformers;
-	NSMutableArray *globalRequestPostTransformers;
-
-	NSMutableArray *globalResponsePreTransformers;
-	NSMutableDictionary *responseTransformers;
-	NSMutableArray *globalResponsePostTransformers;
 	
 	dispatch_queue_t sharedDispatchQueue;
 
@@ -44,10 +30,6 @@
 @property (nonatomic, retain, readonly) NSMutableDictionary *responseTransformers;
 @property (nonatomic, retain, readonly) NSMutableArray *globalResponsePostTransformers;
 
-
-
-
-
 - (id) initWithContext:(IRWebAPIContext *)inContext;
 	
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler;
@@ -56,10 +38,6 @@
 
 - (NSMutableArray *) requestTransformersForMethodNamed:(NSString *)inMethodName;
 - (NSMutableArray *) responseTransformersForMethodNamed:(NSString *)inMethodName;
-
-
-
-
 
 @end
 
