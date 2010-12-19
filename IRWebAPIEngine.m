@@ -20,6 +20,10 @@
 
 - (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil onSuccess:(IRWebAPICallback)inSuccessHandler onFailure:(IRWebAPICallback)inFailureHandler;
 
+
+- (NSDictionary *) requestContextByTransformingContext:(NSDictionary *)inContext forMethodNamed:(NSString *)inMethodName;
+- (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse forMethodNamed:(NSString *)inMethodName;
+
 @end
 
 
@@ -156,15 +160,22 @@
 
 	void (^returnedBlock) (void) = ^ {
 	
-	//	Remove [NSNull null] argument values
-	
 		NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
 		
-		if (inArgumentsOrNil)
-		for (id argumentKey in inArgumentsOrNil)
-		if (![[inArgumentsOrNil objectForKey:argumentKey] isEqual:@""])
-		if (![[inArgumentsOrNil objectForKey:argumentKey] isEqual:[NSNull null]])
-		[arguments setObject:[inArgumentsOrNil objectForKey:argumentKey] forKey:argumentKey];		
+		
+	//	Remove [NSNull null] argument values
+	
+		if (inArgumentsOrNil) for (id argumentKey in [inArgumentsOrNil keysOfEntriesPassingTest:^(id key, id object, BOOL *stop) {
+		
+			if ([object isEqual:@""]) return NO;
+			if ([object isEqual:[NSNull null]]) return NO;
+			
+			return YES;
+		
+		}]) [arguments setObject:[inArgumentsOrNil objectForKey:argumentKey] forKey:argumentKey];		
+		
+		
+	//	Create initial context to be transformed
 		
 		NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 		
@@ -178,25 +189,24 @@
 		
 		nil];
 		
+		
+	//	Put all options in the root
+		
 		for (id optionValueKey in inOptionsOrNil)
 		[transformedContext setValue:[inOptionsOrNil valueForKey:optionValueKey] forKey:optionValueKey];
 		
-		for (IRWebAPITransformer transformerBlock in self.globalRequestPreTransformers)
-		transformedContext = [[transformerBlock(transformedContext) mutableCopy] autorelease];
 		
-		for (IRWebAPITransformer transformerBlock in [self requestTransformersForMethodNamed:inMethodName])
-		transformedContext = [[transformerBlock(transformedContext) mutableCopy] autorelease];
-
-		for (IRWebAPITransformer transformerBlock in self.globalRequestPostTransformers)
-		transformedContext = [[transformerBlock(transformedContext) mutableCopy] autorelease];
+	//	Finalize the context
 		
-	
+		NSDictionary *finalizedContext = [self requestContextByTransformingContext:transformedContext forMethodNamed:inMethodName];
+		
+		
 	//	Create Request
 		
 		NSURL *requestBaseURL = IRWebAPIRequestURLWithQueryParameters(
 		
-			(NSURL *)[transformedContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL],
-			[transformedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters]
+			(NSURL *)[finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL],
+			[finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters]
 		
 		);
 		
@@ -204,15 +214,15 @@
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestBaseURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
 		
 			NSDictionary *headerFields;
-			if (headerFields = [transformedContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields])
+			if (headerFields = [finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields])
 			for (NSString *headerFieldKey in headerFields)
 			[request setValue:[headerFields objectForKey:headerFieldKey] forHTTPHeaderField:headerFieldKey];
 			
-			NSData *httpBody = [transformedContext objectForKey:kIRWebAPIEngineRequestHTTPBody];
+			NSData *httpBody = [finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPBody];
 			if (![httpBody isEqual:[NSNull null]])
 			[request setHTTPBody:httpBody];
 			
-			[request setHTTPMethod:[transformedContext objectForKey:kIRWebAPIEngineRequestHTTPMethod]];
+			[request setHTTPMethod:[finalizedContext objectForKey:kIRWebAPIEngineRequestHTTPMethod]];
 		
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -221,21 +231,11 @@
 			
 			CFDictionaryAddValue(successHandlers, connection, [[^ (NSData *inResponse) {
 					
-				BOOL shouldRetry = NO;
-				BOOL notifyDelegate = NO;
+				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
-				IRWebAPIResponseParser parserBlock = [transformedContext objectForKey:kIRWebAPIEngineParser];
-				NSDictionary *parsedResponse = parserBlock([[inResponse retain] autorelease]);
-				
-				for (IRWebAPITransformer transformerBlock in self.globalResponsePreTransformers)
-				parsedResponse = transformerBlock(parsedResponse);
-				
-				for (IRWebAPITransformer transformerBlock in [self responseTransformersForMethodNamed:inMethodName])
-				parsedResponse = transformerBlock(parsedResponse);
-				
-				for (IRWebAPITransformer transformerBlock in self.globalResponsePostTransformers)
-				parsedResponse = transformerBlock(parsedResponse);
-				
+				IRWebAPIResponseParser parserBlock = [finalizedContext objectForKey:kIRWebAPIEngineParser];
+				NSDictionary *parsedResponse = [self responseByTransformingResponse:parserBlock([[inResponse retain] autorelease]) forMethodNamed:inMethodName];
+								
 				if (inSuccessHandler)
 				inSuccessHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);
 				
@@ -253,8 +253,7 @@
 			
 			CFDictionaryAddValue(failureHandlers, connection, [[^ {
 			
-				BOOL shouldRetry = NO;
-				BOOL notifyDelegate = NO;
+				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
 				if (inFailureHandler)
 				inFailureHandler(self, [NSDictionary dictionaryWithObject:@"TEST FAIL" forKey:@"FOO"], &notifyDelegate, &shouldRetry);
@@ -392,6 +391,34 @@
 	}
 	
 	return returnedArray;
+
+}
+
+
+
+
+
+- (NSDictionary *) requestContextByTransformingContext:(NSDictionary *)inContext forMethodNamed:(NSString *)inMethodName {
+
+	return IRWebAPITransformedContextFromTransformerArraysGet(inContext, [NSArray arrayWithObjects:
+		
+		self.globalRequestPreTransformers,
+		[self requestTransformersForMethodNamed:inMethodName],
+		self.globalRequestPostTransformers,
+	
+	nil]);
+
+}
+
+- (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse forMethodNamed:(NSString *)inMethodName {
+
+	return IRWebAPITransformedContextFromTransformerArraysGet(inResponse, [NSArray arrayWithObjects:
+
+		self.globalResponsePreTransformers,
+		[self responseTransformersForMethodNamed:inMethodName],
+		self.globalResponsePostTransformers,
+
+	nil]);
 
 }
 
