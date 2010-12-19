@@ -81,14 +81,14 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 
 		NSLog(@"statuses/update response: %@", inResponseOrNil);
 		
 		if (inSuccessCallback)
 		inSuccessCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
 
-	} onFailure: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		NSLog(@"Failed. %@");
 		

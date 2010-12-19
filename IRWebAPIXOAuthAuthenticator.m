@@ -147,7 +147,7 @@
 		IRWebAPIResponseQueryResponseParserMake(), kIRWebAPIEngineParser,
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 			
-	nil] onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 
 		NSLog(@"XOAuth AUTH SUCCESS %@", inResponseOrNil);
 
@@ -176,7 +176,7 @@
 		
 		}
 	
-	} onFailure: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		NSLog(@"XOAuth AUTH FAIL %@", inResponseOrNil);
 	

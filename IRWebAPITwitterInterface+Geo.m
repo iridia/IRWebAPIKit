@@ -31,7 +31,7 @@
 		[NSString stringWithFormat:@"%f,%f", inLocation.coordinate.latitude, inLocation.coordinate.longitude], @"latlng",
 		@"true", @"sensor",
 	
-	nil] onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		NSLog(@"google success");
 	
@@ -55,7 +55,7 @@
 		
 		}
 	
-	} onFailure: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
 	
@@ -74,7 +74,7 @@
 		@"1000m", @"accuracy",
 		@"1", @"max_results",
 
-	nil] options:nil onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] options:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 
 		if (
 		
@@ -103,7 +103,7 @@
 		
 		NSLog(@"geo/reverse_geocode response: %@", inResponseOrNil);
 		
-	} onFailure: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
 	

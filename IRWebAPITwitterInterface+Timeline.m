@@ -27,11 +27,11 @@
 		(inSinceIdentifierOrNil == 0) ? (id)[NSNull null] : (id)[NSNumber numberWithInt:inSinceIdentifierOrNil], @"since_id",
 		(inBeforeIdentifierOrNil == 0) ? (id)[NSNull null] : (id)[NSNumber numberWithInt:inBeforeIdentifierOrNil], @"max_id",
 	
-	nil] onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		NSLog(@"timeline success with response %@");
 	 
-	} onFailure: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		NSLog(@"timeline failure with response %@");
 	
