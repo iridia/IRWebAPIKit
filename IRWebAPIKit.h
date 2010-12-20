@@ -51,6 +51,11 @@ typedef void (^IRWebAPIAuthenticatorCallback) (IRWebAPIAuthenticator *inAuthenti
 //	If necessary, the block works with the authenticator and can tell it to retry authenticating.
 
 
+typedef void (^IRWebAPIInterfaceCallback) (NSDictionary *inResponseOrNil, BOOL *outNotifyDelegate, BOOL *outShouldRetry);
+
+//	The callback takes the response, then optionally tells the interface whether to notify its delegate or retry.
+
+
 typedef void (^IRWebAPIEngineExecutionBlock) (void);
 
 //	Internal.
