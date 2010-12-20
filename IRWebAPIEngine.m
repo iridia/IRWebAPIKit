@@ -171,7 +171,25 @@
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
 				IRWebAPIResponseParser parserBlock = [finalizedContext objectForKey:kIRWebAPIEngineParser];
-				NSDictionary *parsedResponse = [self responseByTransformingResponse:parserBlock([[inResponse retain] autorelease]) forMethodNamed:inMethodName];
+
+				NSDictionary *parsedResponse = parserBlock(inResponse);		
+				if (parsedResponse == nil) {
+				
+				//	THE RESPONSE IS UNPARSIBLE HERE
+				
+					NSLog(@"Warning: unparsable response.  Resetting returned response to an empty dictionary.");
+					NSLog(@"Context: %@", finalizedContext);
+					
+					IRWebAPIResponseParser defaultParser = IRWebAPIResponseDefaultParserMake();
+					
+					NSDictionary *debugOutput = defaultParser(inResponse);
+					NSLog(@"Default parser returns %@.", debugOutput ? (id<NSObject>)debugOutput : (id<NSObject>)@"- null -");
+					
+					parsedResponse = [NSDictionary dictionary];
+				
+				}
+				
+				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse forMethodNamed:inMethodName];
 				
 				if ((inValidator != nil) && (!inValidator(self, parsedResponse))) {
 
