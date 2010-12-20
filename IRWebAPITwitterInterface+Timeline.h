@@ -31,6 +31,6 @@ typedef enum {
 
 @interface IRWebAPITwitterInterface (Timeline)
 
-- (void) retrieveTimeline:(IRWebAPITwitterTimelineType)inTimelineType since:(IRWebAPITwitterStatusIdentifier)inSinceIdentifierOrNull before:(IRWebAPITwitterStatusIdentifier)inBeforeIdentifierOrNull onSuccess:(IRWebAPICallback)inSuccessCallback onFailure:(IRWebAPICallback)inFailureCallback;
+- (void) retrieveTimeline:(IRWebAPITwitterTimelineType)inTimelineType since:(IRWebAPITwitterStatusIdentifier)inSinceIdentifier before:(IRWebAPITwitterStatusIdentifier)inBeforeIdentifier successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
 
 @end

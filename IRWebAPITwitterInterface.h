@@ -30,7 +30,7 @@ typedef NSUInteger IRWebAPITwitterStatusIdentifier;
 
 
 
-#import "IRWebAPITwitterInterface+TImeline.h"
+#import "IRWebAPITwitterInterface+Timeline.h"
 #import "IRWebAPITwitterInterface+Geo.h"
 
 
