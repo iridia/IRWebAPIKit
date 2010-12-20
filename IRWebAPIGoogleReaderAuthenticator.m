@@ -76,24 +76,18 @@
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 		[NSDictionary dictionaryWithObjectsAndKeys:@"application/x-www-form-urlencoded", @"Content-type", nil], kIRWebAPIEngineRequestHTTPHeaderFields,
 	
-	nil] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
 	
-		NSString *probableAuthToken = [inResponseOrNil valueForKey:@"Auth"];
-		if (!probableAuthToken || [probableAuthToken isEqual:[NSNull null]]) {
-		
-			if (failureHandler)
-			failureHandler(self, NO, inShouldRetry);
-			
-			*inShouldRetry = YES;
-			
-			return;
-		
-		}
-		
-		self.authToken = probableAuthToken;
+		if ([[inResponseOrNil valueForKey:@"Auth"] isEqual:[NSNull null]]) return NO;
+		return YES;
+	
+	} successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	
+		self.authToken = [inResponseOrNil valueForKey:@"Auth"];
 		self.currentCredentials = inCredentials;
 		
-		if (successHandler) successHandler(self, YES, inShouldRetry);
+		if (successHandler)
+		successHandler(self, YES, inShouldRetry);
 	
 	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 		
