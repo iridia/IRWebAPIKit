@@ -68,6 +68,33 @@ static inline NSString * IRWebAPIKitRFC3986EncodedStringMake (id<NSObject> inObj
 
 
 
+static inline NSString * IRWebAPIKitRFC3986DecodedStringMake (id<NSObject> inObject) {
+
+	NSString *inString = IRWebAPIKitStringValue(inObject);
+	
+//	From Google’s GData Toolkit
+//	http://oauth.net/core/1.0a/#encoding_parameters
+
+	CFStringRef originalString = (CFStringRef)inString;
+
+	CFStringRef unescapedStr = NULL;
+
+	if (inString) {
+
+		unescapedStr = CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault, originalString, CFSTR(""), kCFStringEncodingUTF8);
+		
+		[(id)CFMakeCollectable(unescapedStr) autorelease];
+
+	}
+
+	return (NSString *)unescapedStr;
+	
+}
+
+
+
+
+
 static inline NSString * IRWebAPIKitOAuthSignatureBaseStringMake (NSString *inHTTPMethod, NSURL *inBaseURL, NSDictionary *inQueryParameters) {
 
 	NSString * (^uriEncode) (NSString *) = ^ NSString * (NSString *inString) {
