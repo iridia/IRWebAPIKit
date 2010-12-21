@@ -213,10 +213,10 @@
 		FF896DD212A567ED00AE2AF3 /* Applied Implementations */ = {
 			isa = PBXGroup;
 			children = (
-				FF5147BC12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h */,
-				FF5147BD12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m */,
 				FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */,
 				FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */,
+				FF5147BC12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h */,
+				FF5147BD12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m */,
 				FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */,
 				FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */,
 				FF48661412A6329900B75591 /* IRWebAPIGoogleReaderInterface.h */,
