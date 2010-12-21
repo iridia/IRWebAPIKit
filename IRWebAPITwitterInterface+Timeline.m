@@ -27,7 +27,6 @@
 		(inSinceIdentifier == 0) ? (id)[NSNull null] : (id)[NSNumber numberWithInt:inSinceIdentifier], @"since_id",
 		(inBeforeIdentifier == 0) ? (id)[NSNull null] : (id)[NSNumber numberWithInt:inBeforeIdentifier], @"max_id",
 		[NSNumber numberWithInt:200], @"count",
-	//	[NSNumber numberWithBool:YES], @"trim_user",
 	
 	nil] options:nil validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
 	
@@ -47,7 +46,7 @@
 		return YES;
 	
 	} successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
-	
+		
 		if (inSuccessCallback)
 		inSuccessCallback([inResponseOrNil valueForKeyPath:@"response"], inNotifyDelegate, inShouldRetry);
 	 
