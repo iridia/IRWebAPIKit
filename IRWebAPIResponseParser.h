@@ -64,12 +64,22 @@ static inline IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake () 
 		
 		NSMutableDictionary *returnedResponse = [NSMutableDictionary dictionary];
 		
-		[expression enumerateMatchesInString:responseString options:0 range:NSMakeRange(0, [responseString length]) usingBlock: ^ (NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+		@try {
 		
-			[returnedResponse setObject:[responseString substringWithRange:[result rangeAtIndex:2]] forKey:[responseString substringWithRange:[result rangeAtIndex:1]]];
+			[expression enumerateMatchesInString:responseString options:0 range:NSMakeRange(0, [responseString length]) usingBlock: ^ (NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+			
+				[returnedResponse setObject:[responseString substringWithRange:[result rangeAtIndex:2]] forKey:[responseString substringWithRange:[result rangeAtIndex:1]]];
+			
+			}];
 		
-		}];
-		
+		} @catch (NSException * e) {
+			
+			NSLog(@"IRWebAPIResponseQueryResponseParser encountered an exception while parsing response.  Returning empty dictionary.");
+			
+			return [NSDictionary dictionary];
+			
+		}
+
 		return returnedResponse;
 	
 	};
