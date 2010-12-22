@@ -37,13 +37,7 @@
 - (NSMutableArray *) requestTransformersForMethodNamed:(NSString *)inMethodName;
 - (NSMutableArray *) responseTransformersForMethodNamed:(NSString *)inMethodName;
 
-@end
-
-
-
-
-
-@interface IRWebAPIEngine (Convenience)
+//	Convenience.  Putting them in a category does not assure compiler checking.
 
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler;
 
