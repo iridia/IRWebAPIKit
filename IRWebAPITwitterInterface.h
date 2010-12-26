@@ -8,11 +8,32 @@
 
 #import "IRWebAPIKit.h"
 
-#ifndef __IRWebAPIInterface__
-#define __IRWebAPIInterface__
+#ifndef __IRWebAPITwitterInterface__
+#define __IRWebAPITwitterInterface__
 
 typedef NSUInteger IRWebAPITwitterStatusIdentifier;
 #define IRWebAPITwitterStatusIdentifierNotApplicable 0;
+
+
+typedef struct IRWebAPITwitterStatusIdentifierRange {
+	
+	IRWebAPITwitterStatusIdentifier begin;
+	IRWebAPITwitterStatusIdentifier end;
+	
+} IRWebAPITwitterStatusIdentifierRange;
+
+
+static inline IRWebAPITwitterStatusIdentifierRange IRWebAPITwitterStatusIdentifierRangeMake (IRWebAPITwitterStatusIdentifier begin, IRWebAPITwitterStatusIdentifier end) {
+	
+	IRWebAPITwitterStatusIdentifierRange returnedRange;
+
+	returnedRange.begin = begin;
+	returnedRange.end = end;
+	
+	return returnedRange;
+	
+}
+
 
 #endif
 
