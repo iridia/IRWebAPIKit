@@ -197,10 +197,10 @@
 				
 				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse forMethodNamed:inMethodName];
 				
-				if ((inValidator != nil) && (!inValidator(self, parsedResponse))) {
+				if ((inValidator != nil) && (!inValidator(self, transformedResponse))) {
 
 					if (inFailureHandler)
-					inFailureHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);
+					inFailureHandler(self, transformedResponse, &notifyDelegate, &shouldRetry);
 					
 					if (shouldRetry) retryHandler();
 					if (notifyDelegate) notifyDelegateHandler();
@@ -210,7 +210,7 @@
 				}
 				
 				if (inSuccessHandler)
-				inSuccessHandler(self, parsedResponse, &notifyDelegate, &shouldRetry);
+				inSuccessHandler(self, transformedResponse, &notifyDelegate, &shouldRetry);
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
