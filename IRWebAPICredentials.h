@@ -9,7 +9,7 @@
 #import "IRWebAPIKit.h"
 
 
-@interface IRWebAPICredentials : NSObject <NSCopying> {
+@interface IRWebAPICredentials : NSObject <NSCopying, NSCoding> {
 
 }
 
@@ -28,6 +28,5 @@
 @property (nonatomic, readwrite, assign) BOOL authenticated;
 
 - (id) initWithIdentifier:(NSString *)inIdentifier qualifier:(NSString *)inQualifier;
-- (id) initWithCoder:(NSCoder *)inCoder;
 
 @end
