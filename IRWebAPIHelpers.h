@@ -12,8 +12,6 @@
 #import <CommonCrypto/CommonHMAC.h>
 #import <UIKit/UIDevice.h>
 
-#import "IRWebAPIKitEntityDefines.h"
-
 #ifndef __IRWebAPIHelpersSection__
 #define __IRWebAPIHelpersSection__
 
