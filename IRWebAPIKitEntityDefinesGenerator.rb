@@ -77,7 +77,7 @@ require 'open-uri'
 		
 		returnedString = <<-END
 
-			NSDictionary* #{methodName} () {
+			static inline NSDictionary* #{methodName} () {
 
 				return [NSDictionary dictionaryWithObjectsAndKeys:
 

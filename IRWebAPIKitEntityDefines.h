@@ -11,7 +11,7 @@
 #ifndef __IRWebAPIKit_Entity_Defines__
 #define __IRWebAPIKit_Entity_Defines__
 
-NSDictionary* IRWebAPIKitXMLEntityNumbersFromNames () {
+static inline NSDictionary* IRWebAPIKitXMLEntityNumbersFromNames () {
 
 	return [NSDictionary dictionaryWithObjectsAndKeys:
 
@@ -276,7 +276,7 @@ NSDictionary* IRWebAPIKitXMLEntityNumbersFromNames () {
 
 
 
-NSDictionary* IRWebAPIKitXMLEntityNamesFromNumbers () {
+static inline NSDictionary* IRWebAPIKitXMLEntityNamesFromNumbers () {
 
 	return [NSDictionary dictionaryWithObjectsAndKeys:
 

@@ -14,12 +14,8 @@
 
 #import "IRWebAPIKitEntityDefines.h"
 
-#ifndef IRWebAPIHelpersSection
-#define IRWebAPIHelpersSection
-
-
-
-
+#ifndef __IRWebAPIHelpersSection__
+#define __IRWebAPIHelpersSection__
 
 static inline NSString * IRWebAPIKitStringValue (id<NSObject> inObject) {
 
@@ -191,13 +187,13 @@ static inline NSString *IRWebAPIKitBase64StringFromNSDataMake (NSData *inData) {
 
 
 
-NSString *IRWebAPIStringByDecodingXMLEntities (NSString *inString) {
+static inline NSString *IRWebAPIStringByDecodingXMLEntities (NSString *inString) {
 
 //	Modified from:
 //	http://stackoverflow.com/questions/659602/objective-c-html-escape-unescape
 	
 	static NSDictionary *entityNamesToNumbers;
-	static NSString *ampersand = @"&";
+	NSString *ampersand = @"&";
 	
 	if ([inString rangeOfString:ampersand options:NSLiteralSearch].location == NSNotFound)
 	return inString;
