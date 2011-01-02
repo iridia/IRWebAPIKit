@@ -1,4 +1,4 @@
-mate *.tmproj
+*.tmproj
 
 .DS_Store
 

@@ -12,6 +12,8 @@
 #import <CommonCrypto/CommonHMAC.h>
 #import <UIKit/UIDevice.h>
 
+#import "IRWebAPIKitEntityDefines.h"
+
 #ifndef IRWebAPIHelpersSection
 #define IRWebAPIHelpersSection
 
@@ -189,6 +191,94 @@ static inline NSString *IRWebAPIKitBase64StringFromNSDataMake (NSData *inData) {
 
 
 
+NSString *IRWebAPIStringByDecodingXMLEntities (NSString *inString) {
+
+//	Modified from:
+//	http://stackoverflow.com/questions/659602/objective-c-html-escape-unescape
+	
+	static NSDictionary *entityNamesToNumbers;
+	static NSString *ampersand = @"&";
+	
+	if ([inString rangeOfString:ampersand options:NSLiteralSearch].location == NSNotFound)
+	return inString;
+	
+	NSMutableString *result = [NSMutableString stringWithCapacity:([inString length] * 1.25)];
+	NSScanner *scanner = [NSScanner scannerWithString:inString];
+	NSCharacterSet *boundaryCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@" \t\n\r;"];
+
+	[scanner setCharactersToBeSkipped:nil];
+
+	entityNamesToNumbers = entityNamesToNumbers ? entityNamesToNumbers : IRWebAPIKitXMLEntityNumbersFromNames();
+	
+	NSString* (^scanEntityNumber) (NSScanner **inScanner) = ^ (NSScanner **inScanner) {
+	
+		NSScanner *scanner = *inScanner;
+				
+		if (![scanner scanString:@"&#" intoString:NULL]) {
+		
+			[scanner scanString:ampersand intoString:NULL];
+			return ampersand;
+
+		}
+
+		NSUInteger charCode;
+		NSString *xForHex;
+		
+		if ([scanner scanString:@"x" intoString:NULL] ? [scanner scanHexInt:&charCode] : [scanner scanInt:(int*)&charCode]) {
+
+			[scanner scanString:@";" intoString:NULL];
+			return (NSString *)[NSString stringWithFormat:@"%C", charCode];
+    
+		}
+
+		NSString *unknownEntity = @"";
+		[scanner scanUpToCharactersFromSet:boundaryCharacterSet intoString:&unknownEntity];
+	//	NSLog(@"Expected numeric character entity but got &#%@%@;", xForHex, unknownEntity);
+	
+		return (NSString *)[NSString stringWithFormat:@"&#%@%@", xForHex, unknownEntity];
+	
+	};
+	
+	
+	while (![scanner isAtEnd]) {
+
+		NSString *nonEntityString;
+
+		if ([scanner scanUpToString:ampersand intoString:&nonEntityString])
+		[result appendString:nonEntityString];
+
+		if ([scanner isAtEnd])
+		return result;
+		
+		BOOL didScanEntity = NO;
+		
+		for (id entityRep in entityNamesToNumbers)
+		if ([scanner scanString:entityRep intoString:NULL]) {
+		
+			NSScanner *entityNumberScanner = [NSScanner scannerWithString:[entityNamesToNumbers objectForKey:entityRep]];
+		
+			[result appendString:scanEntityNumber(&entityNumberScanner)];
+			didScanEntity = YES;
+			break;
+		
+		}
+		
+		if (didScanEntity)
+		continue;
+		
+		[result appendString:scanEntityNumber(&scanner)];
+
+	}
+	
+	
+	return result;
+
+}
+
+
+
+
+
 static inline NSString *IRWebAPIKitHMACSHA1 (NSString *inConsumerSecret, NSString *inTokenSecret, NSString *inPayload) {
 
 //	From Google’s GData Toolkit
@@ -307,7 +397,6 @@ static inline NSDictionary *IRWebAPITransformedContextFromTransformerArraysGet (
 	return transformedContext;
 
 }
-
 
 
 
