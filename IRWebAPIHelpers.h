@@ -30,6 +30,14 @@ static inline NSString * IRWebAPIKitStringValue (id<NSObject> inObject) {
 
 }
 
+static inline BOOL IRWebAPIKitValidResponse (id inObject) {
+
+	if (!inObject || [inObject isEqual:[NSNull null]]) return NO;
+	
+	return YES;
+
+}
+
 
 
 

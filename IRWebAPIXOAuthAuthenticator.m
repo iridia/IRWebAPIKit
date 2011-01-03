@@ -149,9 +149,12 @@
 			
 	nil] validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
 	
-		if ([[inResponseOrNil valueForKey:@"oauth_token"] isEqual:[NSNull null]]) return NO;
-		if ([[inResponseOrNil valueForKey:@"oauth_token_secret"] isEqual:[NSNull null]]) return NO;
+		NSLog(@"Validating response %@", inResponseOrNil);
 	
+		for (id key in [NSArray arrayWithObjects:@"oauth_token", @"oauth_token_secret", nil])
+		if (!IRWebAPIKitValidResponse([inResponseOrNil objectForKey:key]))
+		return NO;
+		
 		return YES;
 	
 	} successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
