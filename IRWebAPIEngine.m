@@ -6,6 +6,7 @@
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
+#import <objc/runtime.h>
 #import "IRWebAPIEngine.h"
 
 
@@ -14,19 +15,34 @@
 
 @interface IRWebAPIEngine ()
 
+static NSString *kIRWebAPIEngineAssociatedDataStore = @"kIRWebAPIEngineAssociatedDataStore";
+static NSString *kIRWebAPIEngineAssociatedSuccessHandler = @"kIRWebAPIEngineAssociatedSuccessHandler";
+static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAssociatedFailureHandler";
+
+@property (nonatomic, assign, readwrite) CFMutableDictionaryRef dataStore;
 @property (nonatomic, assign, readwrite) CFMutableDictionaryRef successHandlers;
 @property (nonatomic, assign, readwrite) CFMutableDictionaryRef failureHandlers;
-@property (nonatomic, assign, readwrite) CFMutableDictionaryRef dataStore;
+
+- (void) setInternalDataStore:(NSData *)inDataStore forConnection:(NSURLConnection *)inConnection;
+- (NSData *) internalDataStoreForConnection:(NSURLConnection *)inConnection;
+
+- (void) setInternalSuccessHandler:(void (^)(NSData *inResponse))inSuccessHandler forConnection:(NSURLConnection *)inConnection;
+- (void (^)(NSData *inResponse)) internalSuccessHandlerForConnection:(NSURLConnection *)inConnection;
+
+- (void) setInternalFailureHandler:(void (^)(void))inFailureHandler forConnection:(NSURLConnection *)inConnection;
+- (void (^)(void)) internalFailureHandlerForConnection:(NSURLConnection *)inConnection;
+
 
 - (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil validator:(IRWebAPIResposeValidator)inValidator successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler;
 
+- (void) ensureResponseParserExistence;
+
 - (NSDictionary *) baseRequestContextWithMethodName:(NSString *)inMethodName arguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil;
 - (NSDictionary *) requestContextByTransformingContext:(NSDictionary *)inContext forMethodNamed:(NSString *)inMethodName;
-- (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse forMethodNamed:(NSString *)inMethodName;
-
 - (NSURLRequest *) requestWithContext:(NSDictionary *)inContext;
 
-- (void) ensureResponseParserExistence;
+- (NSDictionary *) parsedResponseForData:(NSData *)inData withContext:(NSDictionary *)inContext;
+- (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse forMethodNamed:(NSString *)inMethodName;
 
 - (void) cleanUpForConnection:(NSURLConnection *)inConnection;
 
@@ -44,6 +60,9 @@
 
 
 
+
+# pragma mark -
+# pragma mark Initializationand Memory Management
 
 - (id) initWithContext:(IRWebAPIContext *)inContext {
 
@@ -106,6 +125,9 @@
 
 
 
+# pragma mark -
+# pragma mark Helpers
+
 - (void) ensureResponseParserExistence {
 	
 	if (self.parser) return;
@@ -115,9 +137,25 @@
 	
 }
 
+- (NSDictionary *) parsedResponseForData:(NSData *)inData withContext:(NSDictionary *)inContext {
 
+	IRWebAPIResponseParser parserBlock = [inContext objectForKey:kIRWebAPIEngineParser];
 
+	NSDictionary *parsedResponse = parserBlock(inData);		
+	if (parsedResponse)
+	return parsedResponse;
 
+	NSLog(@"Warning: unparsable response.  Resetting returned response to an empty dictionary.");
+	NSLog(@"Context: %@", inContext);
+
+	IRWebAPIResponseParser defaultParser = IRWebAPIResponseDefaultParserMake();
+
+	NSDictionary *debugOutput = defaultParser(inData);
+	NSLog(@"Default parser returns %@.", debugOutput ? (id<NSObject>)debugOutput : (id<NSObject>)@"- null -");
+
+	return [NSDictionary dictionary];
+
+}
 
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler {
 
@@ -147,6 +185,10 @@
 
 
 	
+	
+# pragma mark -
+# pragma mark Core
+
 - (IRWebAPIEngineExecutionBlock) executionBlockForAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil validator:(IRWebAPIResposeValidator)inValidator successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler {
 
 	[self ensureResponseParserExistence];
@@ -173,53 +215,35 @@
 		dispatch_async(dispatch_get_main_queue(), ^{
 		
 			NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
-						
-			CFDictionaryAddValue(successHandlers, connection, [[^ (NSData *inResponse) {
+			
+			[self setInternalSuccessHandler: ^ (NSData *inResponse) {
+			
+				NSLog(@"Success!");
 					
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
-				IRWebAPIResponseParser parserBlock = [finalizedContext objectForKey:kIRWebAPIEngineParser];
-
-				NSDictionary *parsedResponse = parserBlock(inResponse);		
-				if (parsedResponse == nil) {
-				
-				//	THE RESPONSE IS UNPARSIBLE HERE
-				
-					NSLog(@"Warning: unparsable response.  Resetting returned response to an empty dictionary.");
-					NSLog(@"Context: %@", finalizedContext);
-					
-					IRWebAPIResponseParser defaultParser = IRWebAPIResponseDefaultParserMake();
-					
-					NSDictionary *debugOutput = defaultParser(inResponse);
-					NSLog(@"Default parser returns %@.", debugOutput ? (id<NSObject>)debugOutput : (id<NSObject>)@"- null -");
-					
-					parsedResponse = [NSDictionary dictionary];
-				
-				}
-				
+				NSDictionary *parsedResponse = [self parsedResponseForData:inResponse withContext:finalizedContext];
 				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse forMethodNamed:inMethodName];
 				
 				if ((inValidator != nil) && (!inValidator(self, transformedResponse))) {
 
 					if (inFailureHandler)
 					inFailureHandler(self, transformedResponse, &notifyDelegate, &shouldRetry);
-					
-					if (shouldRetry) retryHandler();
-					if (notifyDelegate) notifyDelegateHandler();
-					
-					return;
+									
+				} else {
+				
+					if (inSuccessHandler)
+					inSuccessHandler(self, transformedResponse, &notifyDelegate, &shouldRetry);
 				
 				}
-				
-				if (inSuccessHandler)
-				inSuccessHandler(self, transformedResponse, &notifyDelegate, &shouldRetry);
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
 
-			} copy] autorelease]);
+			} forConnection:connection];
 			
-			CFDictionaryAddValue(failureHandlers, connection, [[^ {
+			
+			[self setInternalFailureHandler: ^ {
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
@@ -229,9 +253,12 @@
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
 			
-			} copy] autorelease]);
+			} forConnection:connection];
 			
-			CFDictionaryAddValue(dataStore, connection, [NSMutableData data]);
+			
+			[self setInternalDataStore:[NSMutableData data] forConnection:connection];
+			
+		//	objc_setAssociatedObject(connection, kIRWebAPIEngineAssociatedDataStore, @"DataStore!", OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 			
 			[connection start];
 		
@@ -247,6 +274,9 @@
 
 
 
+# pragma mark -
+# pragma mark Connection Delegation
+
 - (void) connection:(NSURLConnection *)inConnection didReceiveData:(NSData *)inData {
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -261,46 +291,24 @@
 
 }
 
-
-
-
-
 - (void) connectionDidFinishLoading:(NSURLConnection *)inConnection {
 
+//	NSLog(@"connection %@, associated data store %@", self, objc_getAssociatedObject(inConnection, kIRWebAPIEngineAssociatedDataStore));
+
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
-
-		id successHandlerOrNil = (void (^)(NSData *))CFDictionaryGetValue(self.successHandlers, inConnection);
-		if (!successHandlerOrNil) return;
-
-		id connectionDataStoreOrNil = (NSData *)CFDictionaryGetValue(self.dataStore, inConnection);
-		if (!connectionDataStoreOrNil) return;
-		
-		void (^successBlock)() = successHandlerOrNil;
-		NSMutableData *connectionDataStore = connectionDataStoreOrNil;
-		
-		successBlock(connectionDataStore);
-		
+	
+		[self internalSuccessHandlerForConnection:inConnection]([self internalDataStoreForConnection:inConnection]);
 		[self cleanUpForConnection:inConnection];
 	
 	});
 	
 }
-
-
-
-
 
 - (void) connection:(NSURLConnection *)inConnection didFailWithError:(NSError *)error {
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 	
-		id failureHandlerOrNil = (void (^)(void))CFDictionaryGetValue(self.failureHandlers, inConnection);
-		if (!failureHandlerOrNil) return;
-		
-		void (^failureBlock)(void) = failureHandlerOrNil;
-		
-		failureBlock();
-		
+		[self internalFailureHandlerForConnection:inConnection]();
 		[self cleanUpForConnection:inConnection];
 	
 	});
@@ -310,6 +318,48 @@
 
 
 
+
+# pragma mark -
+# pragma mark Associated Objects
+
+//	Notice that blocks are made on the stack so they must be copied before being stored away
+
+
+- (void) setInternalSuccessHandler:(void (^)(NSData *inResponse))inSuccessHandler forConnection:(NSURLConnection *)inConnection {
+
+	CFDictionarySetValue(self.successHandlers, inConnection, [[inSuccessHandler copy] autorelease]);
+
+}
+
+- (void (^)(NSData *inResponse)) internalSuccessHandlerForConnection:(NSURLConnection *)inConnection {
+
+	return CFDictionaryGetValue(self.successHandlers, inConnection);
+
+}
+
+- (void) setInternalFailureHandler:(void (^)(void))inFailureHandler forConnection:(NSURLConnection *)inConnection {
+
+	CFDictionarySetValue(self.failureHandlers, inConnection, [[inFailureHandler copy] autorelease]);
+
+}
+
+- (void (^)(void)) internalFailureHandlerForConnection:(NSURLConnection *)inConnection {
+
+	return CFDictionaryGetValue(self.failureHandlers, inConnection);
+
+}
+
+- (void) setInternalDataStore:(NSData *)inDataStore forConnection:(NSURLConnection *)inConnection {
+
+	CFDictionarySetValue(self.dataStore, inConnection, inDataStore);
+
+}
+
+- (NSData *) internalDataStoreForConnection:(NSURLConnection *)inConnection {
+
+	return (NSData *)CFDictionaryGetValue(self.dataStore, inConnection);
+
+}
 
 - (void) cleanUpForConnection:(NSURLConnection *)inConnection {
 
