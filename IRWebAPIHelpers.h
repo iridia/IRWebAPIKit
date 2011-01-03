@@ -210,7 +210,7 @@ static inline NSString *IRWebAPIStringByDecodingXMLEntities (NSString *inString)
 
 	[scanner setCharactersToBeSkipped:nil];
 
-	entityNamesToNumbers = entityNamesToNumbers ? entityNamesToNumbers : IRWebAPIKitXMLEntityNumbersFromNames();
+	entityNamesToNumbers = entityNamesToNumbers ? entityNamesToNumbers : [IRWebAPIKitXMLEntityNumbersFromNames() retain];
 	
 	NSString* (^scanEntityNumber) (NSScanner **inScanner) = ^ (NSScanner **inScanner) {
 	
