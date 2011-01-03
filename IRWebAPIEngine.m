@@ -19,12 +19,8 @@ static NSString *kIRWebAPIEngineAssociatedDataStore = @"kIRWebAPIEngineAssociate
 static NSString *kIRWebAPIEngineAssociatedSuccessHandler = @"kIRWebAPIEngineAssociatedSuccessHandler";
 static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAssociatedFailureHandler";
 
-@property (nonatomic, assign, readwrite) CFMutableDictionaryRef dataStore;
-@property (nonatomic, assign, readwrite) CFMutableDictionaryRef successHandlers;
-@property (nonatomic, assign, readwrite) CFMutableDictionaryRef failureHandlers;
-
-- (void) setInternalDataStore:(NSData *)inDataStore forConnection:(NSURLConnection *)inConnection;
-- (NSData *) internalDataStoreForConnection:(NSURLConnection *)inConnection;
+- (void) setInternalDataStore:(NSMutableData *)inDataStore forConnection:(NSURLConnection *)inConnection;
+- (NSMutableData *) internalDataStoreForConnection:(NSURLConnection *)inConnection;
 
 - (void) setInternalSuccessHandler:(void (^)(NSData *inResponse))inSuccessHandler forConnection:(NSURLConnection *)inConnection;
 - (void (^)(NSData *inResponse)) internalSuccessHandlerForConnection:(NSURLConnection *)inConnection;
@@ -54,7 +50,7 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 @implementation IRWebAPIEngine
 
-@synthesize parser, context, successHandlers, failureHandlers, dataStore;
+@synthesize parser, context;
 @synthesize globalRequestPreTransformers, globalRequestPostTransformers, requestTransformers, globalResponsePreTransformers, globalResponsePostTransformers, responseTransformers;
 
 
@@ -69,15 +65,6 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	self = [super init]; if (!self) return nil;
 	
 	context = [inContext retain];
-	
-	successHandlers = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-	CFRetain(successHandlers);
-
-	failureHandlers = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
-	CFRetain(failureHandlers);
-
-	dataStore = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
-	CFRetain(dataStore);
 	
 	globalRequestPreTransformers = [[NSMutableArray array] retain];
 	requestTransformers = [[NSMutableDictionary dictionary] retain];
@@ -103,10 +90,6 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 	[context release];
 	
-	CFRelease(successHandlers);
-	CFRelease(failureHandlers);
-	CFRelease(dataStore);
-
 	[globalRequestPreTransformers release];
 	[requestTransformers release];
 	[globalRequestPostTransformers release];
@@ -281,11 +264,7 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 
-		id connectionDataStoreOrNil = (NSData *)CFDictionaryGetValue(self.dataStore, inConnection);
-		if (!connectionDataStoreOrNil) return;
-
-		NSMutableData *connectionDataStore = connectionDataStoreOrNil;
-		[connectionDataStore appendData:inData];
+		[[self internalDataStoreForConnection:inConnection] appendData:inData];
 	
 	});
 
@@ -327,47 +306,45 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) setInternalSuccessHandler:(void (^)(NSData *inResponse))inSuccessHandler forConnection:(NSURLConnection *)inConnection {
 
-	CFDictionarySetValue(self.successHandlers, inConnection, [[inSuccessHandler copy] autorelease]);
+	objc_setAssociatedObject(inConnection, kIRWebAPIEngineAssociatedSuccessHandler, inSuccessHandler, OBJC_ASSOCIATION_COPY);
 
 }
 
 - (void (^)(NSData *inResponse)) internalSuccessHandlerForConnection:(NSURLConnection *)inConnection {
 
-	return CFDictionaryGetValue(self.successHandlers, inConnection);
+	return objc_getAssociatedObject(inConnection, kIRWebAPIEngineAssociatedSuccessHandler);
 
 }
 
 - (void) setInternalFailureHandler:(void (^)(void))inFailureHandler forConnection:(NSURLConnection *)inConnection {
 
-	CFDictionarySetValue(self.failureHandlers, inConnection, [[inFailureHandler copy] autorelease]);
+	objc_setAssociatedObject(inConnection, kIRWebAPIEngineAssociatedFailureHandler, inFailureHandler, OBJC_ASSOCIATION_COPY);
 
 }
 
 - (void (^)(void)) internalFailureHandlerForConnection:(NSURLConnection *)inConnection {
 
-	return CFDictionaryGetValue(self.failureHandlers, inConnection);
+	return objc_getAssociatedObject(inConnection, kIRWebAPIEngineAssociatedFailureHandler);
 
 }
 
-- (void) setInternalDataStore:(NSData *)inDataStore forConnection:(NSURLConnection *)inConnection {
+- (void) setInternalDataStore:(NSMutableData *)inDataStore forConnection:(NSURLConnection *)inConnection {
 
-	CFDictionarySetValue(self.dataStore, inConnection, inDataStore);
+	objc_setAssociatedObject(inConnection, kIRWebAPIEngineAssociatedDataStore, inDataStore, OBJC_ASSOCIATION_RETAIN);
 
 }
 
-- (NSData *) internalDataStoreForConnection:(NSURLConnection *)inConnection {
+- (NSMutableData *) internalDataStoreForConnection:(NSURLConnection *)inConnection {
 
-	return (NSData *)CFDictionaryGetValue(self.dataStore, inConnection);
-
+	return objc_getAssociatedObject(inConnection, kIRWebAPIEngineAssociatedDataStore);
+	
 }
 
 - (void) cleanUpForConnection:(NSURLConnection *)inConnection {
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 	
-		CFDictionaryRemoveValue(self.successHandlers, inConnection);
-		CFDictionaryRemoveValue(self.failureHandlers, inConnection);
-		CFDictionaryRemoveValue(self.dataStore, inConnection);
+		objc_removeAssociatedObjects(inConnection);
 	
 	});	
 
