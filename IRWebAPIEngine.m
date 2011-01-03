@@ -28,6 +28,8 @@
 
 - (void) ensureResponseParserExistence;
 
+- (void) cleanUpForConnection:(NSURLConnection *)inConnection;
+
 @end
 
 
@@ -277,13 +279,8 @@
 		NSMutableData *connectionDataStore = connectionDataStoreOrNil;
 		
 		successBlock(connectionDataStore);
-		dispatch_async(dispatch_get_main_queue(), ^{
-	
-			CFDictionaryRemoveValue(self.successHandlers, inConnection);
-			CFDictionaryRemoveValue(self.failureHandlers, inConnection);
-			CFDictionaryRemoveValue(self.dataStore, inConnection);
-				
-		});
+		
+		[self cleanUpForConnection:inConnection];
 	
 	});
 	
@@ -293,25 +290,36 @@
 
 
 
-- (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+- (void) connection:(NSURLConnection *)inConnection didFailWithError:(NSError *)error {
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 	
-		id failureHandlerOrNil = (void (^)(void))CFDictionaryGetValue(self.failureHandlers, connection);
+		id failureHandlerOrNil = (void (^)(void))CFDictionaryGetValue(self.failureHandlers, inConnection);
 		if (!failureHandlerOrNil) return;
 		
 		void (^failureBlock)(void) = failureHandlerOrNil;
 		
 		failureBlock();
-		dispatch_async(dispatch_get_main_queue(), ^{
 		
-			CFDictionaryRemoveValue(self.successHandlers, connection);
-			CFDictionaryRemoveValue(self.failureHandlers, connection);
-			CFDictionaryRemoveValue(self.dataStore, connection);
-		
-		});
+		[self cleanUpForConnection:inConnection];
 	
 	});
+
+}
+
+
+
+
+
+- (void) cleanUpForConnection:(NSURLConnection *)inConnection {
+
+	dispatch_async(dispatch_get_main_queue(), ^{
+	
+		CFDictionaryRemoveValue(self.successHandlers, inConnection);
+		CFDictionaryRemoveValue(self.failureHandlers, inConnection);
+		CFDictionaryRemoveValue(self.dataStore, inConnection);
+	
+	});	
 
 }
 
