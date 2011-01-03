@@ -160,6 +160,7 @@
 		self.retrievedTokenSecret = [inResponseOrNil valueForKey:@"oauth_token_secret"];
 
 		self.currentCredentials = inCredentials;
+		self.currentCredentials.authenticated = YES;
 
 		[self.currentCredentials.userInfo setObject:self.retrievedToken forKey:@"oauth_token"];
 		[self.currentCredentials.userInfo setObject:self.retrievedTokenSecret forKey:@"oauth_token_secret"];
