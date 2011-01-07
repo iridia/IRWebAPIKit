@@ -27,12 +27,22 @@
 		if (!self.currentCredentials) return inOriginalContext;
 		if (!self.authToken) return inOriginalContext;
 		
-		NSMutableDictionary *transformedContext = [inOriginalContext mutableCopy];
+		NSMutableDictionary *transformedContext = [[inOriginalContext mutableCopy] autorelease];
 		
 		NSMutableDictionary *headerFields = [transformedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields];
+		
+		if (![headerFields isEqual:[NSNull null]]) {
+		
+			if (![headerFields isKindOfClass:[NSMutableDictionary class]]) {
 
-		if (![headerFields isEqual:[NSNull null]])
-		[headerFields setObject:[NSString stringWithFormat:@"GoogleLogin auth=%@", self.authToken] forKey:@"Authorization"];
+				headerFields = [[headerFields mutableCopy] autorelease];
+				[transformedContext setObject:headerFields forKey:kIRWebAPIEngineRequestHTTPHeaderFields];
+				
+			}
+		
+			[headerFields setObject:[NSString stringWithFormat:@"GoogleLogin auth=%@", self.authToken] forKey:@"Authorization"];
+		
+		}
 		
 		return (NSDictionary *)transformedContext;
 	
