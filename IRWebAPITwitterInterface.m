@@ -90,7 +90,7 @@
 
 	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
-		NSLog(@"Failed. %@");
+		NSLog(@"Failed. %@", inResponseOrNil);
 		
 		if (inFailureCallback)
 		inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
