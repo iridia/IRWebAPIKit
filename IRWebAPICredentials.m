@@ -17,14 +17,16 @@
 
 	self = [super init]; if (!self) return nil;
 	
-	identifier = nil;
-	identifierPlaceholder = nil;
-	qualifier = nil;
-	qualifierPlaceholder = nil;
-	displayName = nil;
-	notes = nil;
-	userInfo = [[NSMutableDictionary dictionary] retain];
-	authenticated = NO;
+	self.identifier = nil;
+	self.identifierPlaceholder = nil;
+	self.identifierLabelText = nil;
+	self.qualifier = nil;
+	self.qualifierPlaceholder = nil;
+	self.qualifierLabelText = nil;
+	self.displayName = nil;
+	self.notes = nil;
+	self.userInfo = [[NSMutableDictionary dictionary] retain];
+	self.authenticated = NO;
 	
 	return self;
 
@@ -45,9 +47,11 @@
 
 	[identifier release];
 	[identifierPlaceholder release];
+	[identifierLabelText release];
 	
 	[qualifier release];
 	[qualifierPlaceholder release];
+	[qualifierLabelText release];
 	
 	[displayName release];
 	[notes release];
@@ -61,14 +65,16 @@
 
 	self = [self init]; if (!self) return nil;
 	
-	identifier = [inCoder decodeObjectForKey:@"identifier"];
-	identifierPlaceholder = [inCoder decodeObjectForKey:@"identifierPlaceholder"];
-	qualifier = [inCoder decodeObjectForKey:@"qualifier"];
-	qualifierPlaceholder = [inCoder decodeObjectForKey:@"qualifierPlaceholder"];
-	displayName = [inCoder decodeObjectForKey:@"displayName"];
-	notes = [inCoder decodeObjectForKey:@"notes"];
-	userInfo = [inCoder decodeObjectForKey:@"userInfo"];
-	authenticated = [(NSNumber *)[inCoder decodeObjectForKey:@"authenticated"] boolValue];
+	self.identifier = [inCoder decodeObjectForKey:@"identifier"];
+	self.identifierPlaceholder = [inCoder decodeObjectForKey:@"identifierPlaceholder"];
+	self.identifierLabelText = [inCoder decodeObjectForKey:@"identifierLabelText"];
+	self.qualifier = [inCoder decodeObjectForKey:@"qualifier"];
+	self.qualifierPlaceholder = [inCoder decodeObjectForKey:@"qualifierPlaceholder"];
+	self.qualifierLabelText = [inCoder decodeObjectForKey:@"qualifierLabelText"];
+	self.displayName = [inCoder decodeObjectForKey:@"displayName"];
+	self.notes = [inCoder decodeObjectForKey:@"notes"];
+	self.userInfo = [inCoder decodeObjectForKey:@"userInfo"];
+	self.authenticated = [(NSNumber *)[inCoder decodeObjectForKey:@"authenticated"] boolValue];
 	
 	return self;
 
@@ -78,8 +84,10 @@
 
 	[inCoder encodeObject:identifier forKey:@"identifier"];
 	[inCoder encodeObject:identifierPlaceholder forKey:@"identifierPlaceholder"];
+	[inCoder encodeObject:identifierLabelText forKey:@"identifierLabelText"];
 	[inCoder encodeObject:qualifier forKey:@"qualifier"];
 	[inCoder encodeObject:qualifierPlaceholder forKey:@"qualifierPlaceholder"];
+	[inCoder encodeObject:qualifierLabelText forKey:@"qualifierLabelText"];
 	[inCoder encodeObject:displayName forKey:@"displayName"];
 	[inCoder encodeObject:notes forKey:@"notes"];
 	[inCoder encodeObject:userInfo forKey:@"userInfo"];
@@ -97,8 +105,10 @@
 	
 	copy.identifier = self.identifier;
 	copy.identifierPlaceholder = self.identifierPlaceholder;
+	copy.identifierLabelText = self.identifierLabelText;
 	copy.qualifier = self.qualifier;
 	copy.qualifierPlaceholder = self.qualifierPlaceholder;
+	copy.qualifierLabelText = self.qualifierLabelText;
 	copy.displayName = self.displayName;
 	copy.notes = self.notes;
 	copy.userInfo = [[self.userInfo copy] autorelease];
@@ -110,15 +120,23 @@
 
 - (NSString *) description {
 
+	id (^wrap)(id) = ^ id (id obj) {
+	
+		return obj ? (id)obj : (id)@"(null)";
+	
+	};
+	
 	return [[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		self.identifier, @"identifier",
-		self.identifierPlaceholder, @"identifierPlaceholder",
-		self.qualifier, @"qualifier",
-		self.qualifierPlaceholder, @"qualifierPlaceholder",
-		self.displayName, @"displayName",
-		self.notes, @"notes",
-		self.userInfo, @"userInfo",
+		wrap(self.identifier), @"identifier",
+		wrap(self.identifierPlaceholder), @"identifierPlaceholder",
+		wrap(self.identifierLabelText), @"identifierLabelText",
+		wrap(self.qualifier), @"qualifier",
+		wrap(self.qualifierPlaceholder), @"qualifierPlaceholder",
+		wrap(self.qualifierLabelText), @"qualifierLabelText",
+		wrap(self.displayName), @"displayName",
+		wrap(self.notes), @"notes",
+		wrap(self.userInfo), @"userInfo",
 		[NSNumber numberWithBool:self.authenticated], @"authenticated",
 	
 	nil] description];
