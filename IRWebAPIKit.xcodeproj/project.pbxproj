@@ -35,8 +35,6 @@
 		FF7408991296B06F00571D46 /* IRWebAPIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408971296B06F00571D46 /* IRWebAPIContext.h */; };
 		FF74089A1296B06F00571D46 /* IRWebAPIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408981296B06F00571D46 /* IRWebAPIContext.m */; };
 		FF740CAA1296EB0C00571D46 /* IRWebAPIResponseParser.h in Headers */ = {isa = PBXBuildFile; fileRef = FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */; };
-		FF7A7AAE129CD8210004890B /* IRWebAPIKeychainedCredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7A7AAC129CD8210004890B /* IRWebAPIKeychainedCredentials.h */; };
-		FF7A7AAF129CD8210004890B /* IRWebAPIKeychainedCredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7A7AAD129CD8210004890B /* IRWebAPIKeychainedCredentials.m */; };
 		FF896A6B12A5666D00AE2AF3 /* IRWebAPIInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF896A6912A5666D00AE2AF3 /* IRWebAPIInterface.h */; };
 		FF896A6C12A5666D00AE2AF3 /* IRWebAPIInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF896A6A12A5666D00AE2AF3 /* IRWebAPIInterface.m */; };
 		FF896CD012A566BF00AE2AF3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF896CCF12A566BF00AE2AF3 /* CoreFoundation.framework */; };
@@ -97,8 +95,6 @@
 		FF7408971296B06F00571D46 /* IRWebAPIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIContext.h; sourceTree = "<group>"; };
 		FF7408981296B06F00571D46 /* IRWebAPIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIContext.m; sourceTree = "<group>"; };
 		FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIResponseParser.h; sourceTree = "<group>"; };
-		FF7A7AAC129CD8210004890B /* IRWebAPIKeychainedCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIKeychainedCredentials.h; sourceTree = "<group>"; };
-		FF7A7AAD129CD8210004890B /* IRWebAPIKeychainedCredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIKeychainedCredentials.m; sourceTree = "<group>"; };
 		FF896A6912A5666D00AE2AF3 /* IRWebAPIInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterface.h; sourceTree = "<group>"; };
 		FF896A6A12A5666D00AE2AF3 /* IRWebAPIInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIInterface.m; sourceTree = "<group>"; };
 		FF896CCF12A566BF00AE2AF3 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -154,7 +150,6 @@
 				FF25FA321299406800975BE3 /* IRWebAPIAuthenticator.m */,
 				FF25FCC712996A2C00975BE3 /* Specific Authenticators */,
 				FF25FA7C129944D000975BE3 /* Applied Implementations */,
-				FF7A7AB1129CD8C80004890B /* Keychain Integration */,
 			);
 			name = "Credentials and Authenticators";
 			sourceTree = "<group>";
@@ -239,15 +234,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FF7A7AB1129CD8C80004890B /* Keychain Integration */ = {
-			isa = PBXGroup;
-			children = (
-				FF7A7AAC129CD8210004890B /* IRWebAPIKeychainedCredentials.h */,
-				FF7A7AAD129CD8210004890B /* IRWebAPIKeychainedCredentials.m */,
-			);
-			name = "Keychain Integration";
-			sourceTree = "<group>";
-		};
 		FF896B5812A5667A00AE2AF3 /* Interfacing Wrapper */ = {
 			isa = PBXGroup;
 			children = (
@@ -303,7 +289,6 @@
 				FF25FA7F129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.h in Headers */,
 				FF25FCCA12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h in Headers */,
 				FF25FD7E129971EC00975BE3 /* IRWebAPIHelpers.h in Headers */,
-				FF7A7AAE129CD8210004890B /* IRWebAPIKeychainedCredentials.h in Headers */,
 				FF896A6B12A5666D00AE2AF3 /* IRWebAPIInterface.h in Headers */,
 				FF896DD512A567FA00AE2AF3 /* IRWebAPITwitterInterface.h in Headers */,
 				FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h in Headers */,
@@ -426,7 +411,6 @@
 				FF896A6C12A5666D00AE2AF3 /* IRWebAPIInterface.m in Sources */,
 				FF74089A1296B06F00571D46 /* IRWebAPIContext.m in Sources */,
 				FF896DD612A567FA00AE2AF3 /* IRWebAPITwitterInterface.m in Sources */,
-				FF7A7AAF129CD8210004890B /* IRWebAPIKeychainedCredentials.m in Sources */,
 				FF25FA341299406800975BE3 /* IRWebAPIAuthenticator.m in Sources */,
 				FF25FA301299406200975BE3 /* IRWebAPICredentials.m in Sources */,
 				FF25FA80129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.m in Sources */,
