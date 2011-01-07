@@ -13,11 +13,15 @@
 
 
 
-@interface IRWebAPIEngine ()
-
 static NSString *kIRWebAPIEngineAssociatedDataStore = @"kIRWebAPIEngineAssociatedDataStore";
 static NSString *kIRWebAPIEngineAssociatedSuccessHandler = @"kIRWebAPIEngineAssociatedSuccessHandler";
 static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAssociatedFailureHandler";
+
+
+
+
+
+@interface IRWebAPIEngine ()
 
 - (void) setInternalDataStore:(NSMutableData *)inDataStore forConnection:(NSURLConnection *)inConnection;
 - (NSMutableData *) internalDataStoreForConnection:(NSURLConnection *)inConnection;
@@ -465,7 +469,7 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	) cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
 	
 	NSDictionary *headerFields;
-	if (headerFields = [inContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields])
+	if ((headerFields = [inContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields]))
 	for (NSString *headerFieldKey in headerFields)
 	[request setValue:[headerFields objectForKey:headerFieldKey] forHTTPHeaderField:headerFieldKey];
 	
