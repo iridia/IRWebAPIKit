@@ -45,10 +45,10 @@
 - (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler;
 
 @property (nonatomic, assign, readwrite) IRWebAPIEngine *engine;
-@property (nonatomic, assign, readwrite) IRWebAPITransformer globalRequestPreTransformerBlock;
-@property (nonatomic, assign, readwrite) IRWebAPITransformer globalRequestPostTransformerBlock;
-@property (nonatomic, assign, readwrite) IRWebAPITransformer globalResponsePreTransformerBlock;
-@property (nonatomic, assign, readwrite) IRWebAPITransformer globalResponsePostTransformerBlock;
+@property (nonatomic, copy, readwrite) IRWebAPITransformer globalRequestPreTransformerBlock;
+@property (nonatomic, copy, readwrite) IRWebAPITransformer globalRequestPostTransformerBlock;
+@property (nonatomic, copy, readwrite) IRWebAPITransformer globalResponsePreTransformerBlock;
+@property (nonatomic, copy, readwrite) IRWebAPITransformer globalResponsePostTransformerBlock;
 @property (nonatomic, assign, readwrite) IRWebAPICredentials *currentCredentials;
 
 @end
