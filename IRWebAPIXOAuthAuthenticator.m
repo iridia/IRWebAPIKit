@@ -32,7 +32,7 @@
 
 - (void) createTransformerBlocks {
 
-	self.globalRequestPostTransformerBlock = [[^ (NSDictionary *inOriginalContext) {
+	self.globalRequestPostTransformerBlock = ^ (NSDictionary *inOriginalContext) {
 
 		NSMutableDictionary *mutatedContext = [inOriginalContext mutableCopy];
 	
@@ -70,7 +70,7 @@
 		
 		}
 		
-		NSMutableDictionary *signatureStringParameters = (isRequestAuthenticated() && isPOST()) ? [NSMutableDictionary dictionary] : [[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPQueryParameters] mutableCopy];
+		NSMutableDictionary *signatureStringParameters = (isRequestAuthenticated() && isPOST()) ? [NSMutableDictionary dictionary] : [[[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPQueryParameters] mutableCopy] autorelease];
 						
 		NSMutableDictionary *oAuthParameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 		
@@ -101,7 +101,7 @@
 		
 			@"%26",
 		
-			IRWebAPIKitRFC3986EncodedStringMake([[NSString alloc] initWithData:[mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPBody] encoding:NSUTF8StringEncoding])
+			IRWebAPIKitRFC3986EncodedStringMake([[[NSString alloc] initWithData:[mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPBody] encoding:NSUTF8StringEncoding] autorelease])
 			
 		];
 		
@@ -117,9 +117,9 @@
 		
 		[(NSMutableDictionary *)[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields] setObject:[NSString stringWithFormat:@"OAuth %@", [oAuthHeaderContents componentsJoinedByString:@", "]] forKey:@"Authorization"];
 			
-		return mutatedContext;
+		return [mutatedContext autorelease];
 	
-	} copy] retain];
+	};
 
 }
 
