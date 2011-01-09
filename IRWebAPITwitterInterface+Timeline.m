@@ -65,7 +65,7 @@
 
 - (void) retrieveMentionsSince:(IRWebAPITwitterStatusIdentifier)inSinceIdentifier before:(IRWebAPITwitterStatusIdentifier)inBeforeIdentifier successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	[self.engine fireAPIRequestNamed:@"statuses/mentions" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	[self.engine fireAPIRequestNamed:@"statuses/mentions.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
 		IRWebAPIKitNumberOrNull(inSinceIdentifier), @"since_id",
 		IRWebAPIKitNumberOrNull(inBeforeIdentifier), @"max_id",
