@@ -136,8 +136,9 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 - (NSDictionary *) parsedResponseForData:(NSData *)inData withContext:(NSDictionary *)inContext {
 
 	IRWebAPIResponseParser parserBlock = [inContext objectForKey:kIRWebAPIEngineParser];
-
+	
 	NSDictionary *parsedResponse = parserBlock(inData);		
+	
 	if (parsedResponse)
 	return parsedResponse;
 
@@ -235,6 +236,8 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
+				
+				[self cleanUpForConnection:connection];
 
 			} forConnection:connection];
 			
@@ -248,6 +251,8 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
+				
+				[self cleanUpForConnection:connection];
 			
 			} forConnection:connection];
 			
@@ -284,9 +289,8 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 - (void) connectionDidFinishLoading:(NSURLConnection *)inConnection {
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
-	
+
 		[self internalSuccessHandlerForConnection:inConnection]([self internalDataStoreForConnection:inConnection]);
-		[self cleanUpForConnection:inConnection];
 	
 	});
 	
@@ -297,7 +301,6 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 	
 		[self internalFailureHandlerForConnection:inConnection]();
-		[self cleanUpForConnection:inConnection];
 	
 	});
 

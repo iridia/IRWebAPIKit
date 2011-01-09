@@ -15,7 +15,7 @@
 
 @interface IRWebAPIEngine : NSObject
 
-@property (nonatomic, readwrite, retain) IRWebAPIResponseParser parser;
+@property (nonatomic, readwrite, copy) IRWebAPIResponseParser parser;
 @property (nonatomic, readonly, retain) IRWebAPIContext *context;
 
 @property (nonatomic, readonly, retain) NSMutableArray *globalRequestPreTransformers;

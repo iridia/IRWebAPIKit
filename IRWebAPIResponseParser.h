@@ -41,7 +41,7 @@ static inline IRWebAPIResponseParser IRWebAPIResponseDefaultParserMake () {
 	
 	};
 
-	return [defaultParser retain];
+	return defaultParser;
 
 }
 
@@ -84,7 +84,7 @@ static inline IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake () 
 	
 	};
 	
-	return [queryResponseParser retain];
+	return queryResponseParser;
 
 }
 
@@ -93,9 +93,6 @@ static inline IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake () 
 
 
 static inline IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake () {
-
-//	The default JSON Parser is TouchJSON.  Feel free to override ;)
-//	FIXME: Make it not leak.  Perhaps move everything to a class object?
 
 	NSDictionary * (^defaultJSONParser) (NSData *) = ^ NSDictionary * (NSData *inData) {
 
@@ -119,7 +116,7 @@ static inline IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake () {
 		
 		id incomingObject;
 
-		NSError *error;
+		NSError *error = nil;
 		NSError **errorPointer = &error;
 		
 		NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[deserializer methodSignatureForSelector:selDeserialize]];
@@ -132,12 +129,8 @@ static inline IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake () {
 		[invocation invoke];
 		[invocation getReturnValue:&incomingObject];
 		
-		if (!incomingObject) {
-		
-			NSLog(@"Error. %@", error);
-			return nil;
-		
-		}
+		if (!incomingObject)
+		return nil;
 
 		if ([incomingObject isKindOfClass:[NSDictionary class]])
 		return (NSDictionary *)incomingObject;
@@ -146,7 +139,7 @@ static inline IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake () {
 	
 	};
 	
-	return [defaultJSONParser retain];
+	return defaultJSONParser;
 	
 }
 
