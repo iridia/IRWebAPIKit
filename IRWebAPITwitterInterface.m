@@ -29,6 +29,16 @@
 
 }
 
+- (void) dealloc {
+
+//	IRWebAPIInterfaceXOAuthAuthenticating
+	self.consumerKey = nil;
+	self.consumerSecret = nil;
+
+	[super dealloc];
+
+}
+
 
 
 

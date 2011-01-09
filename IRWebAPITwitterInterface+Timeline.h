@@ -33,4 +33,6 @@ typedef enum {
 
 - (void) retrieveTimeline:(IRWebAPITwitterTimelineType)inTimelineType since:(IRWebAPITwitterStatusIdentifier)inSinceIdentifier before:(IRWebAPITwitterStatusIdentifier)inBeforeIdentifier successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
 
+- (void) retrieveMentionsSince:(IRWebAPITwitterStatusIdentifier)inSince before:(IRWebAPITwitterStatusIdentifier)inBefore successHandler:(IRWebAPIInterfaceCallback)onSuccess failureHandler:(IRWebAPIInterfaceCallback)onFailure;
+
 @end

@@ -13,22 +13,18 @@
 
 
 
-@interface IRWebAPIEngine : NSObject {
-	
-	dispatch_queue_t sharedDispatchQueue;
-
-}
+@interface IRWebAPIEngine : NSObject
 
 @property (nonatomic, readwrite, retain) IRWebAPIResponseParser parser;
 @property (nonatomic, readonly, retain) IRWebAPIContext *context;
 
-@property (nonatomic, retain, readonly) NSMutableArray *globalRequestPreTransformers;
-@property (nonatomic, retain, readonly) NSMutableDictionary *requestTransformers;
-@property (nonatomic, retain, readonly) NSMutableArray *globalRequestPostTransformers;
+@property (nonatomic, readonly, retain) NSMutableArray *globalRequestPreTransformers;
+@property (nonatomic, readonly, retain) NSMutableDictionary *requestTransformers;
+@property (nonatomic, readonly, retain) NSMutableArray *globalRequestPostTransformers;
 
-@property (nonatomic, retain, readonly) NSMutableArray *globalResponsePreTransformers;
-@property (nonatomic, retain, readonly) NSMutableDictionary *responseTransformers;
-@property (nonatomic, retain, readonly) NSMutableArray *globalResponsePostTransformers;
+@property (nonatomic, readonly, retain) NSMutableArray *globalResponsePreTransformers;
+@property (nonatomic, readonly, retain) NSMutableDictionary *responseTransformers;
+@property (nonatomic, readonly, retain) NSMutableArray *globalResponsePostTransformers;
 
 - (id) initWithContext:(IRWebAPIContext *)inContext;
 

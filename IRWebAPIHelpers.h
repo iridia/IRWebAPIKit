@@ -6,14 +6,18 @@
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
+#ifndef __IRWebAPIHelpersSection__
+#define __IRWebAPIHelpersSection__
+
+
+
+
+
 #import <Foundation/Foundation.h>
 #import "IRWebAPIKit.h"
 #import <CoreFoundation/CoreFoundation.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import <UIKit/UIDevice.h>
-
-#ifndef __IRWebAPIHelpersSection__
-#define __IRWebAPIHelpersSection__
 
 static inline NSString * IRWebAPIKitStringValue (id<NSObject> inObject) {
 
@@ -399,6 +403,25 @@ static inline NSDictionary *IRWebAPITransformedContextFromTransformerArraysGet (
 	return transformedContext;
 
 }
+
+
+
+
+
+static inline id IRWebAPIKitWrapNil(id inObjectOrNil) {
+
+	if (inObjectOrNil == nil)
+	return [NSNull null];
+	
+	return inObjectOrNil;
+
+}
+
+static inline id IRWebAPIKitNumberOrNull (int inInt) {
+
+	return inInt ? [NSNumber numberWithInt:inInt] : [NSNull null];
+	
+};
 
 
 

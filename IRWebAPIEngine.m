@@ -21,7 +21,22 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 
 
-@interface IRWebAPIEngine ()
+@interface IRWebAPIEngine () {
+	
+	dispatch_queue_t sharedDispatchQueue;
+
+}
+
+@property (nonatomic, readwrite, retain) IRWebAPIContext *context;
+
+@property (nonatomic, readwrite, retain) NSMutableArray *globalRequestPreTransformers;
+@property (nonatomic, readwrite, retain) NSMutableDictionary *requestTransformers;
+@property (nonatomic, readwrite, retain) NSMutableArray *globalRequestPostTransformers;
+
+@property (nonatomic, readwrite, retain) NSMutableArray *globalResponsePreTransformers;
+@property (nonatomic, readwrite, retain) NSMutableDictionary *responseTransformers;
+@property (nonatomic, readwrite, retain) NSMutableArray *globalResponsePostTransformers;
+
 
 - (void) setInternalDataStore:(NSMutableData *)inDataStore forConnection:(NSURLConnection *)inConnection;
 - (NSMutableData *) internalDataStoreForConnection:(NSURLConnection *)inConnection;
@@ -54,13 +69,6 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 @implementation IRWebAPIEngine
 
-@synthesize parser, context;
-@synthesize globalRequestPreTransformers, globalRequestPostTransformers, requestTransformers, globalResponsePreTransformers, globalResponsePostTransformers, responseTransformers;
-
-
-
-
-
 # pragma mark -
 # pragma mark Initializationand Memory Management
 
@@ -92,15 +100,16 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) dealloc {
 
-	[context release];
+	self.parser = nil;
+	self.context = nil;
 	
-	[globalRequestPreTransformers release];
-	[requestTransformers release];
-	[globalRequestPostTransformers release];
-
-	[globalResponsePreTransformers release];
-	[responseTransformers release];
-	[globalResponsePostTransformers release];
+	self.globalRequestPreTransformers = nil;
+	self.requestTransformers = nil;
+	self.globalRequestPostTransformers = nil;
+	
+	self.globalRequestPostTransformers = nil;
+	self.responseTransformers = nil;
+	self.globalRequestPostTransformers = nil;
 	
 	dispatch_release(sharedDispatchQueue);
 
@@ -245,8 +254,6 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			
 			[self setInternalDataStore:[NSMutableData data] forConnection:connection];
 			
-		//	objc_setAssociatedObject(connection, kIRWebAPIEngineAssociatedDataStore, @"DataStore!", OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-			
 			[connection start];
 		
 		});
@@ -275,8 +282,6 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 }
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)inConnection {
-
-//	NSLog(@"connection %@, associated data store %@", self, objc_getAssociatedObject(inConnection, kIRWebAPIEngineAssociatedDataStore));
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 	

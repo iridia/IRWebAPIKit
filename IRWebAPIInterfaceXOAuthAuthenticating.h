@@ -11,9 +11,7 @@
 
 @protocol IRWebAPIInterfaceXOAuthAuthenticating <IRWebAPIInterfaceAuthenticating>
 
-- (void) setConsumerKey:(NSString *)inConsumerKey;
-- (NSString *) consumerKey;
-- (void) setConsumerSecret:(NSString *)inConsumerSecret;
-- (NSString *) consumerSecret;
+@property (nonatomic, readwrite, retain) NSString *consumerKey;
+@property (nonatomic, readwrite, retain) NSString *consumerSecret;
 
 @end

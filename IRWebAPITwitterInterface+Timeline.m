@@ -24,8 +24,8 @@
 	
 	[self.engine fireAPIRequestNamed:methodNameForType(inTimelineType) withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		(inSinceIdentifier == 0) ? (id)[NSNull null] : (id)[NSNumber numberWithInt:inSinceIdentifier], @"since_id",
-		(inBeforeIdentifier == 0) ? (id)[NSNull null] : (id)[NSNumber numberWithInt:inBeforeIdentifier], @"max_id",
+		IRWebAPIKitNumberOrNull(inSinceIdentifier), @"since_id",
+		IRWebAPIKitNumberOrNull(inSinceIdentifier), @"max_id",
 		[NSNumber numberWithInt:200], @"count",
 	
 	nil] options:nil validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
@@ -56,6 +56,31 @@
 		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
 	
 	}];
+
+}
+
+
+
+
+
+- (void) retrieveMentionsSince:(IRWebAPITwitterStatusIdentifier)inSinceIdentifier before:(IRWebAPITwitterStatusIdentifier)inBeforeIdentifier successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	[self.engine fireAPIRequestNamed:@"statuses/mentions" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+		IRWebAPIKitNumberOrNull(inSinceIdentifier), @"since_id",
+		IRWebAPIKitNumberOrNull(inBeforeIdentifier), @"max_id",
+		[NSNumber numberWithInt:200], @"count",
+		[NSNumber numberWithBool:YES], @"include_rts",
+		[NSNumber numberWithBool:YES], @"include_entities",
+	
+	nil] options:nil validator:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	
+		NSLog(@"retrieveMentionsSince.  Retrieved response %@", inResponseOrNil);
+		
+		if (inSuccessCallback)
+		inSuccessCallback([inResponseOrNil valueForKeyPath:@"response"], inNotifyDelegate, inShouldRetry);
+	 
+	} failureHandler:nil];
 
 }
 
