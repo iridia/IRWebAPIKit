@@ -215,8 +215,6 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			
 			[self setInternalSuccessHandler: ^ (NSData *inResponse) {
 			
-				NSLog(@"Success!");
-					
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
 				NSDictionary *parsedResponse = [self parsedResponseForData:inResponse withContext:finalizedContext];
