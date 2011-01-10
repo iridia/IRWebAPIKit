@@ -11,7 +11,7 @@
 
 @implementation IRWebAPITwitterInterface (Timeline)
 
-- (void) retrieveTimeline:(IRWebAPITwitterTimelineType)inTimelineType since:(IRWebAPITwitterStatusIdentifier)inSinceIdentifier before:(IRWebAPITwitterStatusIdentifier)inBeforeIdentifier successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+- (void) retrieveStatusesFromTimeline:(IRWebAPITwitterTimelineType)inTimelineType withRange:(IRWebAPITwitterStatusIDRange)inRange successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	NSString * (^methodNameForType) (IRWebAPITwitterTimelineType) = ^ NSString * (IRWebAPITwitterTimelineType inType) {
 	
@@ -24,9 +24,9 @@
 	
 	[self.engine fireAPIRequestNamed:methodNameForType(inTimelineType) withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		IRWebAPIKitNumberOrNull(inSinceIdentifier), @"since_id",
-		IRWebAPIKitNumberOrNull(inSinceIdentifier), @"max_id",
-		[NSNumber numberWithInt:200], @"count",
+		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
+		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
+		[NSNumber numberWithInt:10], @"count",
 	
 	nil] options:nil validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
 	
@@ -48,7 +48,7 @@
 	} successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 		
 		if (inSuccessCallback)
-		inSuccessCallback([inResponseOrNil valueForKeyPath:@"response"], inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
 	 
 	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 		
@@ -63,12 +63,12 @@
 
 
 
-- (void) retrieveMentionsSince:(IRWebAPITwitterStatusIdentifier)inSinceIdentifier before:(IRWebAPITwitterStatusIdentifier)inBeforeIdentifier successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+- (void) retrieveMentionsWithRange:(IRWebAPITwitterStatusIDRange)inRange successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	[self.engine fireAPIRequestNamed:@"statuses/mentions.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		IRWebAPIKitNumberOrNull(inSinceIdentifier), @"since_id",
-		IRWebAPIKitNumberOrNull(inBeforeIdentifier), @"max_id",
+		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
+		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
 		[NSNumber numberWithInt:200], @"count",
 		[NSNumber numberWithBool:YES], @"include_rts",
 		[NSNumber numberWithBool:YES], @"include_entities",

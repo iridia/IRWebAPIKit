@@ -11,24 +11,26 @@
 #ifndef __IRWebAPITwitterInterface__
 #define __IRWebAPITwitterInterface__
 
-typedef NSUInteger IRWebAPITwitterStatusIdentifier;
+
+typedef uint64_t IRWebAPITwitterStatusID;
 #define IRWebAPITwitterStatusIdentifierNotApplicable 0;
 
-
-typedef struct IRWebAPITwitterStatusIdentifierRange {
+typedef struct IRWebAPITwitterStatusIDRange {
 	
-	IRWebAPITwitterStatusIdentifier begin;
-	IRWebAPITwitterStatusIdentifier end;
+	IRWebAPITwitterStatusID since;
+	IRWebAPITwitterStatusID before;
 	
-} IRWebAPITwitterStatusIdentifierRange;
+} IRWebAPITwitterStatusIDRange;
+
+#define IRWebAPITwitterStatusIDRangeNull ((IRWebAPITwitterStatusIDRange){0, 0})
 
 
-static inline IRWebAPITwitterStatusIdentifierRange IRWebAPITwitterStatusIdentifierRangeMake (IRWebAPITwitterStatusIdentifier begin, IRWebAPITwitterStatusIdentifier end) {
+static inline IRWebAPITwitterStatusIDRange IRWebAPITwitterStatusIDRangeMake (IRWebAPITwitterStatusID begin, IRWebAPITwitterStatusID end) {
 	
-	IRWebAPITwitterStatusIdentifierRange returnedRange;
+	IRWebAPITwitterStatusIDRange returnedRange;
 
-	returnedRange.begin = begin;
-	returnedRange.end = end;
+	returnedRange.since = begin;
+	returnedRange.before = end;
 	
 	return returnedRange;
 	
