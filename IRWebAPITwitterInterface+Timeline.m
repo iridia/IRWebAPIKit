@@ -26,7 +26,7 @@
 	
 		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
 		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
-		[NSNumber numberWithInt:10], @"count",
+		[NSNumber numberWithInt:200], @"count",
 	
 	nil] options:nil validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
 	
