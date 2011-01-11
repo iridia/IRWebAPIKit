@@ -145,10 +145,10 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	NSLog(@"Warning: unparsable response.  Resetting returned response to an empty dictionary.");
 	NSLog(@"Context: %@", inContext);
 
-	IRWebAPIResponseParser defaultParser = IRWebAPIResponseDefaultParserMake();
-
-	NSDictionary *debugOutput = defaultParser(inData);
-	NSLog(@"Default parser returns %@.", debugOutput ? (id<NSObject>)debugOutput : (id<NSObject>)@"- null -");
+//	This can potentially clog up the wirings
+//	IRWebAPIResponseParser defaultParser = IRWebAPIResponseDefaultParserMake();
+//	NSDictionary *debugOutput = defaultParser(inData);
+//	NSLog(@"Default parser returns %@.", debugOutput ? (id<NSObject>)debugOutput : (id<NSObject>)@"- null -");
 
 	return [NSDictionary dictionary];
 
