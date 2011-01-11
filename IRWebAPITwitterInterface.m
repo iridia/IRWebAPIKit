@@ -6,8 +6,9 @@
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
-#import "IRWebAPITwitterInterface.h"
+#import <UIKit/UIKit.h>
 
+#import "IRWebAPITwitterInterface.h"
 
 @implementation IRWebAPITwitterInterface
 
@@ -91,7 +92,12 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	
+		id returnedError = [inResponseOrNil objectForKey:@"error"];
+		return (BOOL)(returnedError == nil);
+	
+	} successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 
 		NSLog(@"statuses/update response: %@", inResponseOrNil);
 		
