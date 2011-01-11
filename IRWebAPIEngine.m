@@ -21,11 +21,7 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 
 
-@interface IRWebAPIEngine () {
-	
-	dispatch_queue_t sharedDispatchQueue;
-
-}
+@interface IRWebAPIEngine ()
 
 @property (nonatomic, readwrite, retain) IRWebAPIContext *context;
 
@@ -36,6 +32,8 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 @property (nonatomic, readwrite, retain) NSMutableArray *globalResponsePreTransformers;
 @property (nonatomic, readwrite, retain) NSMutableDictionary *responseTransformers;
 @property (nonatomic, readwrite, retain) NSMutableArray *globalResponsePostTransformers;
+
+@property (nonatomic, readwrite, assign) dispatch_queue_t sharedDispatchQueue;
 
 
 - (void) setInternalDataStore:(NSMutableData *)inDataStore forConnection:(NSURLConnection *)inConnection;
@@ -78,16 +76,16 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	
 	context = [inContext retain];
 	
-	globalRequestPreTransformers = [[NSMutableArray array] retain];
-	requestTransformers = [[NSMutableDictionary dictionary] retain];
-	globalRequestPostTransformers = [[NSMutableArray array] retain];
+	self.globalRequestPreTransformers = [NSMutableArray array];
+	self.requestTransformers = [NSMutableDictionary dictionary];
+	self.globalRequestPostTransformers = [NSMutableArray array];
 
-	globalResponsePreTransformers = [[NSMutableArray array] retain];
-	responseTransformers = [[NSMutableDictionary dictionary] retain];
-	globalResponsePostTransformers = [[NSMutableArray array] retain];
+	self.globalResponsePreTransformers = [NSMutableArray array];
+	self.responseTransformers = [NSMutableDictionary dictionary];
+	self.globalResponsePostTransformers = [NSMutableArray array];
 	
-	sharedDispatchQueue = dispatch_queue_create("com.iridia.WebAPIEngine.queue.main", NULL);
-	
+	self.sharedDispatchQueue = dispatch_queue_create("com.iridia.WebAPIEngine.queue.main", NULL);
+
 	return self;
 
 }
@@ -111,7 +109,8 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	self.responseTransformers = nil;
 	self.globalRequestPostTransformers = nil;
 	
-	dispatch_release(sharedDispatchQueue);
+	dispatch_release(self.sharedDispatchQueue);
+	self.sharedDispatchQueue = nil;
 
 	[super dealloc];
 
@@ -156,25 +155,25 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler {
 
-	dispatch_async(dispatch_get_global_queue(0, 0), [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:nil validator:nil successHandler:inSuccessHandler failureHandler:inFailureHandler]);
+	dispatch_async(self.sharedDispatchQueue, [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:nil validator:nil successHandler:inSuccessHandler failureHandler:inFailureHandler]);
 	
 }
 
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil validator:(IRWebAPIResposeValidator)inValidator successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler {
 
-	dispatch_async(dispatch_get_global_queue(0, 0), [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:inValidator successHandler:inSuccessHandler failureHandler:inFailureHandler]);
+	dispatch_async(self.sharedDispatchQueue, [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:inValidator successHandler:inSuccessHandler failureHandler:inFailureHandler]);
 
 }
 
 - (void) fireAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler {
 
-	dispatch_async(dispatch_get_global_queue(0, 0), [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:nil successHandler:inSuccessHandler failureHandler:inFailureHandler]);
+	dispatch_async(self.sharedDispatchQueue, [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:nil successHandler:inSuccessHandler failureHandler:inFailureHandler]);
 	
 }
 
 - (void) enqueueAPIRequestNamed:(NSString *)inMethodName withArguments:(NSDictionary *)inArgumentsOrNil options:(NSDictionary *)inOptionsOrNil successHandler:(IRWebAPICallback)inSuccessHandler failureHandler:(IRWebAPICallback)inFailureHandler {
 
-	dispatch_async(sharedDispatchQueue, [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:nil successHandler:inSuccessHandler failureHandler:inFailureHandler]);
+	dispatch_async(self.sharedDispatchQueue, [self executionBlockForAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil validator:nil successHandler:inSuccessHandler failureHandler:inFailureHandler]);
 		
 }
 
@@ -276,7 +275,7 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) connection:(NSURLConnection *)inConnection didReceiveData:(NSData *)inData {
 
-	dispatch_async(dispatch_get_global_queue(0, 0), ^{
+	dispatch_async(self.sharedDispatchQueue, ^{
 
 		[[self internalDataStoreForConnection:inConnection] appendData:inData];
 	
@@ -286,7 +285,7 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)inConnection {
 
-	dispatch_async(dispatch_get_global_queue(0, 0), ^{
+	dispatch_async(self.sharedDispatchQueue, ^{
 
 		[self internalSuccessHandlerForConnection:inConnection]([self internalDataStoreForConnection:inConnection]);
 	
@@ -296,7 +295,7 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) connection:(NSURLConnection *)inConnection didFailWithError:(NSError *)error {
 
-	dispatch_async(dispatch_get_global_queue(0, 0), ^{
+	dispatch_async(self.sharedDispatchQueue, ^{
 	
 		[self internalFailureHandlerForConnection:inConnection]();
 	
