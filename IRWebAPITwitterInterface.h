@@ -13,7 +13,7 @@
 
 
 typedef uint64_t IRWebAPITwitterStatusID;
-#define IRWebAPITwitterStatusIdentifierNotApplicable 0;
+#define IRWebAPITwitterStatusIdentifierNotApplicable 0
 
 typedef struct IRWebAPITwitterStatusIDRange {
 	
