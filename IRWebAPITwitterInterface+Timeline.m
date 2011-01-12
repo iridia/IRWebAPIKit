@@ -74,11 +74,9 @@
 		[NSNumber numberWithBool:YES], @"include_entities",
 	
 	nil] options:nil validator:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
-	
-		NSLog(@"retrieveMentionsSince.  Retrieved response %@", inResponseOrNil);
-		
+			
 		if (inSuccessCallback)
-		inSuccessCallback([inResponseOrNil valueForKeyPath:@"response"], inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
 	 
 	} failureHandler:nil];
 
