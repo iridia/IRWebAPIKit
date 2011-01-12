@@ -23,6 +23,14 @@ typedef enum {
 
 } IRWebAPITwitterTimelineType;
 
+typedef enum {
+
+	IRWebAPITwitterRetweetByUser,		//	Retweets retweeted by current user
+	IRWebAPITwitterRetweetByFollowers,	//	Retweets retweeted by other people
+	IRWebAPITwitterRetweetOfUser		//	Retweets from other people, that are tweets by current user
+
+} IRWebAPITwitterRetweetType;
+
 #endif
 
 
@@ -34,5 +42,7 @@ typedef enum {
 - (void) retrieveStatusesFromTimeline:(IRWebAPITwitterTimelineType)inTimelineType withRange:(IRWebAPITwitterStatusIDRange)range successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
 
 - (void) retrieveMentionsWithRange:(IRWebAPITwitterStatusIDRange)inRange successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+
+- (void) retrieveRetweetsOfType:(IRWebAPITwitterRetweetType)inType withRange:(IRWebAPITwitterStatusIDRange)inRange successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
 
 @end
