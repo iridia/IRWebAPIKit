@@ -27,7 +27,7 @@
 - (id) initWithEngine:(IRWebAPIEngine *)inEngine;
 
 @property (nonatomic, assign, readonly) IRWebAPIEngine *engine;
-@property (nonatomic, assign, readonly)	IRWebAPICredentials *currentCredentials;
+@property (nonatomic, retain, readonly)	IRWebAPICredentials *currentCredentials;
 
 @end
 
@@ -49,7 +49,7 @@
 @property (nonatomic, copy, readwrite) IRWebAPITransformer globalRequestPostTransformerBlock;
 @property (nonatomic, copy, readwrite) IRWebAPITransformer globalResponsePreTransformerBlock;
 @property (nonatomic, copy, readwrite) IRWebAPITransformer globalResponsePostTransformerBlock;
-@property (nonatomic, assign, readwrite) IRWebAPICredentials *currentCredentials;
+@property (nonatomic, retain, readwrite) IRWebAPICredentials *currentCredentials;
 
 @end
 

@@ -21,7 +21,8 @@
 	self = [super init]; if (!self) return nil;
 	
 	engine = inEngine;
-	currentCredentials = nil;
+	
+	self.currentCredentials = nil;
 	
 	[self createTransformerBlocks];
 	
@@ -43,6 +44,8 @@
 	self.globalRequestPostTransformerBlock = nil;
 	self.globalResponsePreTransformerBlock = nil;
 	self.globalResponsePostTransformerBlock = nil;
+	
+	self.currentCredentials = nil;
 
 	[super dealloc];
 

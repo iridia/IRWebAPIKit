@@ -10,6 +10,13 @@
 #import "IRWebAPIXOAuthAuthenticator.h"
 
 
+@interface IRWebAPIXOAuthAuthenticator ()
+
+@property (nonatomic, retain, readwrite) IRWebAPICredentials *currentCredentials;
+
+@end
+
+
 @implementation IRWebAPIXOAuthAuthenticator
 
 @synthesize consumerKey, consumerSecret, retrievedToken, retrievedTokenSecret;
@@ -27,6 +34,17 @@
 	authorizeURL = nil;
 	
 	return self;
+
+}
+
+- (void) dealloc {
+
+	self.consumerKey = nil;
+	self.consumerSecret = nil;
+	self.retrievedToken = nil;
+	self.retrievedTokenSecret = nil;
+	
+	[super dealloc];
 
 }
 
