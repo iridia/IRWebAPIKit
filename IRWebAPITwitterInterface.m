@@ -25,6 +25,8 @@
 	self = [self initWithEngine:twitterEngine authenticator:twitterAuthenticator];
 
 	if (!self) return nil;
+	
+	self.defaultBatchSize = 200;
 
 	return self;
 

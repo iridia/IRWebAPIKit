@@ -26,7 +26,7 @@
 	
 		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
 		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
-		[NSNumber numberWithInt:200], @"count",
+		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 	
 	nil] options:nil validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
 	
@@ -69,7 +69,7 @@
 	
 		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
 		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
-		[NSNumber numberWithInt:200], @"count",
+		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_rts",
 		[NSNumber numberWithBool:YES], @"include_entities",
 	
