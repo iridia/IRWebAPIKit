@@ -43,6 +43,7 @@
 		FF896DD512A567FA00AE2AF3 /* IRWebAPITwitterInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */; };
 		FF896DD612A567FA00AE2AF3 /* IRWebAPITwitterInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */; };
 		FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h in Headers */ = {isa = PBXBuildFile; fileRef = FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h */; };
+		FF8A111912DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF8A111812DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m */; };
 		FFC41B9112B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h in Headers */ = {isa = PBXBuildFile; fileRef = FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */; };
 		FFC41B9212B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m in Sources */ = {isa = PBXBuildFile; fileRef = FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */; };
 /* End PBXBuildFile section */
@@ -103,6 +104,8 @@
 		FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPITwitterInterface.h; sourceTree = "<group>"; };
 		FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPITwitterInterface.m; sourceTree = "<group>"; };
 		FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterfaceXOAuthAuthenticating.h; sourceTree = "<group>"; };
+		FF8A111712DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIKitTestOAuthHelpers.h; sourceTree = "<group>"; };
+		FF8A111812DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIKitTestOAuthHelpers.m; sourceTree = "<group>"; };
 		FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPITwitterInterface+Geo.h"; sourceTree = "<group>"; };
 		FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPITwitterInterface+Geo.m"; sourceTree = "<group>"; };
 		FFE2607212D084CB001AF1AF /* IRWebAPIKitEntityDefinesGenerator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = IRWebAPIKitEntityDefinesGenerator.rb; sourceTree = "<group>"; };
@@ -190,6 +193,8 @@
 				FF45629212D057D6000239DC /* SenTestingKit.framework */,
 				FF45628C12D05769000239DC /* TestIRWebAPIKitStringHelpers.h */,
 				FF45628D12D05769000239DC /* TestIRWebAPIKitStringHelpers.m */,
+				FF8A111712DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.h */,
+				FF8A111812DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m */,
 			);
 			name = Test;
 			sourceTree = "<group>";
@@ -401,6 +406,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FF4562F512D0589B000239DC /* TestIRWebAPIKitStringHelpers.m in Sources */,
+				FF8A111912DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
