@@ -53,9 +53,9 @@
 	NSString * (^methodNameForType) (IRWebAPITwitterTimelineType) = ^ NSString * (IRWebAPITwitterTimelineType inType) {
 	
 		if (inType == IRWebAPITwitterTimelineHome)
-		return @"statuses/home_timeline.json";
+		return @"1/statuses/home_timeline.json";
 		
-		return @"statuses/user_timeline.json";
+		return @"1/statuses/user_timeline.json";
 	
 	}; 
 	
@@ -85,7 +85,7 @@
 
 - (void) retrieveMentionsWithRange:(IRWebAPITwitterStatusIDRange)inRange successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	[self.engine fireAPIRequestNamed:@"statuses/mentions.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	[self.engine fireAPIRequestNamed:@"1/statuses/mentions.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
 		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
 		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
@@ -117,9 +117,9 @@
 	
 		switch (inType) {
 		
-			case IRWebAPITwitterRetweetByUser: return @"statuses/retweeted_by_me.json";
-			case IRWebAPITwitterRetweetByFollowers: return @"statuses/retweeted_to_me.json";
-			case IRWebAPITwitterRetweetOfUser: return @"statuses/retweets_of_me.json";
+			case IRWebAPITwitterRetweetByUser: return @"1/statuses/retweeted_by_me.json";
+			case IRWebAPITwitterRetweetByFollowers: return @"1/statuses/retweeted_to_me.json";
+			case IRWebAPITwitterRetweetOfUser: return @"1/statuses/retweets_of_me.json";
 		
 		}
 		
@@ -161,10 +161,10 @@
 
 - (void) setStatus:(IRWebAPITwitterStatusID)inID asFavorited:(BOOL)inBecomesFavorited successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"favorites/%@/%llu.json", (inBecomesFavorited ? @"create" : @"destroy"), inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/favorites/%@/%llu.json", (inBecomesFavorited ? @"create" : @"destroy"), inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-//		[NSNumber numberWithUnsignedLongLong:inID], @"id",
-//		[NSNumber numberWithBool:YES], @"include_entities",
+		[NSNumber numberWithUnsignedLongLong:inID], @"id",
+		[NSNumber numberWithBool:YES], @"include_entities",
 	
 	nil] options:[NSDictionary dictionaryWithObjectsAndKeys:
 
@@ -190,7 +190,7 @@
 
 - (void) retweetStatus:(IRWebAPITwitterStatusID)inID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"statuses/retweet/%ull.json", inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/statuses/retweet/%ull.json", inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
 		[NSNumber numberWithUnsignedLongLong:inID], @"id",
 		[NSNumber numberWithBool:YES], @"include_entities",
