@@ -6,6 +6,24 @@
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
+
+
+
+
+#if 0
+
+	#define IRWebAPIKitLog( s, ... ) NSLog( @"<%s : (%d)> %@",__FUNCTION__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
+
+#else
+
+	#define IRWebAPIKitLog( s, ... ) 
+
+#endif
+
+
+
+
+
 #ifndef __IRWebAPITransformer__
 #define __IRWebAPITransformer__
 

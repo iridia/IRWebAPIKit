@@ -287,6 +287,8 @@ static inline NSString *IRWebAPIStringByDecodingXMLEntities (NSString *inString)
 
 static inline NSString *IRWebAPIKitHMACSHA1 (NSString *inConsumerSecret, NSString *inTokenSecret, NSString *inPayload) {
 
+	IRWebAPIKitLog(@"HMAC-SHA1 Encoding: %@, %@, %@", inConsumerSecret, inTokenSecret, inPayload);
+
 //	From Google’s GData Toolkit
 
 	NSString *encodedConsumerSecret = IRWebAPIKitRFC3986EncodedStringMake(inConsumerSecret);
@@ -311,7 +313,11 @@ static inline NSString *IRWebAPIKitHMACSHA1 (NSString *inConsumerSecret, NSStrin
 	 
 	);
 	
-	return IRWebAPIKitBase64StringFromNSDataMake(sigData);
+	NSString *returnedString = IRWebAPIKitBase64StringFromNSDataMake(sigData);
+	
+	IRWebAPIKitLog(@"HMAC-SHA1 Encoded: %@ => %@", sigData, returnedString);
+	
+	return returnedString;
   
 }
 
