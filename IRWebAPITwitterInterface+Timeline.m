@@ -155,4 +155,66 @@
 	
 }
 
+
+
+
+
+- (void) setStatus:(IRWebAPITwitterStatusID)inID asFavorited:(BOOL)inBecomesFavorited successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"favorites/%@/%llu.json", (inBecomesFavorited ? @"create" : @"destroy"), inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+//		[NSNumber numberWithUnsignedLongLong:inID], @"id",
+//		[NSNumber numberWithBool:YES], @"include_entities",
+	
+	nil] options:[NSDictionary dictionaryWithObjectsAndKeys:
+
+		@"POST", kIRWebAPIEngineRequestHTTPMethod,
+
+	nil] validator:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+			
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	 
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	
+	}];
+
+}
+
+
+
+
+
+- (void) retweetStatus:(IRWebAPITwitterStatusID)inID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"statuses/retweet/%ull.json", inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+		[NSNumber numberWithUnsignedLongLong:inID], @"id",
+		[NSNumber numberWithBool:YES], @"include_entities",
+	
+	nil] options:[NSDictionary dictionaryWithObjectsAndKeys:
+
+		@"POST", kIRWebAPIEngineRequestHTTPMethod,
+
+	nil] validator:[self defaultTimelineValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+			
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	 
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	
+	}];
+
+}
+
+
+
+
+
 @end

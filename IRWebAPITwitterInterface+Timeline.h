@@ -45,4 +45,8 @@ typedef enum {
 
 - (void) retrieveRetweetsOfType:(IRWebAPITwitterRetweetType)inType withRange:(IRWebAPITwitterStatusIDRange)inRange successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
 
+- (void) setStatus:(IRWebAPITwitterStatusID)inID asFavorited:(BOOL)inBecomesFavorited successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+
+- (void) retweetStatus:(IRWebAPITwitterStatusID)inID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+
 @end
