@@ -74,7 +74,6 @@
 		FF45628C12D05769000239DC /* TestIRWebAPIKitStringHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestIRWebAPIKitStringHelpers.h; sourceTree = "<group>"; };
 		FF45628D12D05769000239DC /* TestIRWebAPIKitStringHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestIRWebAPIKitStringHelpers.m; sourceTree = "<group>"; };
 		FF45629212D057D6000239DC /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		FF45633112D069F3000239DC /* IRWebAPIKitEntitiesHelper.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = IRWebAPIKitEntitiesHelper.rb; sourceTree = "<group>"; };
 		FF45635A12D06A46000239DC /* IRWebAPIKitEntityDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIKitEntityDefines.h; sourceTree = "<group>"; };
 		FF45635C12D06A50000239DC /* IRWebAPIKitEntityDefinesHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIKitEntityDefinesHeader.h; sourceTree = "<group>"; };
 		FF45637712D07653000239DC /* IRWebAPIKitEntityDefinesFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIKitEntityDefinesFooter.h; sourceTree = "<group>"; };
@@ -213,7 +212,6 @@
 				FF896CCF12A566BF00AE2AF3 /* CoreFoundation.framework */,
 				FF896CD112A566BF00AE2AF3 /* Foundation.framework */,
 				FF896CD312A566BF00AE2AF3 /* Security.framework */,
-				FF45633112D069F3000239DC /* IRWebAPIKitEntitiesHelper.rb */,
 			);
 			sourceTree = "<group>";
 		};
