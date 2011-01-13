@@ -101,11 +101,11 @@
 	
 	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 		
+		*inShouldRetry = NO;
+
 		if (failureHandler)
 		failureHandler(self, NO, inShouldRetry);
-		
-		*inShouldRetry = YES;
-	
+			
 	}];
 
 }
