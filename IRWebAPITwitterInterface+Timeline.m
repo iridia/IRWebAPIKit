@@ -12,6 +12,7 @@
 @interface IRWebAPITwitterInterface (TimelinePrivate)
 
 - (IRWebAPIResposeValidator) defaultTimelineValidator;
+- (IRWebAPIResposeValidator) defaultNoErrorValidator;
 
 @end
 
@@ -24,6 +25,9 @@
 	//	We might need something that is more concise here?
 	
 		id response = [inResponseOrNil valueForKeyPath:@"response"];
+		
+		if (!response)
+		return NO;
 	
 		if ([response isEqual:[NSNull null]])
 		return NO;
@@ -37,6 +41,40 @@
 		return YES;
 	
 	}) copy] autorelease];
+
+}
+
+- (IRWebAPIResposeValidator) defaultSingleTweetValidator {
+
+	return [[(^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	
+		if (![inResponseOrNil valueForKeyPath:@"text"])
+		return NO;
+		
+		return YES;
+	
+	}) copy] autorelease];
+
+}
+
+- (IRWebAPIResposeValidator) defaultNoErrorValidator {
+
+	return [[(^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	
+		if ([inResponseOrNil isEqual:[NSNull null]])
+		return NO;
+	
+		if ([inResponseOrNil valueForKeyPath:@"error"]) {
+		
+			NSLog(@"Fix Me: defaultNoErrorValidator: %@", [inResponseOrNil valueForKeyPath:@"error"]);
+			
+			return NO;
+		
+		}
+		
+		return YES;
+	
+	}) copy] autorelease];	
 
 }
 
@@ -170,7 +208,7 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator:[self defaultNoErrorValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 			
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
@@ -199,7 +237,7 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator:[self defaultTimelineValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator:[self defaultSingleTweetValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 			
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
