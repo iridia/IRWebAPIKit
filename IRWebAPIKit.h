@@ -6,6 +6,13 @@
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
+#ifndef __IRWebAPITransformer__
+#define __IRWebAPITransformer__
+
+
+
+
+
 #import <Foundation/Foundation.h>
 
 
@@ -127,6 +134,12 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 
 #import "IRWebAPITwitterInterface.h"
 #import "IRWebAPIGoogleReaderInterface.h"
+
+
+
+
+
+#endif
 
 
 
