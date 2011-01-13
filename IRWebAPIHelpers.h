@@ -373,8 +373,13 @@ static inline NSString *IRWebAPIRequestURLQueryParametersStringMake (NSDictionar
 static inline NSURL *IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NSDictionary *inQueryParametersOrNil) {
 
 	if (inQueryParametersOrNil == nil) return inBaseURL;
+	if ([inQueryParametersOrNil count] == 0) return inBaseURL;
 	
-	return [NSURL URLWithString:[[inBaseURL absoluteString] stringByAppendingFormat:@"?%@", IRWebAPIRequestURLQueryParametersStringMake(inQueryParametersOrNil, @"&")]];
+	
+	NSURL *returnedURL = [NSURL URLWithString:[[inBaseURL absoluteString] stringByAppendingFormat:@"?%@", IRWebAPIRequestURLQueryParametersStringMake(inQueryParametersOrNil, @"&")]];
+	
+	
+	return returnedURL;
 
 }
 
