@@ -35,6 +35,7 @@
 		if (![response isKindOfClass:[NSArray class]])
 		return NO;
 		
+		if ([(NSArray *)response count] > 0)
 		if ([[[(NSArray *)response objectAtIndex:0] valueForKeyPath:@"text"] isEqual:[NSNull null]])
 		return NO;
 		
