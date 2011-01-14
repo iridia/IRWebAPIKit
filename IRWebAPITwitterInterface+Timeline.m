@@ -102,6 +102,7 @@
 		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
 		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
+		[NSNumber numberWithBool:YES], @"include_entities",
 	
 	nil] options:nil validator:[self defaultTimelineValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 		
