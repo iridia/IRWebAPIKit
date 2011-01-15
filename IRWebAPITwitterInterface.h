@@ -47,7 +47,7 @@ static inline IRWebAPITwitterStatusIDRange IRWebAPITwitterStatusIDRangeMake (IRW
 
 @property (nonatomic, readwrite, assign) NSUInteger defaultBatchSize;
 
-- (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userinfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback;
+- (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userInfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback;
 
 @end
 
