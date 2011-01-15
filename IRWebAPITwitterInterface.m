@@ -84,11 +84,17 @@
 
 
 
-- (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userinfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPICallback)inSuccessCallback onFailure:(IRWebAPICallback)inFailureCallback {
+- (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userinfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	[self.engine fireAPIRequestNamed:@"1/statuses/update.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 
 		inContents, @"status",
+		[NSString stringWithFormat:@"%llu", [(NSNumber *)[inUserInfo objectForKey:@"replyingStatusIdentifier"] unsignedLongLongValue]], @"in_reply_to_status_id",
+		[inUserInfo objectForKey:@"latitude"], @"lat",
+		[inUserInfo objectForKey:@"longitude"], @"lng",
+		[inUserInfo objectForKey:@"placeIdentifier"], @"placeID",
+		[inUserInfo objectForKey:@"displaysCoordinates"], @"display_coordinates",
+		[NSNumber numberWithBool:YES], @"include_entities",
 
 	nil] options:[NSDictionary dictionaryWithObjectsAndKeys:
 
@@ -104,14 +110,14 @@
 		NSLog(@"statuses/update response: %@", inResponseOrNil);
 		
 		if (inSuccessCallback)
-		inSuccessCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
 
 	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 	
 		NSLog(@"Failed. %@", inResponseOrNil);
 		
 		if (inFailureCallback)
-		inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
 	
 	}];
 
