@@ -57,7 +57,7 @@ static inline NSString * IRWebAPIKitRFC3986EncodedStringMake (id<NSObject> inObj
 
 	CFStringRef leaveUnescaped = CFSTR("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._~");
 	CFStringRef forceEscaped =  CFSTR("%!$&'()*+,/:;=?@");
-
+	
 	CFStringRef escapedStr = NULL;
 
 	if (inString) {
@@ -67,6 +67,8 @@ static inline NSString * IRWebAPIKitRFC3986EncodedStringMake (id<NSObject> inObj
 		[(id)CFMakeCollectable(escapedStr) autorelease];
 
 	}
+	
+	IRWebAPIKitLog(@"IRWebAPIKitRFC3986EncodedStringMake %@ -> %@", inObject, (NSString *)escapedStr);
 
 	return (NSString *)escapedStr;
 	
