@@ -69,6 +69,9 @@
 		};
 		
 		BOOL removesQueryParameters = NO;
+		NSMutableDictionary *queryParams = [mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters];
+		
+		IRWebAPIKitLog(@"queryParams %@", queryParams);
 	
 		if (isRequestAuthenticated() && isPOST()) {
 		
@@ -82,8 +85,6 @@
 			NSString *POSTBody;
 			NSMutableArray *POSTBodyElements = [NSMutableArray array];
 			
-			NSMutableDictionary *queryParams = [mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters];
-
 			for (id key in queryParams)
 			[POSTBodyElements addObject:[NSString stringWithFormat:@"%@=%@", key, IRWebAPIKitRFC3986EncodedStringMake([queryParams objectForKey:key])]];
 						
@@ -100,8 +101,15 @@
 		
 		}
 		
-		NSMutableDictionary *signatureStringParameters = [[[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPQueryParameters] mutableCopy] autorelease];
-								
+		NSDictionary *unencodedQueryParameters = [mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPQueryParameters];		
+		NSMutableDictionary *signatureStringParameters = [NSMutableDictionary dictionary];
+
+		for (id aKey in unencodedQueryParameters)
+		[signatureStringParameters setObject:IRWebAPIKitRFC3986EncodedStringMake([unencodedQueryParameters objectForKey:aKey]) forKey:aKey];
+		
+
+	//	Add oAuth Parameters to signature string parameters
+		
 		NSMutableDictionary *oAuthParameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 		
 			self.consumerKey, @"oauth_consumer_key",
@@ -118,6 +126,9 @@
 		for (id key in oAuthParameters)
 		[signatureStringParameters setObject:[oAuthParameters objectForKey:key] forKey:key];
 
+		
+	//	Make signature string!
+		
 		NSString *baseSignatureString = IRWebAPIKitOAuthSignatureBaseStringMake(
 
 			[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPMethod],
@@ -129,12 +140,9 @@
 		[oAuthParameters setObject:IRWebAPIKitHMACSHA1(self.consumerSecret, self.retrievedTokenSecret, baseSignatureString) forKey:@"oauth_signature"];
 		
 		NSMutableArray *oAuthHeaderContents = [NSMutableArray array];
-		
-		for (id key in oAuthParameters) {
-		
-			[oAuthHeaderContents addObject:[NSString stringWithFormat:@"%@=\"%@\"", key, IRWebAPIKitRFC3986EncodedStringMake([oAuthParameters objectForKey:key])]];
-		
-		}
+				
+		for (id key in oAuthParameters)
+		[oAuthHeaderContents addObject:[NSString stringWithFormat:@"%@=\"%@\"", key, IRWebAPIKitRFC3986EncodedStringMake([oAuthParameters objectForKey:key])]];
 		
 		[(NSMutableDictionary *)[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields] setObject:[NSString stringWithFormat:@"OAuth %@", [oAuthHeaderContents componentsJoinedByString:@", "]] forKey:@"Authorization"];
 		
