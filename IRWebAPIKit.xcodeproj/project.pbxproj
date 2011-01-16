@@ -17,7 +17,6 @@
 		FF25FCCA12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FCC812996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h */; };
 		FF25FCCB12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FCC912996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m */; };
 		FF25FD7E129971EC00975BE3 /* IRWebAPIHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FD7D129971EC00975BE3 /* IRWebAPIHelpers.h */; };
-		FF45628E12D05769000239DC /* TestIRWebAPIKitStringHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45628C12D05769000239DC /* TestIRWebAPIKitStringHelpers.h */; };
 		FF45629312D057D6000239DC /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF45629212D057D6000239DC /* SenTestingKit.framework */; };
 		FF45629712D057F1000239DC /* libIRWebAPIKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF7408241296A8D200571D46 /* libIRWebAPIKit.a */; };
 		FF4562F512D0589B000239DC /* TestIRWebAPIKitStringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF45628D12D05769000239DC /* TestIRWebAPIKitStringHelpers.m */; };
@@ -43,11 +42,21 @@
 		FF896DD512A567FA00AE2AF3 /* IRWebAPITwitterInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */; };
 		FF896DD612A567FA00AE2AF3 /* IRWebAPITwitterInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */; };
 		FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h in Headers */ = {isa = PBXBuildFile; fileRef = FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h */; };
-		FF8A111912DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF8A111812DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m */; };
 		FFC41B9112B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h in Headers */ = {isa = PBXBuildFile; fileRef = FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */; };
 		FFC41B9212B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m in Sources */ = {isa = PBXBuildFile; fileRef = FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */; };
-		FFF90C9612E3768C00464897 /* IRWebAPITwitterInterface+Lists.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */; };
-		FFF90D0B12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90D0A12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m */; };
+		FFF90E1C12E3805D00464897 /* IRWebAPITwitterInterface+Lists.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */; };
+		FFF90E1D12E3805D00464897 /* IRWebAPITwitterInterface+Validators.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90D0A12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m */; };
+		FFF90E1E12E3807700464897 /* IRWebAPITwitterInterface+Validators.h in Headers */ = {isa = PBXBuildFile; fileRef = FFF90D0912E37D0400464897 /* IRWebAPITwitterInterface+Validators.h */; };
+		FFF90E1F12E3807700464897 /* IRWebAPITwitterInterface+Validators.m in Headers */ = {isa = PBXBuildFile; fileRef = FFF90D0A12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m */; };
+		FFF90E2012E3807700464897 /* IRWebAPITwitterInterface.m in Headers */ = {isa = PBXBuildFile; fileRef = FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */; };
+		FFF90E2112E3807700464897 /* IRWebAPITwitterInterface+Timeline.m in Headers */ = {isa = PBXBuildFile; fileRef = FF5147BD12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m */; };
+		FFF90E2212E3807700464897 /* IRWebAPITwitterInterface+Lists.h in Headers */ = {isa = PBXBuildFile; fileRef = FFF90C9412E3768C00464897 /* IRWebAPITwitterInterface+Lists.h */; };
+		FFF90E2312E3807700464897 /* IRWebAPITwitterInterface+Lists.m in Headers */ = {isa = PBXBuildFile; fileRef = FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */; };
+		FFF90E2412E3807700464897 /* IRWebAPITwitterInterface+Geo.m in Headers */ = {isa = PBXBuildFile; fileRef = FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */; };
+		FFF90E2512E3807700464897 /* IRWebAPIGoogleReaderInterface.m in Headers */ = {isa = PBXBuildFile; fileRef = FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */; };
+		FFF90E2812E3808200464897 /* IRWebAPIKitTestOAuthHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF8A111812DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m */; };
+		FFF90E2B12E3808F00464897 /* TestIRWebAPIKitStringHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45628C12D05769000239DC /* TestIRWebAPIKitStringHelpers.h */; };
+		FFF90E2C12E3808F00464897 /* IRWebAPIKitTestOAuthHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF8A111712DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -303,17 +312,33 @@
 				FF25FCCA12996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h in Headers */,
 				FF25FD7E129971EC00975BE3 /* IRWebAPIHelpers.h in Headers */,
 				FF896A6B12A5666D00AE2AF3 /* IRWebAPIInterface.h in Headers */,
-				FF896DD512A567FA00AE2AF3 /* IRWebAPITwitterInterface.h in Headers */,
 				FF8974E212A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h in Headers */,
-				FF48661612A6329900B75591 /* IRWebAPIGoogleReaderInterface.h in Headers */,
 				FF47A29B12A6486900AF729F /* IRWebAPIInterfaceAuthenticating.h in Headers */,
-				FFC41B9112B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h in Headers */,
 				FF0E874112B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h in Headers */,
-				FF5147BE12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h in Headers */,
-				FF45628E12D05769000239DC /* TestIRWebAPIKitStringHelpers.h in Headers */,
 				FF45635B12D06A46000239DC /* IRWebAPIKitEntityDefines.h in Headers */,
 				FF45635D12D06A50000239DC /* IRWebAPIKitEntityDefinesHeader.h in Headers */,
 				FF45637812D07653000239DC /* IRWebAPIKitEntityDefinesFooter.h in Headers */,
+				FF896DD512A567FA00AE2AF3 /* IRWebAPITwitterInterface.h in Headers */,
+				FFF90E1E12E3807700464897 /* IRWebAPITwitterInterface+Validators.h in Headers */,
+				FFF90E1F12E3807700464897 /* IRWebAPITwitterInterface+Validators.m in Headers */,
+				FFF90E2012E3807700464897 /* IRWebAPITwitterInterface.m in Headers */,
+				FF5147BE12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h in Headers */,
+				FFF90E2112E3807700464897 /* IRWebAPITwitterInterface+Timeline.m in Headers */,
+				FFF90E2212E3807700464897 /* IRWebAPITwitterInterface+Lists.h in Headers */,
+				FFF90E2312E3807700464897 /* IRWebAPITwitterInterface+Lists.m in Headers */,
+				FFC41B9112B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h in Headers */,
+				FFF90E2412E3807700464897 /* IRWebAPITwitterInterface+Geo.m in Headers */,
+				FF48661612A6329900B75591 /* IRWebAPIGoogleReaderInterface.h in Headers */,
+				FFF90E2512E3807700464897 /* IRWebAPIGoogleReaderInterface.m in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FFF90E3712E380A700464897 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFF90E2B12E3808F00464897 /* TestIRWebAPIKitStringHelpers.h in Headers */,
+				FFF90E2C12E3808F00464897 /* IRWebAPIKitTestOAuthHelpers.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,7 +349,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FF45627C12D05709000239DC /* Build configuration list for PBXNativeTarget "IRWebAPIKitTest" */;
 			buildPhases = (
-				FF45627312D05708000239DC /* Resources */,
+				FFF90E3712E380A700464897 /* Headers */,
 				FF45627412D05708000239DC /* Sources */,
 				FF45627512D05708000239DC /* Frameworks */,
 				FF45627612D05708000239DC /* ShellScript */,
@@ -382,16 +407,6 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		FF45627312D05708000239DC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
 /* Begin PBXShellScriptBuildPhase section */
 		FF45627612D05708000239DC /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -413,10 +428,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FFF90E2812E3808200464897 /* IRWebAPIKitTestOAuthHelpers.m in Sources */,
 				FF4562F512D0589B000239DC /* TestIRWebAPIKitStringHelpers.m in Sources */,
-				FF8A111912DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m in Sources */,
-				FFF90C9612E3768C00464897 /* IRWebAPITwitterInterface+Lists.m in Sources */,
-				FFF90D0B12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,6 +448,8 @@
 				FF48661712A6329900B75591 /* IRWebAPIGoogleReaderInterface.m in Sources */,
 				FFC41B9212B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m in Sources */,
 				FF5147BF12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m in Sources */,
+				FFF90E1C12E3805D00464897 /* IRWebAPITwitterInterface+Lists.m in Sources */,
+				FFF90E1D12E3805D00464897 /* IRWebAPITwitterInterface+Validators.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -526,6 +541,8 @@
 					"-Xclang",
 					"-fobjc-nonfragile-abi2",
 				);
+				OTHER_LDFLAGS = "";
+				PREBINDING = YES;
 			};
 			name = Debug;
 		};
@@ -539,6 +556,8 @@
 					"-Xclang",
 					"-fobjc-nonfragile-abi2",
 				);
+				OTHER_LDFLAGS = "";
+				PREBINDING = YES;
 			};
 			name = Release;
 		};
