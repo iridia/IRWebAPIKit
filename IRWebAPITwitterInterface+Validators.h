@@ -14,4 +14,6 @@
 - (IRWebAPIResposeValidator) defaultSingleTweetValidator;
 - (IRWebAPIResposeValidator) defaultNoErrorValidator;
 
+- (IRWebAPIResposeValidator) defaultListsValidator;
+
 @end
