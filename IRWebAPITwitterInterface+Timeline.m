@@ -230,7 +230,7 @@
 
 - (void) retweetStatus:(IRWebAPITwitterStatusID)inID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/statuses/retweet/%ull.json", inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/statuses/retweet/%llu.json", inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
 		[NSNumber numberWithUnsignedLongLong:inID], @"id",
 		[NSNumber numberWithBool:YES], @"include_entities",
