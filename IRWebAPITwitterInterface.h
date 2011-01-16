@@ -36,6 +36,8 @@ static inline IRWebAPITwitterStatusIDRange IRWebAPITwitterStatusIDRangeMake (IRW
 	
 }
 
+typedef uint64_t IRWebAPITwitterUserID;
+typedef uint64_t IRWebAPITwitterListID;
 
 #endif
 
@@ -55,8 +57,11 @@ static inline IRWebAPITwitterStatusIDRange IRWebAPITwitterStatusIDRangeMake (IRW
 
 
 
+#import "IRWebAPITwitterInterface+Validators.h"
+
 #import "IRWebAPITwitterInterface+Timeline.h"
 #import "IRWebAPITwitterInterface+Geo.h"
+#import "IRWebAPITwitterInterface+Lists.h"
 
 
 
