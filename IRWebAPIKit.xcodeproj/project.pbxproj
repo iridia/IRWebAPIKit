@@ -28,6 +28,8 @@
 		FF48661712A6329900B75591 /* IRWebAPIGoogleReaderInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */; };
 		FF5147BE12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h in Headers */ = {isa = PBXBuildFile; fileRef = FF5147BC12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h */; };
 		FF5147BF12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m in Sources */ = {isa = PBXBuildFile; fileRef = FF5147BD12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m */; };
+		FF609D1F12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.h in Headers */ = {isa = PBXBuildFile; fileRef = FF609D1D12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.h */; };
+		FF609D2012E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = FF609D1E12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.m */; };
 		FF74082B1296A8E000571D46 /* IRWebAPIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408291296A8E000571D46 /* IRWebAPIKit.h */; };
 		FF7408471296A94900571D46 /* IRWebAPIEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408451296A94900571D46 /* IRWebAPIEngine.h */; };
 		FF7408481296A94900571D46 /* IRWebAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408461296A94900571D46 /* IRWebAPIEngine.m */; };
@@ -93,6 +95,8 @@
 		FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIGoogleReaderInterface.m; sourceTree = "<group>"; };
 		FF5147BC12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPITwitterInterface+Timeline.h"; sourceTree = "<group>"; };
 		FF5147BD12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPITwitterInterface+Timeline.m"; sourceTree = "<group>"; };
+		FF609D1D12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPITwitterInterface+DirectMessages.h"; sourceTree = "<group>"; };
+		FF609D1E12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPITwitterInterface+DirectMessages.m"; sourceTree = "<group>"; };
 		FF74081A1296A89500571D46 /* IRSiteReachability.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRSiteReachability.j; sourceTree = "<group>"; };
 		FF74081B1296A89500571D46 /* IRWebAPIContext.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIContext.j; sourceTree = "<group>"; };
 		FF74081C1296A89500571D46 /* IRWebAPIEngine.j */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IRWebAPIEngine.j; sourceTree = "<group>"; };
@@ -269,11 +273,13 @@
 			isa = PBXGroup;
 			children = (
 				FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */,
+				FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */,
 				FFF90D0912E37D0400464897 /* IRWebAPITwitterInterface+Validators.h */,
 				FFF90D0A12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m */,
-				FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */,
 				FF5147BC12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h */,
 				FF5147BD12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m */,
+				FF609D1D12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.h */,
+				FF609D1E12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.m */,
 				FFF90C9412E3768C00464897 /* IRWebAPITwitterInterface+Lists.h */,
 				FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */,
 				FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */,
@@ -330,6 +336,7 @@
 				FFF90E2412E3807700464897 /* IRWebAPITwitterInterface+Geo.m in Headers */,
 				FF48661612A6329900B75591 /* IRWebAPIGoogleReaderInterface.h in Headers */,
 				FFF90E2512E3807700464897 /* IRWebAPIGoogleReaderInterface.m in Headers */,
+				FF609D1F12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +457,7 @@
 				FF5147BF12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m in Sources */,
 				FFF90E1C12E3805D00464897 /* IRWebAPITwitterInterface+Lists.m in Sources */,
 				FFF90E1D12E3805D00464897 /* IRWebAPITwitterInterface+Validators.m in Sources */,
+				FF609D2012E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

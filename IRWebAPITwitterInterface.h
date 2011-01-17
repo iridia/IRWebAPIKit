@@ -38,6 +38,20 @@ static inline IRWebAPITwitterStatusIDRange IRWebAPITwitterStatusIDRangeMake (IRW
 
 typedef uint64_t IRWebAPITwitterUserID;
 typedef uint64_t IRWebAPITwitterListID;
+typedef uint64_t IRWebAPITwitterDirectMessageID;
+
+typedef IRWebAPITwitterStatusIDRange IRWebAPITwitterDirectMessageIDRange;
+
+static inline IRWebAPITwitterDirectMessageIDRange IRWebAPITwitterDirectMessageIDRangeMake (IRWebAPITwitterDirectMessageID begin, IRWebAPITwitterDirectMessageID end) {
+
+	IRWebAPITwitterDirectMessageIDRange returnedRange;
+
+	returnedRange.since = begin;
+	returnedRange.before = end;
+	
+	return returnedRange;
+	
+}
 
 #endif
 
@@ -62,6 +76,7 @@ typedef uint64_t IRWebAPITwitterListID;
 #import "IRWebAPITwitterInterface+Timeline.h"
 #import "IRWebAPITwitterInterface+Geo.h"
 #import "IRWebAPITwitterInterface+Lists.h"
+#import "IRWebAPITwitterInterface+DirectMessages.h"
 
 
 
