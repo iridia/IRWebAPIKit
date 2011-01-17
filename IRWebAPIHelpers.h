@@ -68,8 +68,6 @@ static inline NSString * IRWebAPIKitRFC3986EncodedStringMake (id<NSObject> inObj
 
 	}
 	
-	IRWebAPIKitLog(@"IRWebAPIKitRFC3986EncodedStringMake %@ -> %@", inObject, (NSString *)escapedStr);
-
 	return (NSString *)escapedStr;
 	
 }
@@ -241,7 +239,8 @@ static inline NSString *IRWebAPIStringByDecodingXMLEntities (NSString *inString)
 
 		NSString *unknownEntity = @"";
 		[scanner scanUpToCharactersFromSet:boundaryCharacterSet intoString:&unknownEntity];
-	//	NSLog(@"Expected numeric character entity but got &#%@%@;", xForHex, unknownEntity);
+		
+		IRWebAPIKitLog(@"Expected numeric character entity but got &#%@%@;", xForHex, unknownEntity);
 	
 		return (NSString *)[NSString stringWithFormat:@"&#%@%@", xForHex, unknownEntity];
 	
@@ -289,8 +288,6 @@ static inline NSString *IRWebAPIStringByDecodingXMLEntities (NSString *inString)
 
 static inline NSString *IRWebAPIKitHMACSHA1 (NSString *inConsumerSecret, NSString *inTokenSecret, NSString *inPayload) {
 
-	IRWebAPIKitLog(@"HMAC-SHA1 Encoding: %@, %@, %@", inConsumerSecret, inTokenSecret, inPayload);
-
 //	From Google’s GData Toolkit
 
 	NSString *encodedConsumerSecret = IRWebAPIKitRFC3986EncodedStringMake(inConsumerSecret);
@@ -315,11 +312,7 @@ static inline NSString *IRWebAPIKitHMACSHA1 (NSString *inConsumerSecret, NSStrin
 	 
 	);
 	
-	NSString *returnedString = IRWebAPIKitBase64StringFromNSDataMake(sigData);
-	
-	IRWebAPIKitLog(@"HMAC-SHA1 Encoded: %@ => %@", sigData, returnedString);
-	
-	return returnedString;
+	return IRWebAPIKitBase64StringFromNSDataMake(sigData);
   
 }
 
