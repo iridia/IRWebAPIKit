@@ -13,9 +13,12 @@
 
 
 
-static NSString *kIRWebAPIEngineAssociatedDataStore = @"kIRWebAPIEngineAssociatedDataStore";
-static NSString *kIRWebAPIEngineAssociatedSuccessHandler = @"kIRWebAPIEngineAssociatedSuccessHandler";
-static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAssociatedFailureHandler";
+NSString * const kIRWebAPIEngineResponseDictionaryIncomingData = @"kIRWebAPIEngineResponseDictionaryIncomingData";
+NSString * const kIRWebAPIEngineResponseDictionaryOutgoingContext = @"kIRWebAPIEngineResponseDictionaryOutgoingContext";
+
+NSString * const kIRWebAPIEngineAssociatedDataStore = @"kIRWebAPIEngineAssociatedDataStore";
+NSString * const kIRWebAPIEngineAssociatedSuccessHandler = @"kIRWebAPIEngineAssociatedSuccessHandler";
+NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAssociatedFailureHandler";
 
 
 
@@ -145,7 +148,12 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	
 	[self handleUnparsableResponseForData:inData context:inContext];
 
-	return [NSDictionary dictionary];
+	return [NSDictionary dictionaryWithObjectsAndKeys:
+	
+		inData, kIRWebAPIEngineResponseDictionaryIncomingData,
+		inContext, kIRWebAPIEngineResponseDictionaryOutgoingContext,
+	
+	nil];
 
 }
 

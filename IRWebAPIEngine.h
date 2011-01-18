@@ -13,6 +13,13 @@
 
 
 
+extern NSString * const kIRWebAPIEngineResponseDictionaryIncomingData;
+extern NSString * const kIRWebAPIEngineResponseDictionaryOutgoingContext;
+
+
+
+
+
 @interface IRWebAPIEngine : NSObject
 
 @property (nonatomic, readwrite, copy) IRWebAPIResponseParser parser;
