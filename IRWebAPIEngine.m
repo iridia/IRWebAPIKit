@@ -55,6 +55,8 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 - (NSURLRequest *) requestWithContext:(NSDictionary *)inContext;
 
 - (NSDictionary *) parsedResponseForData:(NSData *)inData withContext:(NSDictionary *)inContext;
+- (void) handleUnparsableResponseForData:(NSData *)inData context:(NSDictionary *)inContext;
+
 - (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse forMethodNamed:(NSString *)inMethodName;
 
 - (void) cleanUpForConnection:(NSURLConnection *)inConnection;
@@ -140,16 +142,22 @@ static NSString *kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	
 	if (parsedResponse)
 	return parsedResponse;
+	
+	[self handleUnparsableResponseForData:inData context:inContext];
 
-	NSLog(@"Warning: unparsable response.  Resetting returned response to an empty dictionary.");
+	return [NSDictionary dictionary];
+
+}
+
+- (void) handleUnparsableResponseForData:(NSData *)inData context:(NSDictionary *)inContext {
+
+	NSLog(@"%@ %s Warning: unparsable response.  Resetting returned response to an empty dictionary.", self, __PRETTY_FUNCTION__);
 	NSLog(@"Context: %@", inContext);
 
 //	This can potentially clog up the wirings
 //	IRWebAPIResponseParser defaultParser = IRWebAPIResponseDefaultParserMake();
 //	NSDictionary *debugOutput = defaultParser(inData);
 //	NSLog(@"Default parser returns %@.", debugOutput ? (id<NSObject>)debugOutput : (id<NSObject>)@"- null -");
-
-	return [NSDictionary dictionary];
 
 }
 
