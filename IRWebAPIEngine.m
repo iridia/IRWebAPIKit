@@ -327,6 +327,8 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) connection:(NSURLConnection *)inConnection didFailWithError:(NSError *)error {
 
+	NSLog(@"Connection did fail with error %@", error);
+
 	dispatch_async(self.sharedDispatchQueue, ^{
 	
 		[self internalFailureHandlerForConnection:inConnection]();

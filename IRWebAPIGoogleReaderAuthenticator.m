@@ -100,6 +100,8 @@
 		successHandler(self, YES, inShouldRetry);
 	
 	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	
+		NSLog(@"Authentication Failure: %@", inResponseOrNil);
 		
 		*inShouldRetry = NO;
 
