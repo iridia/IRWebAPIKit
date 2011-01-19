@@ -11,8 +11,6 @@
 
 @implementation IRWebAPICredentials
 
-@synthesize identifier, identifierPlaceholder, identifierLabelText, qualifier, qualifierPlaceholder, qualifierLabelText, displayName, notes, userInfo, authenticated;
-
 - (id) init {
 
 	self = [super init]; if (!self) return nil;
@@ -25,7 +23,7 @@
 	self.qualifierLabelText = nil;
 	self.displayName = nil;
 	self.notes = nil;
-	self.userInfo = [[NSMutableDictionary dictionary] retain];
+	self.userInfo = [NSMutableDictionary dictionary];
 	self.authenticated = NO;
 	
 	return self;
@@ -45,17 +43,17 @@
 
 - (void) dealloc {
 
-	[identifier release];
-	[identifierPlaceholder release];
-	[identifierLabelText release];
+	self.identifier = nil;
+	self.identifierPlaceholder = nil;
+	self.identifierLabelText = nil;
 	
-	[qualifier release];
-	[qualifierPlaceholder release];
-	[qualifierLabelText release];
+	self.qualifier = nil;
+	self.qualifierPlaceholder = nil;
+	self.qualifierLabelText = nil;
 	
-	[displayName release];
-	[notes release];
-	[userInfo release];
+	self.displayName = nil;
+	self.notes = nil;
+	self.userInfo = nil;
 	
 	[super dealloc];
 
