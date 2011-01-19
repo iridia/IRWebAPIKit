@@ -43,4 +43,11 @@ typedef enum {
 
 - (void) deleteList:(IRWebAPITwitterListID)inListID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
 
+
+- (void) retrieveMembersOfList:(IRWebAPITwitterListID)inListID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+
+- (void) removeMember:(IRWebAPITwitterUserID)inUserID fromList:(IRWebAPITwitterListID)inListID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+
+- (void) addMember:(IRWebAPITwitterUserID)inUserID toList:(IRWebAPITwitterListID)inListID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+
 @end

@@ -13,7 +13,7 @@
 
 - (void) retrieveListsOfType:(IRWebAPITwitterListsType)inListType successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.  Calling failure handler.", __PRETTY_FUNCTION__);
+	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
 		
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/lists%@.json", self.authenticator.currentCredentials.identifier, ((^{
 	
@@ -49,7 +49,7 @@
 
 - (void) retrieveStatusesFromList:(IRWebAPITwitterListID)inListID withRange:(IRWebAPITwitterStatusIDRange)inRange successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.  Calling failure handler.", __PRETTY_FUNCTION__);
+	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
 		
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/lists/%llu/statuses.json", self.authenticator.currentCredentials.identifier, inListID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
@@ -78,7 +78,7 @@
 
 - (void) createListWithName:(NSString *)inName description:(NSString *)inDescription becomingPrivate:(BOOL)inListBecomesPrivate successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.  Calling failure handler.", __PRETTY_FUNCTION__);
+	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
 
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/lists/.json", self.authenticator.currentCredentials.identifier] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
@@ -110,7 +110,7 @@
 
 - (void) updateList:(IRWebAPITwitterListID)inListID withName:(NSString *)inName description:(NSString *)inDescription becomingPrivate:(BOOL)inListBecomesPrivate successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.  Calling failure handler.", __PRETTY_FUNCTION__);
+	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
 
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/lists/%llu.json", self.authenticator.currentCredentials.identifier, inListID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
@@ -142,7 +142,7 @@
 
 - (void) deleteList:(IRWebAPITwitterListID)inListID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.  Calling failure handler.", __PRETTY_FUNCTION__);
+	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
 
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/lists/%llu.json", self.authenticator.currentCredentials.identifier, inListID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
@@ -152,7 +152,95 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator:[self defaultTimelineValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator:[self defaultNoErrorValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+		
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	 
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	
+	}];
+
+}
+
+
+
+
+
+- (void) retrieveMembersOfList:(IRWebAPITwitterListID)inListID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
+
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/%llu/members.json", self.authenticator.currentCredentials.identifier, inListID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+		[NSString stringWithFormat:@"%llu", inListID], @"id",
+		[NSNumber numberWithBool:YES], @"include_entities",
+	
+	nil] options:nil validator:[self defaultNoErrorValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+		
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	 
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	
+	}];
+
+}
+
+
+
+
+
+- (void) removeMember:(IRWebAPITwitterUserID)inUserID fromList:(IRWebAPITwitterListID)inListID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
+
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/%llu/members.json", self.authenticator.currentCredentials.identifier, inListID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+		@"DELETE", @"_method",
+		[NSString stringWithFormat:@"%llu", inUserID], @"id",
+	
+	nil] options:[NSDictionary dictionaryWithObjectsAndKeys:
+
+		@"POST", kIRWebAPIEngineRequestHTTPMethod,
+
+	nil] validator:[self defaultNoErrorValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+		
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	 
+	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+	
+	}];
+
+}
+
+
+
+
+
+- (void) addMember:(IRWebAPITwitterUserID)inUserID toList:(IRWebAPITwitterListID)inListID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
+
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/%llu/members.json", self.authenticator.currentCredentials.identifier, inListID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+		[NSString stringWithFormat:@"%llu", inUserID], @"id",
+	
+	nil] options:[NSDictionary dictionaryWithObjectsAndKeys:
+
+		@"POST", kIRWebAPIEngineRequestHTTPMethod,
+
+	nil] validator:[self defaultNoErrorValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
 		
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
