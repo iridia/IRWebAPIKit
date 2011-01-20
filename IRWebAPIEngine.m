@@ -245,10 +245,13 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	void (^returnedBlock) (void) = ^ {
 			
 		dispatch_async(dispatch_get_main_queue(), ^{
+//		dispatch_async(self.sharedDispatchQueue, ^{
 		
 			NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
 			
 			[self setInternalSuccessHandler: ^ (NSData *inResponse) {
+			
+				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
@@ -272,6 +275,8 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 				if (notifyDelegate) notifyDelegateHandler();
 				
 				[self cleanUpForConnection:connection];
+				
+				[pool drain];
 
 			} forConnection:connection];
 			
