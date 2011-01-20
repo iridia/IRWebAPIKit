@@ -58,6 +58,12 @@ typedef NSDictionary * (^IRWebAPIRequestContextTransformer) (NSDictionary *inOri
 //	The transformer returns a transformed context dictionary.
 
 
+typedef NSDictionary * (^IRWebAPIResponseContextTransformer) (NSDictionary *inParsedResponse, NSDictionary *inResponseContext);
+
+//	The transformer returns a transformed context dictionary, and is given a change to reference the response context.
+//	The latter is not mutable.
+
+
 typedef BOOL (^IRWebAPIResposeValidator) (NSDictionary *inResponseOrNil);
 
 //	The validator returns a BOOL regarding to the parsed and transformed response.
