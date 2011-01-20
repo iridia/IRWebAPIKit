@@ -58,14 +58,15 @@ typedef NSDictionary * (^IRWebAPITransformer) (NSDictionary *inOriginalContext);
 //	The transformer returns a transformed context dictionary.
 
 
-typedef BOOL (^IRWebAPIResposeValidator) (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil);
+typedef BOOL (^IRWebAPIResposeValidator) (NSDictionary *inResponseOrNil);
 
 //	The validator returns a BOOL regarding to the parsed and transformed response.
 
 
-typedef void (^IRWebAPICallback) (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *outNotifyDelegate, BOOL *outShouldRetry);
+typedef void (^IRWebAPICallback) (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry);
 
 //	The callback takes an engine and a response, then optionally tells the engine whether to notify its delegate or retry.
+//	inResponseContext contains lower-level objects, like NSURLResponse.
 //	*&outNotifyDelegate defaults to YES
 //	*&outShouldRetry defaults to NO
 
@@ -127,6 +128,16 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 #define kIRWebAPIEngineParser @"IRWebAPIEngineParser"
 
 //	Expected to be a IRWebAPIResponseParser.  Exposed to allow custom response parsing for “some methods”.
+
+
+
+
+
+#pragma mark IRWebAPIEngine Response Context Dictionary Keys
+
+#define kIRWebAPIEngineResponseContextURLResponseName @"kIRWebAPIEngineResponseContextURLResponseName"
+
+//	We send a response context to IRWebAPICallback blocks; this key gets the original response which contains useful information e.g. the return code.
 
 
 

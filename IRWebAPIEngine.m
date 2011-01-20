@@ -17,6 +17,7 @@ NSString * const kIRWebAPIEngineResponseDictionaryIncomingData = @"kIRWebAPIEngi
 NSString * const kIRWebAPIEngineResponseDictionaryOutgoingContext = @"kIRWebAPIEngineResponseDictionaryOutgoingContext";
 
 NSString * const kIRWebAPIEngineAssociatedDataStore = @"kIRWebAPIEngineAssociatedDataStore";
+NSString * const kIRWebAPIEngineAssociatedResponseContext = @"kIRWebAPIEngineAssociatedResponseContext";
 NSString * const kIRWebAPIEngineAssociatedSuccessHandler = @"kIRWebAPIEngineAssociatedSuccessHandler";
 NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAssociatedFailureHandler";
 
@@ -41,6 +42,9 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) setInternalDataStore:(NSMutableData *)inDataStore forConnection:(NSURLConnection *)inConnection;
 - (NSMutableData *) internalDataStoreForConnection:(NSURLConnection *)inConnection;
+
+- (void) setInternalResponseContext:(NSMutableDictionary *)inResponseContext forConnection:(NSURLConnection *)inConnection;
+- (NSMutableDictionary *) internalResponseContextForConnection:(NSURLConnection *)inConnection;
 
 - (void) setInternalSuccessHandler:(void (^)(NSData *inResponse))inSuccessHandler forConnection:(NSURLConnection *)inConnection;
 - (void (^)(NSData *inResponse)) internalSuccessHandlerForConnection:(NSURLConnection *)inConnection;
@@ -250,16 +254,17 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 				
 				NSDictionary *parsedResponse = [self parsedResponseForData:inResponse withContext:finalizedContext];
 				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse forMethodNamed:inMethodName];
-				
-				if ((inValidator != nil) && (!inValidator(self, transformedResponse))) {
+				NSDictionary *responseContext = [self internalResponseContextForConnection:connection];
+								
+				if ((inValidator != nil) && (!inValidator(transformedResponse))) {
 
 					if (inFailureHandler)
-					inFailureHandler(self, transformedResponse, &notifyDelegate, &shouldRetry);
+					inFailureHandler(transformedResponse, responseContext, &notifyDelegate, &shouldRetry);
 									
 				} else {
 				
 					if (inSuccessHandler)
-					inSuccessHandler(self, transformedResponse, &notifyDelegate, &shouldRetry);
+					inSuccessHandler(transformedResponse, responseContext, &notifyDelegate, &shouldRetry);
 				
 				}
 				
@@ -274,9 +279,10 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			[self setInternalFailureHandler: ^ {
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
+				NSDictionary *responseContext = [self internalResponseContextForConnection:connection];
 				
 				if (inFailureHandler)
-				inFailureHandler(self, [NSDictionary dictionary], &notifyDelegate, &shouldRetry);
+				inFailureHandler([NSDictionary dictionary], responseContext, &notifyDelegate, &shouldRetry);
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
@@ -287,6 +293,7 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			
 			
 			[self setInternalDataStore:[NSMutableData data] forConnection:connection];
+			[self setInternalResponseContext:[NSMutableDictionary dictionary] forConnection:connection];
 			
 			[connection start];
 		
@@ -312,6 +319,15 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 		[[self internalDataStoreForConnection:inConnection] appendData:inData];
 	
 	});
+
+}
+
+- (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+
+	NSLog(@"Connection %@ did receive response %@", connection, response);
+	
+	NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
+	[responseContext setObject:response forKey:kIRWebAPIEngineResponseContextURLResponseName];
 
 }
 
@@ -381,6 +397,18 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 	return objc_getAssociatedObject(inConnection, kIRWebAPIEngineAssociatedDataStore);
 	
+}
+
+- (void) setInternalResponseContext:(NSMutableDictionary *)inResponseContext forConnection:(NSURLConnection *)inConnection {
+
+	objc_setAssociatedObject(inConnection, kIRWebAPIEngineAssociatedResponseContext, inResponseContext, OBJC_ASSOCIATION_RETAIN);
+
+}
+
+- (NSMutableDictionary *) internalResponseContextForConnection:(NSURLConnection *)inConnection {
+
+	return objc_getAssociatedObject(inConnection, kIRWebAPIEngineAssociatedResponseContext);
+
 }
 
 - (void) cleanUpForConnection:(NSURLConnection *)inConnection {

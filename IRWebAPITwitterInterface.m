@@ -100,24 +100,24 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	nil] validator: ^ (NSDictionary *inResponseOrNil) {
 	
 		id returnedError = [inResponseOrNil objectForKey:@"error"];
 		return (BOOL)(returnedError == nil);
 	
-	} successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 
 		NSLog(@"statuses/update response: %@", inResponseOrNil);
 		
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
 		NSLog(@"Failed. %@", inResponseOrNil);
 		
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 

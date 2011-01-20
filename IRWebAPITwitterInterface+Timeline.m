@@ -29,15 +29,15 @@
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_entities",
 	
-	nil] options:nil validator:[self defaultTimelineValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] options:nil validator:[self defaultTimelineValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 
@@ -57,15 +57,15 @@
 		[NSNumber numberWithBool:YES], @"include_rts",
 		[NSNumber numberWithBool:YES], @"include_entities",
 	
-	nil] options:nil validator:[self defaultTimelineValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] options:nil validator:[self defaultTimelineValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 			
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 
@@ -104,15 +104,15 @@
 		[NSNumber numberWithBool:YES], @"include_rts",
 		[NSNumber numberWithBool:YES], @"include_entities",
 	
-	nil] options:nil validator:[self defaultTimelineValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] options:nil validator:[self defaultTimelineValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 			
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 	
@@ -133,15 +133,15 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator:[self defaultNoErrorValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator:[self defaultNoErrorValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 			
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 
@@ -162,15 +162,15 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator:[self defaultSingleTweetValidator] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator:[self defaultSingleTweetValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 			
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 

@@ -86,27 +86,27 @@
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 		[NSDictionary dictionaryWithObjectsAndKeys:@"application/x-www-form-urlencoded", @"Content-type", nil], kIRWebAPIEngineRequestHTTPHeaderFields,
 	
-	nil] validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	nil] validator: ^ (NSDictionary *inResponseOrNil) {
 	
 		if ([[inResponseOrNil valueForKey:@"Auth"] isEqual:[NSNull null]]) return NO;
 		return YES;
 	
-	} successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
 		self.authToken = [inResponseOrNil valueForKey:@"Auth"];
 		self.currentCredentials = inCredentials;
 		
 		if (successHandler)
-		successHandler(self, YES, inShouldRetry);
+		successHandler(self, YES, outShouldRetry);
 	
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
 		NSLog(@"Authentication Failure: %@", inResponseOrNil);
 		
-		*inShouldRetry = NO;
+		*outShouldRetry = NO;
 
 		if (failureHandler)
-		failureHandler(self, NO, inShouldRetry);
+		failureHandler(self, NO, outShouldRetry);
 			
 	}];
 

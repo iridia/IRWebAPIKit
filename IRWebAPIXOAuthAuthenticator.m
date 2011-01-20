@@ -181,7 +181,7 @@
 		IRWebAPIResponseQueryResponseParserMake(), kIRWebAPIEngineParser,
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 			
-	nil] validator: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	nil] validator: ^ (NSDictionary *inResponseOrNil) {
 	
 		if (!inResponseOrNil) return NO;
 	
@@ -193,7 +193,7 @@
 		
 		return YES;
 	
-	} successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		self.retrievedToken = [inResponseOrNil valueForKey:@"oauth_token"];
 		self.retrievedTokenSecret = [inResponseOrNil valueForKey:@"oauth_token_secret"];
@@ -205,14 +205,14 @@
 		[self.currentCredentials.userInfo setObject:self.retrievedTokenSecret forKey:@"oauth_token_secret"];
 
 		if (successHandler)
-		successHandler(self, YES, inShouldRetry);
+		successHandler(self, YES, outShouldRetry);
 		
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
 		NSLog(@"XOAuth AUTH FAIL %@", inResponseOrNil);
 	
 		if (failureHandler)
-		failureHandler(self, NO, inShouldRetry);
+		failureHandler(self, NO, outShouldRetry);
 	
 	}];
 

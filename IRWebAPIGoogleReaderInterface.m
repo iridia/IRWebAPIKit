@@ -49,7 +49,7 @@
 //		
 //		[googleReaderAuthenticator authenticateCredentials:[[[IRWebAPICredentials alloc] initWithIdentifier:MILK_DEVELOPMENT_GOOGLE_USER_IDENTIFIER qualifier:MILK_DEVELOPMENT_GOOGLE_USER_QUALIFIER] autorelease] onSuccess:^(IRWebAPIAuthenticator *inAuthenticator, BOOL isAuthenticated, BOOL *inShouldRetry) {
 //			
-//			[googleReaderEngine fireAPIRequestNamed:@"reader/api/0/user-info" withArguments:nil onSuccess: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) { 
+//			[googleReaderEngine fireAPIRequestNamed:@"reader/api/0/user-info" withArguments:nil onSuccess: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) { 
 //			
 //				NSLog(@"reader/api/0/user-info: %@", inResponseOrNil);
 //			

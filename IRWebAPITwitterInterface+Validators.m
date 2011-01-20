@@ -13,7 +13,7 @@
 
 - (IRWebAPIResposeValidator) defaultTimelineValidator {
 
-	return [[(^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	return [[(^ (NSDictionary *inResponseOrNil) {
 	
 		id response = [inResponseOrNil valueForKeyPath:@"response"];
 		
@@ -38,7 +38,7 @@
 
 - (IRWebAPIResposeValidator) defaultListsValidator {
 
-	return [[(^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	return [[(^ (NSDictionary *inResponseOrNil) {
 		
 		id response = [inResponseOrNil valueForKeyPath:@"response"];
 		
@@ -63,7 +63,7 @@
 
 - (IRWebAPIResposeValidator) defaultSingleTweetValidator {
 
-	return [[(^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	return [[(^ (NSDictionary *inResponseOrNil) {
 	
 		if (![inResponseOrNil valueForKeyPath:@"text"])
 		return NO;
@@ -76,7 +76,7 @@
 
 - (IRWebAPIResposeValidator) defaultNoErrorValidator {
 
-	return [[(^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil) {
+	return [[(^ (NSDictionary *inResponseOrNil) {
 	
 		if ([inResponseOrNil isEqual:[NSNull null]])
 		return NO;

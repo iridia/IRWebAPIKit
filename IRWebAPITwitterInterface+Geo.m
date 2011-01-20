@@ -31,13 +31,13 @@
 		[NSString stringWithFormat:@"%f,%f", inLocation.coordinate.latitude, inLocation.coordinate.longitude], @"latlng",
 		@"true", @"sensor",
 	
-	nil] successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
 		NSLog(@"google success");
 	
 		if (![[inResponseOrNil valueForKey:@"status"] isEqual:@"OK"]) {
 			
-			inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
+			inFailureCallback(inResponseOrNil, inResponseContext, outNotifyDelegate, outShouldRetry);
 			return;
 		
 		}
@@ -50,14 +50,14 @@
 			if ([formattedAddress isEqual:[NSNull null]])
 			continue;
 			
-			inSuccessCallback(inEngine, [NSDictionary dictionaryWithObject:formattedAddress forKey:@"displayString"], inNotifyDelegate, inShouldRetry);
+			inSuccessCallback([NSDictionary dictionaryWithObject:formattedAddress forKey:@"displayString"], inResponseContext, outNotifyDelegate, outShouldRetry);
 			return;
 		
 		}
 	
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
-		inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, inResponseContext, outNotifyDelegate, outShouldRetry);
 	
 	}];
 
@@ -74,7 +74,7 @@
 		@"1000m", @"accuracy",
 		@"1", @"max_results",
 
-	nil] options:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] options:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 
 		if (
 		
@@ -92,7 +92,7 @@
 			
 			} else {
 		
-				inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
+				inFailureCallback(inResponseOrNil, inResponseContext, outNotifyDelegate, outShouldRetry);
 				return;
 				
 			}
@@ -103,9 +103,9 @@
 		
 		NSLog(@"geo/reverse_geocode response: %@", inResponseOrNil);
 		
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
-		inFailureCallback(inEngine, inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, inResponseContext, outNotifyDelegate, outShouldRetry);
 	
 	}];
 

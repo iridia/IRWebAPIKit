@@ -20,15 +20,15 @@
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_entities",
 
-	nil] options:nil validator:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] options:nil validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 			
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];	
 
@@ -47,15 +47,15 @@
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_entities",
 
-	nil] options:nil validator:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] options:nil validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 			
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 
@@ -77,15 +77,15 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 			
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 
@@ -106,15 +106,15 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator:nil successHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	nil] validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 			
 		if (inSuccessCallback)
-		inSuccessCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	 
-	} failureHandler: ^ (IRWebAPIEngine *inEngine, NSDictionary *inResponseOrNil, BOOL *inNotifyDelegate, BOOL *inShouldRetry) {
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inFailureCallback)
-		inFailureCallback(inResponseOrNil, inNotifyDelegate, inShouldRetry);
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	}];
 
