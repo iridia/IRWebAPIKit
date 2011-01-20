@@ -48,11 +48,11 @@
 	
 	} copy] retain];
 
-	self.globalResponsePreTransformerBlock = [[^ (NSDictionary *inOriginalContext) {
+	self.globalResponsePreTransformerBlock = [[^ (NSDictionary *inParsedResponse, NSDictionary *inResponseContext) {
 	
 	//	FIXME: Probably add code to handle possible authentication failure and trigger synchronous, blocking reauthentication?
 	
-		return inOriginalContext;
+		return inParsedResponse;
 	
 	} copy] retain];
 

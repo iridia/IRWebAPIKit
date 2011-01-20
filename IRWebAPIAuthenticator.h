@@ -17,8 +17,8 @@
 	IRWebAPIRequestContextTransformer globalRequestPreTransformerBlock;
 	IRWebAPIRequestContextTransformer globalRequestPostTransformerBlock;
 	
-	IRWebAPIRequestContextTransformer globalResponsePreTransformerBlock;
-	IRWebAPIRequestContextTransformer globalResponsePostTransformerBlock;
+	IRWebAPIResponseContextTransformer globalResponsePreTransformerBlock;
+	IRWebAPIResponseContextTransformer globalResponsePostTransformerBlock;
 	
 	IRWebAPICredentials *currentCredentials;
 
@@ -47,8 +47,8 @@
 @property (nonatomic, assign, readwrite) IRWebAPIEngine *engine;
 @property (nonatomic, copy, readwrite) IRWebAPIRequestContextTransformer globalRequestPreTransformerBlock;
 @property (nonatomic, copy, readwrite) IRWebAPIRequestContextTransformer globalRequestPostTransformerBlock;
-@property (nonatomic, copy, readwrite) IRWebAPIRequestContextTransformer globalResponsePreTransformerBlock;
-@property (nonatomic, copy, readwrite) IRWebAPIRequestContextTransformer globalResponsePostTransformerBlock;
+@property (nonatomic, copy, readwrite) IRWebAPIResponseContextTransformer globalResponsePreTransformerBlock;
+@property (nonatomic, copy, readwrite) IRWebAPIResponseContextTransformer globalResponsePostTransformerBlock;
 @property (nonatomic, retain, readwrite) IRWebAPICredentials *currentCredentials;
 
 @end
