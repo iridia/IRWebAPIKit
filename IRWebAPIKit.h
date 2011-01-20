@@ -53,7 +53,7 @@ typedef NSDictionary * (^IRWebAPIResponseParser) (NSData *inData);
 //	The parser makes a dictionary from a NSData.
 
 
-typedef NSDictionary * (^IRWebAPITransformer) (NSDictionary *inOriginalContext);
+typedef NSDictionary * (^IRWebAPIRequestContextTransformer) (NSDictionary *inOriginalContext);
 
 //	The transformer returns a transformed context dictionary.
 

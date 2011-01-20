@@ -392,7 +392,7 @@ static inline NSDictionary *IRWebAPITransformedContextFromTransformersGet (NSDic
 
 	NSDictionary *transformedContext = [[inContext copy] autorelease];
 
-	for (IRWebAPITransformer transformerBlock in inTransformersArray)
+	for (IRWebAPIRequestContextTransformer transformerBlock in inTransformersArray)
 	transformedContext = transformerBlock(transformedContext);
 
 	return transformedContext;
