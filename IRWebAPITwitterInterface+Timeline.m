@@ -122,6 +122,31 @@
 
 
 
+- (void) retrieveFavoritesWithRange:(IRWebAPITwitterStatusIDRange)inRange successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	[self.engine fireAPIRequestNamed:@"1/favorites.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+	//	The range / count currently is not even supported as the API returns only the latest 20 tweets
+		[NSNumber numberWithBool:YES], @"include_entities",
+	
+	nil] options:nil validator:[self defaultTimelineValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+			
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+	 
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+	
+	}];
+
+}
+
+
+
+
+
 - (void) setStatus:(IRWebAPITwitterStatusID)inID asFavorited:(BOOL)inBecomesFavorited successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/favorites/%@/%llu.json", (inBecomesFavorited ? @"create" : @"destroy"), inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
