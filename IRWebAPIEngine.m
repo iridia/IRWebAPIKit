@@ -64,7 +64,7 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 - (NSDictionary *) parsedResponseForData:(NSData *)inData withContext:(NSDictionary *)inContext;
 - (void) handleUnparsableResponseForData:(NSData *)inData context:(NSDictionary *)inContext;
 
-- (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse forMethodNamed:(NSString *)inMethodName;
+- (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse withRequestContext:(NSDictionary *)inRequestContext forMethodNamed:(NSString *)inMethodName;
 
 - (void) cleanUpForConnection:(NSURLConnection *)inConnection;
 
@@ -245,8 +245,7 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	void (^returnedBlock) (void) = ^ {
 			
 		dispatch_async(dispatch_get_main_queue(), ^{
-//		dispatch_async(self.sharedDispatchQueue, ^{
-		
+
 			NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
 			
 			[self setInternalSuccessHandler: ^ (NSData *inResponse) {
@@ -255,19 +254,20 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
+				NSDictionary *requestContext = [self internalResponseContextForConnection:connection];
+
 				NSDictionary *parsedResponse = [self parsedResponseForData:inResponse withContext:finalizedContext];
-				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse forMethodNamed:inMethodName];
-				NSDictionary *responseContext = [self internalResponseContextForConnection:connection];
+				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse withRequestContext:requestContext forMethodNamed:inMethodName];
 				
 				if ((inValidator != nil) && (!inValidator(transformedResponse))) {
 
 					if (inFailureHandler)
-					inFailureHandler(transformedResponse, responseContext, &notifyDelegate, &shouldRetry);
+					inFailureHandler(transformedResponse, requestContext, &notifyDelegate, &shouldRetry);
 									
 				} else {
 				
 					if (inSuccessHandler)
-					inSuccessHandler(transformedResponse, responseContext, &notifyDelegate, &shouldRetry);
+					inSuccessHandler(transformedResponse, requestContext, &notifyDelegate, &shouldRetry);
 				
 				}
 				
@@ -284,10 +284,10 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			[self setInternalFailureHandler: ^ {
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
-				NSDictionary *responseContext = [self internalResponseContextForConnection:connection];
+				NSDictionary *requestContext = [self internalResponseContextForConnection:connection];
 				
 				if (inFailureHandler)
-				inFailureHandler([NSDictionary dictionary], responseContext, &notifyDelegate, &shouldRetry);
+				inFailureHandler([NSDictionary dictionary], requestContext, &notifyDelegate, &shouldRetry);
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
@@ -298,7 +298,11 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			
 			
 			[self setInternalDataStore:[NSMutableData data] forConnection:connection];
-			[self setInternalResponseContext:[NSMutableDictionary dictionary] forConnection:connection];
+			[self setInternalResponseContext:[NSMutableDictionary dictionaryWithObjectsAndKeys:
+			
+				finalizedContext, kIRWebAPIEngineResponseContextOriginalRequestContextName,
+			
+			nil] forConnection:connection];
 			
 			[connection start];
 		
@@ -505,25 +509,43 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (NSDictionary *) requestContextByTransformingContext:(NSDictionary *)inContext forMethodNamed:(NSString *)inMethodName {
 
-	return IRWebAPITransformedContextFromTransformerArraysGet(inContext, [NSArray arrayWithObjects:
-		
-		self.globalRequestPreTransformers,
-		[self requestTransformersForMethodNamed:inMethodName],
-		self.globalRequestPostTransformers,
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	NSMutableArray *allTransformers = [NSMutableArray array];
+	[allTransformers addObjectsFromArray:self.globalRequestPreTransformers];
+	[allTransformers addObjectsFromArray:[self requestTransformersForMethodNamed:inMethodName]];
+	[allTransformers addObjectsFromArray:self.globalRequestPostTransformers];
 	
-	nil]);
+	NSDictionary *currentContext = inContext;
+	
+	for (IRWebAPIRequestContextTransformer aTransformer in allTransformers)
+	currentContext = aTransformer(currentContext);
+	
+	[currentContext retain];
+	[pool drain];
+
+	return [currentContext autorelease];
 
 }
 
-- (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse forMethodNamed:(NSString *)inMethodName {
+- (NSDictionary *) responseByTransformingResponse:(NSDictionary *)inResponse withRequestContext:(NSDictionary *)inRequestContext forMethodNamed:(NSString *)inMethodName {
 
-	return IRWebAPITransformedContextFromTransformerArraysGet(inResponse, [NSArray arrayWithObjects:
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-		self.globalResponsePreTransformers,
-		[self responseTransformersForMethodNamed:inMethodName],
-		self.globalResponsePostTransformers,
+	NSMutableArray *allTransformers = [NSMutableArray array];
+	[allTransformers addObjectsFromArray:self.globalResponsePreTransformers];
+	[allTransformers addObjectsFromArray:[self responseTransformersForMethodNamed:inMethodName]];
+	[allTransformers addObjectsFromArray:self.globalResponsePostTransformers];
+	
+	NSDictionary *currentResponse = inResponse;
+	
+	for (IRWebAPIResponseContextTransformer aTransformer in allTransformers)
+	currentResponse = aTransformer(currentResponse, inRequestContext);
+	
+	[currentResponse retain];
+	[pool drain];
 
-	nil]);
+	return [currentResponse autorelease];
 
 }
 
