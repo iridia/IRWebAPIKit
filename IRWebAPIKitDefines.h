@@ -118,7 +118,13 @@ extern NSString * const kIRWebAPIEngineParser;
 
 extern NSString * const kIRWebAPIEngineResponseContextURLResponseName;
 
-//	We send a response context to IRWebAPICallback blocks; this key gets the original response which contains useful information e.g. the return code.
+//	We send a response context to IRWebAPICallback blocks.
+//	This contains the vanilla NSURLResponse object.
+
+
+extern NSString * const kIRWebAPIEngineResponseContextOriginalRequestContextName;
+
+//	This key gets the original request context.
 
 
 

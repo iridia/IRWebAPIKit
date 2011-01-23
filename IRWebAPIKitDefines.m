@@ -16,3 +16,4 @@ NSString * const kIRWebAPIEngineRequestHTTPQueryParameters = @"kIRWebAPIEngineRe
 NSString * const kIRWebAPIEngineRequestHTTPMethod = @"kIRWebAPIEngineRequestHTTPMethod";
 NSString * const kIRWebAPIEngineParser = @"kIRWebAPIEngineParser";
 NSString * const kIRWebAPIEngineResponseContextURLResponseName = @"kIRWebAPIEngineResponseContextURLResponseName";
+NSString * const kIRWebAPIEngineResponseContextOriginalRequestContextName = @"kIRWebAPIEngineResponseContextOriginalRequestContextName";
