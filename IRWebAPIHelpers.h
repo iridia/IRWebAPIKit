@@ -18,6 +18,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import <UIKit/UIDevice.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 static inline NSString * IRWebAPIKitStringValue (id<NSObject> inObject) {
 
@@ -428,6 +429,29 @@ static inline id IRWebAPIKitNumberOrNull (int inInt) {
 	return inInt ? [NSNumber numberWithInt:inInt] : [NSNull null];
 	
 };
+
+
+
+
+
+static inline NSString * IRWebAPIKitMIMETypeOfExtension (NSString *inExtension) {
+	
+	if (!inExtension)
+	return nil;
+	
+	CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)inExtension, NULL);
+	
+	if(!UTI)
+	return nil;
+	
+	CFStringRef registeredType = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType);
+	if (!registeredType)
+	return nil;
+	
+	CFRelease(UTI);	
+	return [(NSString *)registeredType autorelease];
+
+}
 
 
 
