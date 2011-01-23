@@ -185,7 +185,7 @@
 	
 		if (!inResponseOrNil) return NO;
 	
-		NSLog(@"Validating response %@", inResponseOrNil);
+		IRWebAPIKitLog(@"Validating response %@", inResponseOrNil);
 	
 		for (id key in [NSArray arrayWithObjects:@"oauth_token", @"oauth_token_secret", nil])
 		if (!IRWebAPIKitValidResponse([inResponseOrNil objectForKey:key]))
