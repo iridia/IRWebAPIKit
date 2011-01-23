@@ -47,6 +47,8 @@
 		FF9AFB4212EC59040037E930 /* IRWebAPIEngine+LocalCaching.h in Headers */ = {isa = PBXBuildFile; fileRef = FF9AFB4012EC59040037E930 /* IRWebAPIEngine+LocalCaching.h */; };
 		FF9AFB4312EC59040037E930 /* IRWebAPIEngine+LocalCaching.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9AFB4112EC59040037E930 /* IRWebAPIEngine+LocalCaching.m */; };
 		FF9AFB4C12EC597C0037E930 /* IRWebAPIKitDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = FF9AFB4B12EC597C0037E930 /* IRWebAPIKitDefines.h */; };
+		FF9AFB7312EC5C060037E930 /* IRWebAPIEngine+FormMultipart.h in Headers */ = {isa = PBXBuildFile; fileRef = FF9AFB7112EC5C060037E930 /* IRWebAPIEngine+FormMultipart.h */; };
+		FF9AFB7412EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9AFB7212EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m */; };
 		FFC41B9112B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h in Headers */ = {isa = PBXBuildFile; fileRef = FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */; };
 		FFC41B9212B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m in Sources */ = {isa = PBXBuildFile; fileRef = FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */; };
 		FFF90E1C12E3805D00464897 /* IRWebAPITwitterInterface+Lists.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */; };
@@ -126,6 +128,8 @@
 		FF9AFB4012EC59040037E930 /* IRWebAPIEngine+LocalCaching.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPIEngine+LocalCaching.h"; sourceTree = "<group>"; };
 		FF9AFB4112EC59040037E930 /* IRWebAPIEngine+LocalCaching.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPIEngine+LocalCaching.m"; sourceTree = "<group>"; };
 		FF9AFB4B12EC597C0037E930 /* IRWebAPIKitDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIKitDefines.h; sourceTree = "<group>"; };
+		FF9AFB7112EC5C060037E930 /* IRWebAPIEngine+FormMultipart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPIEngine+FormMultipart.h"; sourceTree = "<group>"; };
+		FF9AFB7212EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPIEngine+FormMultipart.m"; sourceTree = "<group>"; };
 		FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPITwitterInterface+Geo.h"; sourceTree = "<group>"; };
 		FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPITwitterInterface+Geo.m"; sourceTree = "<group>"; };
 		FFE2607212D084CB001AF1AF /* IRWebAPIKitEntityDefinesGenerator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = IRWebAPIKitEntityDefinesGenerator.rb; sourceTree = "<group>"; };
@@ -184,10 +188,9 @@
 		FF25FA7B129944C200975BE3 /* Engine & Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				FF9AFB4012EC59040037E930 /* IRWebAPIEngine+LocalCaching.h */,
-				FF9AFB4112EC59040037E930 /* IRWebAPIEngine+LocalCaching.m */,
 				FF7408451296A94900571D46 /* IRWebAPIEngine.h */,
 				FF7408461296A94900571D46 /* IRWebAPIEngine.m */,
+				FF9AFB5B12EC5A560037E930 /* IRWebAPIEngine Additions  */,
 				FF7408971296B06F00571D46 /* IRWebAPIContext.h */,
 				FF7408981296B06F00571D46 /* IRWebAPIContext.m */,
 			);
@@ -299,6 +302,17 @@
 			name = "Applied Implementations";
 			sourceTree = "<group>";
 		};
+		FF9AFB5B12EC5A560037E930 /* IRWebAPIEngine Additions  */ = {
+			isa = PBXGroup;
+			children = (
+				FF9AFB4012EC59040037E930 /* IRWebAPIEngine+LocalCaching.h */,
+				FF9AFB4112EC59040037E930 /* IRWebAPIEngine+LocalCaching.m */,
+				FF9AFB7112EC5C060037E930 /* IRWebAPIEngine+FormMultipart.h */,
+				FF9AFB7212EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m */,
+			);
+			name = "IRWebAPIEngine Additions ";
+			sourceTree = "<group>";
+		};
 		FFE2607C12D0858A001AF1AF /* XML Entity Definitions */ = {
 			isa = PBXGroup;
 			children = (
@@ -348,6 +362,7 @@
 				FF609D1F12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.h in Headers */,
 				FF9AFB4212EC59040037E930 /* IRWebAPIEngine+LocalCaching.h in Headers */,
 				FF9AFB4C12EC597C0037E930 /* IRWebAPIKitDefines.h in Headers */,
+				FF9AFB7312EC5C060037E930 /* IRWebAPIEngine+FormMultipart.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,6 +485,7 @@
 				FFF90E1D12E3805D00464897 /* IRWebAPITwitterInterface+Validators.m in Sources */,
 				FF609D2012E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.m in Sources */,
 				FF9AFB4312EC59040037E930 /* IRWebAPIEngine+LocalCaching.m in Sources */,
+				FF9AFB7412EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

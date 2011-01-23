@@ -11,6 +11,8 @@
 
 @interface IRWebAPIEngine (LocalCaching)
 
-- (NSURL *) createEmptyTemporaryFileURL;
++ (NSURL *) temporaryFileURL;
++ (BOOL) cleanUpTemporaryFileAtURL:(NSURL *)inTemporaryFileURL;
++ (IRWebAPIResponseContextTransformer) defaultCleanUpTemporaryFilesRequestTransformer;
 
 @end

@@ -52,3 +52,9 @@ extern NSString * const kIRWebAPIEngineResponseDictionaryOutgoingContext;
 
 
 
+#import "IRWebAPIEngine+LocalCaching.h"
+#import "IRWebAPIEngine+FormMultipart.h"
+
+
+
+
