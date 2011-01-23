@@ -25,15 +25,16 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 
 	NSString *applicationCacheDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 	NSString *preferredCacheDirectoryPath = [applicationCacheDirectory stringByAppendingPathComponent:NSStringFromClass([self class])];
-	NSURL *fileURL = [NSURL fileURLWithPath:[preferredCacheDirectoryPath stringByAppendingPathComponent:IRWebAPIKitNonce()]];
 	
-	if (![[NSFileManager defaultManager] createFileAtPath:[fileURL path] contents:nil attributes:nil]) {
+	NSError *error;
+	if (![[NSFileManager defaultManager] createDirectoryAtPath:preferredCacheDirectoryPath withIntermediateDirectories:YES attributes:nil error:&error]) {
 	
-		NSLog(@"Error creating file at URL %@", fileURL);
+		NSLog(@"Erorr occurred while assuring cache directory existence: %@", error);
 		return nil;
 	
-	}
+	};
 	
+	NSURL *fileURL = [NSURL fileURLWithPath:[preferredCacheDirectoryPath stringByAppendingPathComponent:IRWebAPIKitNonce()]];	
 	return fileURL;
 	
 }
@@ -42,11 +43,15 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 + (BOOL) cleanUpTemporaryFileAtURL:(NSURL *)inTemporaryFileURL {
 
 	NSError *error;
-
+	
 	if (![[NSFileManager defaultManager] removeItemAtURL:inTemporaryFileURL error:&error]) {
 	
-		NSLog(@"Error removing file at URL %@", inTemporaryFileURL);
+		NSLog(@"Error removing file at URL %@: %@", inTemporaryFileURL, error);
 		return NO;
+	
+	} else {
+	
+		NSLog(@"Removed %@", inTemporaryFileURL);
 	
 	}
 	
@@ -55,11 +60,11 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 }
 
 
-+ (IRWebAPIResponseContextTransformer) defaultCleanUpTemporaryFilesRequestTransformer {
++ (IRWebAPIResponseContextTransformer) defaultCleanUpTemporaryFilesResponseTransformer {
 
 	return [[(^ (NSDictionary *inParsedResponse, NSDictionary *inResponseContext) {
 	
-		NSArray *cachedFileURLs = [inResponseContext objectForKey:kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey];
+		NSArray *cachedFileURLs = [[inResponseContext objectForKey:kIRWebAPIEngineResponseContextOriginalRequestContextName] objectForKey:kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey];
 		
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
 		
