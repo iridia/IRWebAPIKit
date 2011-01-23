@@ -11,4 +11,16 @@
 
 @implementation IRWebAPIEngine (FormMultipart)
 
++ (IRWebAPIRequestContextTransformer) defaultFormMultipartTransformer {
+
+	return [[(^ (NSDictionary *inOriginalContext) {
+	
+		NSAssert(NO, @"Implement!");
+	
+		return inOriginalContext;
+	
+	}) copy] autorelease];
+
+}
+
 @end
