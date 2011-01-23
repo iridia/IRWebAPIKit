@@ -73,40 +73,40 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 
 #pragma mark IRWebAPITransformer Context Dictionary Keys
 
-#define kIRWebAPIEngineRequestHTTPBaseURL @"IRWebAPIEngineRequestHTTPBaseURL"
+extern NSString * const kIRWebAPIEngineRequestHTTPBaseURL;
 
 //	Expected to be a NSURL, and well it should be there
 
 
-#define kIRWebAPIEngineRequestHTTPHeaderFields @"IRWebAPIEngineHTTPHeaderFields"
+extern NSString * const kIRWebAPIEngineRequestHTTPHeaderFields;
 
 //	Expected to be a dictionary
 
 
-#define kIRWebAPIEngineRequestHTTPPOSTParameters @"IRWebAPIEngineRequestHTTPPOSTParameters"
+extern NSString * const kIRWebAPIEngineRequestHTTPPOSTParameters;
 
 //	Expected to be a dictionary, that contains NSString / NSData objects.  Everything is in utf-8 or octet.
 //	If not blank, IRWebAPIEngine makes the HTTP body from the parameters.
 //	Notice that to use POST parameters, a new transformer block that grabs the correct stuff under this key from the context and adds it to the 
 
 
-#define kIRWebAPIEngineRequestHTTPBody @"IRWebAPIEngineHTTPBody"
+extern NSString * const kIRWebAPIEngineRequestHTTPBody;
 
 //	Expected to be NSData, or [NSNull null] for custom HTTP body handling.
 //	If used with IRWebAPIEngineRequestHTTPPOSTParameters, an exception will be thrown.
 
 
-#define kIRWebAPIEngineRequestHTTPQueryParameters @"IRWebAPIEngineHTTPQueryParameters"
+extern NSString * const kIRWebAPIEngineRequestHTTPQueryParameters;
 
 //	Expected to be a dictionary
 
 
-#define kIRWebAPIEngineRequestHTTPMethod @"IRWebAPIEngineRequestHTTPMethod"
+extern NSString * const kIRWebAPIEngineRequestHTTPMethod;
 
 //	Expected to be POST, GET, whatever.  Must be POST if IRWebAPIEngineHTTPPOSTParameters is defined.
 
 
-#define kIRWebAPIEngineParser @"IRWebAPIEngineParser"
+extern NSString * const kIRWebAPIEngineParser;
 
 //	Expected to be a IRWebAPIResponseParser.  Exposed to allow custom response parsing for “some methods”.
 
@@ -116,7 +116,7 @@ typedef void (^IRWebAPIEngineExecutionBlock) (void);
 
 #pragma mark IRWebAPIEngine Response Context Dictionary Keys
 
-#define kIRWebAPIEngineResponseContextURLResponseName @"kIRWebAPIEngineResponseContextURLResponseName"
+extern NSString * const kIRWebAPIEngineResponseContextURLResponseName;
 
 //	We send a response context to IRWebAPICallback blocks; this key gets the original response which contains useful information e.g. the return code.
 
