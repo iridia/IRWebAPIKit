@@ -9,11 +9,12 @@
 #import "IRWebAPIEngine.h"
 
 
+extern NSString * const kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey;
+
 @interface IRWebAPIEngine (LocalCaching)
 
-- (NSURL *) temporaryFileURL;
-- (BOOL) cleanUpTemporaryFileAtURL:(NSURL *)inTemporaryFileURL;
-
++ (NSURL *) newTemporaryFileURL;
++ (BOOL) cleanUpTemporaryFileAtURL:(NSURL *)inTemporaryFileURL;
 + (IRWebAPIResponseContextTransformer) defaultCleanUpTemporaryFilesRequestTransformer;
 
 @end

@@ -12,34 +12,8 @@
 #import "IRWebAPIHelpers.h"
 
 
+NSString * const kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey = @"kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey";
 NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngineLocalCachingBasePath";
-
-@interface IRWebAPIEngine (LocalCachingPrivate)
-
-@property (nonatomic, readonly, retain) NSString *localCacheDirectoryPath;
-
-@end
-
-@implementation IRWebAPIEngine (LocalCachingPrivate)
-
-- (NSString *) localCacheDirectoryPath {
-
-	NSString *aPath = objc_getAssociatedObject(self, kIRWebAPIEngineLocallocalCacheDirectoryPath);
-	
-	if (!aPath) {
-	
-		NSString *applicationCacheDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-		NSString *preferredCacheDirectoryPath = [applicationCacheDirectory stringByAppendingPathComponent:NSStringFromClass([self class])];
-		
-		objc_setAssociatedObject(self, kIRWebAPIEngineLocallocalCacheDirectoryPath, preferredCacheDirectoryPath, OBJC_ASSOCIATION_RETAIN);
-		
-	}
-	
-	return aPath;
-
-}
-
-@end
 
 
 
@@ -47,9 +21,11 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 
 @implementation IRWebAPIEngine (LocalCaching)
 
-- (NSURL *) temporaryFileURL {
++ (NSURL *) newTemporaryFileURL {
 
-	NSURL *fileURL = [NSURL fileURLWithPath:[self.localCacheDirectoryPath stringByAppendingPathComponent:IRWebAPIKitNonce()]];
+	NSString *applicationCacheDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+	NSString *preferredCacheDirectoryPath = [applicationCacheDirectory stringByAppendingPathComponent:NSStringFromClass([self class])];
+	NSURL *fileURL = [NSURL fileURLWithPath:[preferredCacheDirectoryPath stringByAppendingPathComponent:IRWebAPIKitNonce()]];
 	
 	if (![[NSFileManager defaultManager] createFileAtPath:[fileURL path] contents:nil attributes:nil]) {
 	
@@ -63,7 +39,7 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 }
 
 
-- (BOOL) cleanUpTemporaryFileAtURL:(NSURL *)inTemporaryFileURL {
++ (BOOL) cleanUpTemporaryFileAtURL:(NSURL *)inTemporaryFileURL {
 
 	NSError *error;
 
@@ -83,8 +59,16 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 
 	return [[(^ (NSDictionary *inParsedResponse, NSDictionary *inResponseContext) {
 	
-		NSAssert(NO, @"Implement!");
+		NSArray *cachedFileURLs = [inResponseContext objectForKey:kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
+		
+			if (cachedFileURLs)
+			for (NSURL *aFileURL in cachedFileURLs)
+			[self cleanUpTemporaryFileAtURL:aFileURL];
 	
+		});
+
 		return inParsedResponse;
 	
 	}) copy] autorelease];
