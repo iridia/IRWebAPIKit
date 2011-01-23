@@ -9,8 +9,99 @@
 #import "IRWebAPIEngine.h"
 
 
+extern NSString * const kIRWebAPIEngineRequestContextFormMultipartFieldsKey;
+
 @interface IRWebAPIEngine (FormMultipart)
 
 + (IRWebAPIRequestContextTransformer) defaultFormMultipartTransformer;
 
 @end
+
+
+
+
+
+/*
+
+	+defaultFormMultipartTransformer emits a block that expects :
+	
+	{
+	
+		kIRWebAPIEngineRequestContextFormMultipartFieldsKey = {
+		
+			aFormName = "aStringValue",
+			
+			anotherFormName = file://myFile.txt ,
+			
+			anotherThing = <00325296>
+		
+		}
+	
+	}
+	
+	Where a string value gets sent, a URL gets mapped and dumped, its UTI guessed, and a NSData simply copied.
+	
+	The HTTP method is changed to POST and there must be nothing in the old HTTP body.
+	
+	
+	Since transforming could be expensive you explicitly hook the transformer up.
+	This category works with the +defaultCleanUpTemporaryFilesResponseTransformer so as to keep things neat.
+	
+	Here’s a use case:
+	
+	- (void) testMultipart {
+		
+		NSString *path = [[IRWebAPIEngine newTemporaryFileURL] path];
+		
+		[[NSData dataWithData:UIImagePNGRepresentation(( ^ {
+		
+			UIGraphicsBeginImageContext([UIScreen mainScreen].bounds.size);
+			CGContextRef context = UIGraphicsGetCurrentContext();
+			
+			CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
+			CGContextFillRect(context, [UIScreen mainScreen].bounds);
+				
+			[self.window.layer renderInContext:ctx];
+				
+			UIImage *returnedImage = UIGraphicsGetImageFromCurrentImageContext();
+			
+			UIGraphicsEndImageContext();
+			
+			
+			return returnedImage;
+		
+		})())] writeToFile:path atomically:YES];
+		
+		
+		IRWebAPIEngine *testEngine = [[[IRWebAPIEngine alloc] initWithContext:(( ^ {
+		
+			IRWebAPIContext *returnedContext = [[[IRWebAPIContext alloc] initWithBaseURL:[NSURL URLWithString:@"http://Museo.local/~evadne/postTest/"]] autorelease];
+			
+			return returnedContext;
+		
+		})())] autorelease];
+		
+		[testEngine.globalRequestPreTransformers addObject:[[testEngine class] defaultFormMultipartTransformer]];
+		[testEngine.globalResponsePostTransformers addObject:[[testEngine class] defaultCleanUpTemporaryFilesResponseTransformer]];
+		
+		[testEngine fireAPIRequestNamed:@"test.php" withArguments:nil options:[NSDictionary dictionaryWithObjectsAndKeys:
+		
+			[NSDictionary dictionaryWithObjectsAndKeys:
+			
+				[NSURL fileURLWithPath:path], @"image",
+			
+			nil], kIRWebAPIEngineRequestContextFormMultipartFieldsKey,
+		
+		nil] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		
+			NSLog(@"Success: %@", inResponseOrNil);
+		
+		} failureHandler:nil];
+
+	}
+
+*/
+
+
+
+
