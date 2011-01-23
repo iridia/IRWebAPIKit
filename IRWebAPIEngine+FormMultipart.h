@@ -99,6 +99,17 @@ extern NSString * const kIRWebAPIEngineRequestContextFormMultipartFieldsKey;
 		} failureHandler:nil];
 
 	}
+	
+	
+	This PHP snippet works with OS X 10.6’s bundled Apache:
+	
+	<?php
+
+		foreach ($_FILES as $file)
+		if ($file['error'] == UPLOAD_ERR_OK)
+		move_uploaded_file($file["tmp_name"], $_SERVER['SCRIPT_FILENAME'] . ("." . time() . ""));
+
+	?>
 
 */
 
