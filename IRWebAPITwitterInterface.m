@@ -6,8 +6,6 @@
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 #import "IRWebAPITwitterInterface.h"
 
 @implementation IRWebAPITwitterInterface

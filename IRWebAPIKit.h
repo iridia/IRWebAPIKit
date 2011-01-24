@@ -38,6 +38,7 @@
 
 #import "IRWebAPIInterfaceAuthenticating.h"
 #import "IRWebAPIInterfaceXOAuthAuthenticating.h"
+#import "IRWebAPIInterfaceOAuthEchoReliance.h"
 
 #import "IRWebAPIInterfaceURLShortening.h"
 
@@ -46,6 +47,9 @@
 
 #import "IRWebAPITwitterInterface.h"
 #import "IRWebAPIGoogleReaderInterface.h"
+
+#import "IRWebAPIImageStorageProvider.h"
+#import "IRWebAPITwitPicInterface.h"
 
 
 
