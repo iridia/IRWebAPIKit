@@ -35,7 +35,7 @@ static inline IRWebAPIResponseParser IRWebAPIResponseDefaultParserMake () {
 		return [NSDictionary dictionaryWithObjectsAndKeys:
 		
 			inData, @"response",
-			[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding], @"responseText",
+			[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease], @"responseText",
 			
 		nil];
 	
@@ -58,7 +58,7 @@ static inline IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake () 
 	
 	NSDictionary * (^queryResponseParser) (NSData *) = ^ NSDictionary * (NSData *inData) {
 	
-		NSString *responseString = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
+		NSString *responseString = [[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease];
 		
 		NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"([^=&\n\r]+)=([^=&\n\r]+)[\n\r&]?" options:NSRegularExpressionCaseInsensitive error:nil];
 		
