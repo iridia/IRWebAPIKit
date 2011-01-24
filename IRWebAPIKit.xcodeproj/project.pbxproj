@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF0D4C0B12ED96E500D9B97D /* IRWebAPIHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0D4C0A12ED96E500D9B97D /* IRWebAPIHelpers.m */; };
 		FF0E874112B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0E874012B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h */; };
 		FF25FA2F1299406200975BE3 /* IRWebAPICredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FA2D1299406200975BE3 /* IRWebAPICredentials.h */; };
 		FF25FA301299406200975BE3 /* IRWebAPICredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FA2E1299406200975BE3 /* IRWebAPICredentials.m */; };
@@ -80,6 +81,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FF0D4C0A12ED96E500D9B97D /* IRWebAPIHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIHelpers.m; sourceTree = "<group>"; };
 		FF0E874012B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterfaceURLShortening.h; sourceTree = "<group>"; };
 		FF25FA2D1299406200975BE3 /* IRWebAPICredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPICredentials.h; sourceTree = "<group>"; };
 		FF25FA2E1299406200975BE3 /* IRWebAPICredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPICredentials.m; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 			children = (
 				FFE2607C12D0858A001AF1AF /* XML Entity Definitions */,
 				FF25FD7D129971EC00975BE3 /* IRWebAPIHelpers.h */,
+				FF0D4C0A12ED96E500D9B97D /* IRWebAPIHelpers.m */,
 				FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */,
 			);
 			name = "Response Parsers and Helpers";
@@ -496,6 +499,7 @@
 				FF609D2012E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.m in Sources */,
 				FF9AFB4312EC59040037E930 /* IRWebAPIEngine+LocalCaching.m in Sources */,
 				FF9AFB7412EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m in Sources */,
+				FF0D4C0B12ED96E500D9B97D /* IRWebAPIHelpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
