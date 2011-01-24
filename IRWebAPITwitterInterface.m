@@ -76,7 +76,21 @@
 
 - (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler {
 
-	[self.authenticator authenticateCredentials:inCredentials onSuccess:successHandler onFailure:failureHandler];
+	[self.authenticator authenticateCredentials:inCredentials onSuccess: ^ (IRWebAPIAuthenticator *inAuthenticator, BOOL isAuthenticated, BOOL *inShouldRetry) {
+	
+		if (!isAuthenticated) {
+		
+			*inShouldRetry = YES;
+			return;
+		
+		}
+		
+		NSLog(@"FIXME: Should do an user lookup and retrieve other values including the identifier here, to make sure things will not slide!");
+		
+		if (successHandler)
+		successHandler(inAuthenticator, isAuthenticated, inShouldRetry);
+	
+	} onFailure:failureHandler];
 
 }
 
