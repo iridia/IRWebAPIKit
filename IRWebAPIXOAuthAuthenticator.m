@@ -67,9 +67,7 @@
 				
 				[[mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
 					
-					[POSTBodyElements addObject:key];
-					[POSTBodyElements addObject:@"="];
-					[POSTBodyElements addObject:IRWebAPIKitRFC3986EncodedStringMake(obj)];
+					[POSTBodyElements addObject:[NSString stringWithFormat:@"%@=%@", key, IRWebAPIKitRFC3986EncodedStringMake(obj)]];
 					
 				}];
 			
