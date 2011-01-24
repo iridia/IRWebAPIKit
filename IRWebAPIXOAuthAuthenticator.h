@@ -28,5 +28,17 @@
 
 @property (nonatomic, readwrite, retain) NSString *retrievedToken;
 @property (nonatomic, readwrite, retain) NSString *retrievedTokenSecret;
+
+
+- (NSDictionary *) oAuthHeaderValuesForHTTPMethod:(NSString *)inHTTPMethod baseURL:(NSURL *)inBaseURL arguments:(NSDictionary *)inMethodArguments;
+- (NSString *) oAuthHeaderValueForHTTPMethod:(NSString *)inHTTPMethod baseURL:(NSURL *)inBaseURL arguments:(NSDictionary *)inMethodArguments;
+
+//	The former returns a dictionary, which is used by the latter, which concatenates everything into a string ready for use in the Authorization header or another header, e.g. X-Verify-Credentials-Authorization
+
+
+- (NSString *) oAuthHeaderValueForRequestContext:(NSDictionary *)inRequestContext;
+
+//	Convenience.
+	
 	
 @end

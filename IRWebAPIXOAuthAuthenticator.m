@@ -51,102 +51,39 @@
 - (void) createTransformerBlocks {
 
 	self.globalRequestPostTransformerBlock = ^ (NSDictionary *inOriginalContext) {
-	
-		IRWebAPIKitLog(@"Authenticator post transformer block invoked with context %@", inOriginalContext);
-	
+		
 		NSMutableDictionary *mutatedContext = [inOriginalContext mutableCopy];
+		NSMutableDictionary *mutatedContextHeaderFields = (NSMutableDictionary *)[mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields];
 	
-		BOOL (^isRequestAuthenticated)(void) = ^ {
-			
-			return (BOOL)(!!(self.retrievedTokenSecret));
+		BOOL	isRequestAuthenticated = (BOOL)(!!(self.retrievedTokenSecret)),
+			isPOST = [@"POST" isEqual:[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPMethod]],
+			removesQueryParameters = NO;
+					
+		if (isRequestAuthenticated && isPOST) {
 		
-		};
-		
-		BOOL (^isPOST)(void) = ^ {
-		
-			return [@"POST" isEqual:[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPMethod]];
-		
-		};
-		
-		BOOL removesQueryParameters = NO;
-		NSMutableDictionary *queryParams = [mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters];
-		
-		IRWebAPIKitLog(@"queryParams %@", queryParams);
-	
-		if (isRequestAuthenticated() && isPOST()) {
-		
-			IRWebAPIKitLog(@"Request is invoked after authentication, and is a POST request.  Reforming.");
-		
-		//	If the user is previously authenticated, and this is a POST request, remove query parameters because IRWebAPIKit assumes that all “arguments” are query parameters.
-		
-		//	This is an ugly hack.  We should assume that all parameters are equal, then assign them as POST or Query parameters separately
-		//	Or, there will be an even better way to do so
-		
-			NSString *POSTBody;
-			NSMutableArray *POSTBodyElements = [NSMutableArray array];
-			
-			for (id key in queryParams)
-			[POSTBodyElements addObject:[NSString stringWithFormat:@"%@=%@", key, IRWebAPIKitRFC3986EncodedStringMake([queryParams objectForKey:key])]];
-						
-			POSTBody = [POSTBodyElements componentsJoinedByString:@"&"];
-			IRWebAPIKitLog(@"POST body elements %@, body string %@", POSTBodyElements, POSTBody);
-			
-			[mutatedContext setObject:[POSTBody dataUsingEncoding:NSUTF8StringEncoding] forKey:kIRWebAPIEngineRequestHTTPBody];
-			
-			removesQueryParameters = YES;			
+			[mutatedContext setObject:((^ {
 
-			[[mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields] setObject:@"application/x-www-form-urlencoded" forKey:@"Content-Type"];
+				NSMutableArray *POSTBodyElements = [NSMutableArray array];
+				
+				[[mutatedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+					
+					[POSTBodyElements addObject:key];
+					[POSTBodyElements addObject:@"="];
+					[POSTBodyElements addObject:IRWebAPIKitRFC3986EncodedStringMake(obj)];
+					
+				}];
 			
-			IRWebAPIKitLog(@"Mutated context is %@", mutatedContext);
+				return [[POSTBodyElements componentsJoinedByString:@"&"] dataUsingEncoding:NSUTF8StringEncoding];
+			
+			})()) forKey:kIRWebAPIEngineRequestHTTPBody];
+			
+			[mutatedContextHeaderFields setObject:@"application/x-www-form-urlencoded" forKey:@"Content-Type"];
+			
+			removesQueryParameters = YES;
 		
 		}
 		
-		NSDictionary *unencodedQueryParameters = [mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPQueryParameters];		
-		NSMutableDictionary *signatureStringParameters = [NSMutableDictionary dictionary];
-
-		for (id aKey in unencodedQueryParameters)
-		[signatureStringParameters setObject:IRWebAPIKitRFC3986EncodedStringMake([unencodedQueryParameters objectForKey:aKey]) forKey:aKey];
-		
-
-	//	Add oAuth Parameters to signature string parameters
-		
-		NSMutableDictionary *oAuthParameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-		
-			self.consumerKey, @"oauth_consumer_key",
-			IRWebAPIKitNonce(), @"oauth_nonce",
-			IRWebAPIKitTimestamp(), @"oauth_timestamp",
-			@"HMAC-SHA1", @"oauth_signature_method",
-			@"1.0", @"oauth_version",
-		
-		nil];
-
-		if (self.retrievedToken)
-		[oAuthParameters setObject:self.retrievedToken forKey:@"oauth_token"];
-		
-		for (id key in oAuthParameters)
-		[signatureStringParameters setObject:[oAuthParameters objectForKey:key] forKey:key];
-
-		
-	//	Make signature string!
-		
-		NSString *baseSignatureString = IRWebAPIKitOAuthSignatureBaseStringMake(
-
-			[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPMethod],
-			[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPBaseURL],
-			signatureStringParameters
-			
-		);
-		
-		[oAuthParameters setObject:IRWebAPIKitHMACSHA1(self.consumerSecret, self.retrievedTokenSecret, baseSignatureString) forKey:@"oauth_signature"];
-		
-		NSMutableArray *oAuthHeaderContents = [NSMutableArray array];
-				
-		for (id key in oAuthParameters)
-		[oAuthHeaderContents addObject:[NSString stringWithFormat:@"%@=\"%@\"", key, IRWebAPIKitRFC3986EncodedStringMake([oAuthParameters objectForKey:key])]];
-		
-		[(NSMutableDictionary *)[mutatedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields] setObject:[NSString stringWithFormat:@"OAuth %@", [oAuthHeaderContents componentsJoinedByString:@", "]] forKey:@"Authorization"];
-		
-		IRWebAPIKitLog(@"Returned mutated context is %@", mutatedContext);
+		[mutatedContextHeaderFields setObject:[self oAuthHeaderValueForRequestContext:mutatedContext] forKey:@"Authorization"];
 		
 		if (removesQueryParameters)
 		[mutatedContext setObject:[NSMutableArray array] forKey:kIRWebAPIEngineRequestHTTPQueryParameters];
@@ -215,6 +152,87 @@
 		failureHandler(self, NO, outShouldRetry);
 	
 	}];
+
+}
+
+
+
+
+
+- (NSDictionary *) oAuthHeaderValuesForHTTPMethod:(NSString *)inHTTPMethod baseURL:(NSURL *)inBaseURL arguments:(NSDictionary *)inMethodArguments {
+
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	NSMutableDictionary *signatureStringParameters = [NSMutableDictionary dictionary];
+	
+	NSMutableDictionary *oAuthParameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+
+		self.consumerKey, @"oauth_consumer_key",
+		IRWebAPIKitNonce(), @"oauth_nonce",
+		IRWebAPIKitTimestamp(), @"oauth_timestamp",
+		@"HMAC-SHA1", @"oauth_signature_method",
+		@"1.0", @"oauth_version",
+
+	nil];
+	
+	if (self.retrievedToken)
+	[oAuthParameters setObject:self.retrievedToken forKey:@"oauth_token"];
+	
+	
+	[signatureStringParameters addEntriesFromDictionary:oAuthParameters];
+	
+	[inMethodArguments enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+	
+		[signatureStringParameters setObject:IRWebAPIKitRFC3986EncodedStringMake(obj) forKey:key];
+	
+	}];
+	
+	NSString *signatureBaseString = IRWebAPIKitOAuthSignatureBaseStringMake(
+		
+		inHTTPMethod, inBaseURL, signatureStringParameters
+			
+	);
+	
+	[oAuthParameters setObject:IRWebAPIKitHMACSHA1(
+	
+		self.consumerSecret, 
+		self.retrievedTokenSecret, 
+		signatureBaseString
+	
+	) forKey:@"oauth_signature"];	
+	
+	[oAuthParameters retain];
+	[pool drain];
+	
+	return [oAuthParameters autorelease];
+	
+}
+
+
+
+
+
+- (NSString *) oAuthHeaderValueForHTTPMethod:(NSString *)inHTTPMethod baseURL:(NSURL *)inBaseURL arguments:(NSDictionary *)inMethodArguments {
+	
+	NSDictionary *headerValues = [self oAuthHeaderValuesForHTTPMethod:inHTTPMethod baseURL:inBaseURL arguments:inMethodArguments];
+	
+	NSMutableArray *contents = [NSMutableArray array];
+	
+	for (id aKey in headerValues)
+	[contents addObject:[NSString stringWithFormat:
+	
+		@"%@=\"%@\"", 
+		aKey, IRWebAPIKitRFC3986EncodedStringMake([headerValues objectForKey:aKey])
+	
+	]];
+	
+	return [NSString stringWithFormat:@"OAuth %@", [contents componentsJoinedByString:@", "]];
+	
+}
+
+- (NSString *) oAuthHeaderValueForRequestContext:(NSDictionary *)inRequestContext {
+
+	return 	[self oAuthHeaderValueForHTTPMethod:[inRequestContext valueForKey:kIRWebAPIEngineRequestHTTPMethod] baseURL:[inRequestContext valueForKey:kIRWebAPIEngineRequestHTTPBaseURL] arguments:[inRequestContext valueForKey:kIRWebAPIEngineRequestHTTPQueryParameters]];
 
 }
 
