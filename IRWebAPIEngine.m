@@ -254,20 +254,20 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
-				NSDictionary *requestContext = [self internalResponseContextForConnection:connection];
+				NSDictionary *responseContext = [self internalResponseContextForConnection:connection];
 
 				NSDictionary *parsedResponse = [self parsedResponseForData:inResponse withContext:finalizedContext];
-				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse withRequestContext:requestContext forMethodNamed:inMethodName];
+				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse withRequestContext:responseContext forMethodNamed:inMethodName];
 				
-				if ((inValidator != nil) && (!inValidator(transformedResponse))) {
+				if ((inValidator != nil) && (!inValidator(transformedResponse, responseContext))) {
 
 					if (inFailureHandler)
-					inFailureHandler(transformedResponse, requestContext, &notifyDelegate, &shouldRetry);
+					inFailureHandler(transformedResponse, responseContext, &notifyDelegate, &shouldRetry);
 									
 				} else {
 				
 					if (inSuccessHandler)
-					inSuccessHandler(transformedResponse, requestContext, &notifyDelegate, &shouldRetry);
+					inSuccessHandler(transformedResponse, responseContext, &notifyDelegate, &shouldRetry);
 				
 				}
 				
@@ -284,10 +284,10 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			[self setInternalFailureHandler: ^ {
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
-				NSDictionary *requestContext = [self internalResponseContextForConnection:connection];
+				NSDictionary *responseContext = [self internalResponseContextForConnection:connection];
 				
 				if (inFailureHandler)
-				inFailureHandler([NSDictionary dictionary], requestContext, &notifyDelegate, &shouldRetry);
+				inFailureHandler([NSDictionary dictionary], responseContext, &notifyDelegate, &shouldRetry);
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();

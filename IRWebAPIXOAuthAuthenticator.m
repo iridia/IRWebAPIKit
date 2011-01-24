@@ -118,7 +118,7 @@
 		IRWebAPIResponseQueryResponseParserMake(), kIRWebAPIEngineParser,
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 			
-	nil] validator: ^ (NSDictionary *inResponseOrNil) {
+	nil] validator: ^ (NSDictionary *inResponseOrNil, NSDictionary *inRequestContext) {
 	
 		if (!inResponseOrNil) return NO;
 	

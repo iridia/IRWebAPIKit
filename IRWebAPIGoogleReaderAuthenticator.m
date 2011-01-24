@@ -86,7 +86,7 @@
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 		[NSDictionary dictionaryWithObjectsAndKeys:@"application/x-www-form-urlencoded", @"Content-type", nil], kIRWebAPIEngineRequestHTTPHeaderFields,
 	
-	nil] validator: ^ (NSDictionary *inResponseOrNil) {
+	nil] validator: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext) {
 	
 		if ([[inResponseOrNil valueForKey:@"Auth"] isEqual:[NSNull null]]) return NO;
 		return YES;

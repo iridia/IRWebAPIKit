@@ -39,7 +39,7 @@ typedef NSDictionary * (^IRWebAPIResponseContextTransformer) (NSDictionary *inPa
 //	The latter is not mutable.
 
 
-typedef BOOL (^IRWebAPIResposeValidator) (NSDictionary *inResponseOrNil);
+typedef BOOL (^IRWebAPIResposeValidator) (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext);
 
 //	The validator returns a BOOL regarding to the parsed and transformed response.
 

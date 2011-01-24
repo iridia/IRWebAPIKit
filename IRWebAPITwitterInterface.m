@@ -100,7 +100,7 @@
 
 		@"POST", kIRWebAPIEngineRequestHTTPMethod,
 
-	nil] validator: ^ (NSDictionary *inResponseOrNil) {
+	nil] validator: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext) {
 	
 		id returnedError = [inResponseOrNil objectForKey:@"error"];
 		return (BOOL)(returnedError == nil);
