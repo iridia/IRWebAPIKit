@@ -333,8 +333,6 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 
-	IRWebAPIKitLog(@"Connection %@ did receive response: %@, %@, %x %@, %@", connection, response, [response MIMEType], [response statusCode], [[response class] localizedStringForStatusCode:[response statusCode]], [response allHeaderFields]);
-	
 	NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
 	[responseContext setObject:response forKey:kIRWebAPIEngineResponseContextURLResponseName];
 
