@@ -485,15 +485,29 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	}]) [arguments setObject:[inArgumentsOrNil objectForKey:argumentKey] forKey:argumentKey];		
 
 	
+	NSURL *baseURL = [inOptionsOrNil objectForKey:kIRWebAPIEngineRequestHTTPBaseURL];
+	baseURL = baseURL ? baseURL : [self.context baseURLForMethodNamed:inMethodName];
+	
+	NSMutableDictionary *headerFields = [inOptionsOrNil objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields];
+	headerFields = headerFields ? [[headerFields mutableCopy] autorelease] : [NSMutableDictionary dictionary];
+	
+	id httpBody = [inOptionsOrNil objectForKey:kIRWebAPIEngineRequestHTTPBody];
+	httpBody = httpBody ? httpBody : [NSNull null];
+	
+	NSString *httpMethod = [inOptionsOrNil objectForKey:kIRWebAPIEngineRequestHTTPMethod];
+	httpMethod = httpMethod ? [[httpMethod copy] autorelease] : @"GET";
+	
+	IRWebAPIResponseParser responseParser = [inOptionsOrNil objectForKey:kIRWebAPIEngineParser];
+	responseParser = responseParser ? responseParser : self.parser;
+	
 	NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 	
-		[self.context baseURLForMethodNamed:inMethodName], kIRWebAPIEngineRequestHTTPBaseURL,
-		[NSMutableDictionary dictionary], kIRWebAPIEngineRequestHTTPHeaderFields,
+		baseURL, kIRWebAPIEngineRequestHTTPBaseURL,
+		headerFields, kIRWebAPIEngineRequestHTTPHeaderFields,
 		arguments, kIRWebAPIEngineRequestHTTPQueryParameters,
-		[NSNull null], kIRWebAPIEngineRequestHTTPBody,
-		@"GET", kIRWebAPIEngineRequestHTTPMethod,
-
-		self.parser, kIRWebAPIEngineParser,
+		httpBody, kIRWebAPIEngineRequestHTTPBody,
+		httpMethod, kIRWebAPIEngineRequestHTTPMethod,
+		responseParser, kIRWebAPIEngineParser,
 	
 	nil];
 			
