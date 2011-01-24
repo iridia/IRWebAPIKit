@@ -287,8 +287,8 @@
 		FF7F44D512EDB66500DC1628 /* TwitPic */ = {
 			isa = PBXGroup;
 			children = (
-				FF7F44B612EDB44400DC1628 /* IRWebAPITwitPicInterface.m */,
 				FF7F44B512EDB44400DC1628 /* IRWebAPITwitPicInterface.h */,
+				FF7F44B612EDB44400DC1628 /* IRWebAPITwitPicInterface.m */,
 			);
 			name = TwitPic;
 			sourceTree = "<group>";
