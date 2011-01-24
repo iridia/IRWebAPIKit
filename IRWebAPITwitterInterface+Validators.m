@@ -94,7 +94,7 @@
 
 		id response = [inResponseOrNil valueForKeyPath:@"response"];
 		
-		if (!response || [response isEqual:[NSNull null]] || [response isKindOfClass:[NSArray class]])
+		if (!response || ![response isKindOfClass:[NSArray class]])
 		return NO;
 		
 		if ([(NSArray *)response count] > 0)
