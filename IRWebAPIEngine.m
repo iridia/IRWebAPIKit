@@ -555,6 +555,8 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (NSURLRequest *) requestWithContext:(NSDictionary *)inContext {
 
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:IRWebAPIRequestURLWithQueryParameters(
 	
 		(NSURL *)[inContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL],
@@ -573,7 +575,10 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 	
 	[request setHTTPMethod:[inContext objectForKey:kIRWebAPIEngineRequestHTTPMethod]];
 	
-	return [[request copy] autorelease];
+	NSURLRequest *returnedRequest = [request copy];
+	[pool drain];
+	
+	return [returnedRequest autorelease];
 
 }
 
