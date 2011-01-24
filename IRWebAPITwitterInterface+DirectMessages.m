@@ -15,8 +15,8 @@
 
 	[self.engine fireAPIRequestNamed:@"1/direct_messages.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 
-		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
-		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.since]), @"since_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.before]), @"max_id",
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_entities",
 
@@ -42,8 +42,8 @@
 
 	[self.engine fireAPIRequestNamed:@"1/direct_messages/sent.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 
-		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
-		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.since]), @"since_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.before]), @"max_id",
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_entities",
 

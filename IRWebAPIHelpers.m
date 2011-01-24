@@ -47,12 +47,12 @@ id IRWebAPIKitWrapNil(id inObjectOrNil) {
 
 }
 
-id IRWebAPIKitNumberOrNull (void * aCValue) {
+id IRWebAPIKitNumberOrNull (NSNumber *aNumber) {
 
-	if (aCValue)
-	return [NSNumber value:&aCValue withObjCType:@encode(__typeof__(aCValue))];
-
+	if (!(BOOL)[aNumber boolValue])
 	return [NSNull null];
+	
+	return aNumber;
 	
 };
 

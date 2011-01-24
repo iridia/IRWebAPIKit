@@ -24,8 +24,8 @@
 	
 	[self.engine fireAPIRequestNamed:methodNameForType(inTimelineType) withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
-		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.since]), @"since_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.before]), @"max_id",
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_entities",
 	
@@ -51,8 +51,8 @@
 
 	[self.engine fireAPIRequestNamed:@"1/statuses/mentions.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
-		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.since]), @"since_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.before]), @"max_id",
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_rts",
 		[NSNumber numberWithBool:YES], @"include_entities",
@@ -98,8 +98,8 @@
 
 	[self.engine fireAPIRequestNamed:requestName withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
-		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.since]), @"since_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.before]), @"max_id",
 		[NSNumber numberWithInt:MIN(100, self.defaultBatchSize)], @"count",
 		[NSNumber numberWithBool:YES], @"include_rts",
 		[NSNumber numberWithBool:YES], @"include_entities",

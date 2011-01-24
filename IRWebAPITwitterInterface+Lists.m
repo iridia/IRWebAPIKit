@@ -53,8 +53,8 @@
 		
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/lists/%llu/statuses.json", self.authenticator.currentCredentials.identifier, inListID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		IRWebAPIKitNumberOrNull(inRange.since), @"since_id",
-		IRWebAPIKitNumberOrNull(inRange.before), @"max_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.since]), @"since_id",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:inRange.before]), @"max_id",
 		[NSNumber numberWithInt:self.defaultBatchSize], @"count",
 		[NSNumber numberWithBool:YES], @"include_entities",
 	
