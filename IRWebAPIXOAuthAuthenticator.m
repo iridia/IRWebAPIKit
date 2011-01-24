@@ -85,6 +85,8 @@
 		
 		if (removesQueryParameters)
 		[mutatedContext setObject:[NSMutableArray array] forKey:kIRWebAPIEngineRequestHTTPQueryParameters];
+		
+		IRWebAPIKitLog(@"mutatedContext %@", mutatedContext);
 			
 		return [mutatedContext autorelease];
 	
@@ -201,6 +203,8 @@
 	
 	[oAuthParameters retain];
 	[pool drain];
+	
+	IRWebAPIKitLog(@"oAuthHeaderValuesForHTTPMethod -> %@", oAuthParameters);
 	
 	return [oAuthParameters autorelease];
 	

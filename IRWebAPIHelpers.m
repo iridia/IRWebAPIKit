@@ -278,6 +278,8 @@ NSString * IRWebAPIKitNonce () {
 
 NSString * IRWebAPIKitOAuthSignatureBaseStringMake (NSString *inHTTPMethod, NSURL *inBaseURL, NSDictionary *inQueryParameters) {
 
+	IRWebAPIKitLog(@"IRWebAPIKitOAuthSignatureBaseStringMake -> %@ %@ %@", inHTTPMethod, inBaseURL, inQueryParameters);
+
 	NSString * (^uriEncode) (NSString *) = ^ NSString * (NSString *inString) {
 
 		return IRWebAPIKitRFC3986EncodedStringMake(inString);
@@ -313,11 +315,15 @@ NSString * IRWebAPIKitOAuthSignatureBaseStringMake (NSString *inHTTPMethod, NSUR
 
 	}
 	
+	IRWebAPIKitLog(@"IRWebAPIKitOAuthSignatureBaseStringMake -> %@", returnedString);
+	
 	return returnedString;
 
 }
 
 NSString * IRWebAPIKitHMACSHA1 (NSString *inConsumerSecret, NSString *inTokenSecret, NSString *inPayload) {
+
+	IRWebAPIKitLog(@"IRWebAPIKitHMACSHA1 -> %@ %@ %@", inConsumerSecret, inTokenSecret, inPayload);
 
 //	From Google’s GData Toolkit
 
@@ -343,7 +349,11 @@ NSString * IRWebAPIKitHMACSHA1 (NSString *inConsumerSecret, NSString *inTokenSec
 	 
 	);
 	
-	return IRWebAPIKitBase64StringFromNSDataMake(sigData);
+	NSString *returnedString = IRWebAPIKitBase64StringFromNSDataMake(sigData);
+	
+	IRWebAPIKitLog(@"IRWebAPIKitHMACSHA1 -> %@", returnedString);
+	
+	return returnedString;
   
 }
 

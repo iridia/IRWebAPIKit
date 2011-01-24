@@ -248,6 +248,8 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 			NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
 			
+			IRWebAPIKitLog(@"Engine %@, Connection %@, Request %@, Context %@", self, connection, request, finalizedContext);
+			
 			[self setInternalSuccessHandler: ^ (NSData *inResponse) {
 			
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
