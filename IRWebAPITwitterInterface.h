@@ -65,6 +65,8 @@ static inline IRWebAPITwitterDirectMessageIDRange IRWebAPITwitterDirectMessageID
 
 - (void) updateStatusForCurrentUserWithContents:(NSString *)inContents userInfo:(NSDictionary *)inUserInfo onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback;
 
+- (void) lookupCurrentUserWithSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessHandler failureHandler:(IRWebAPIInterfaceCallback)inFailureHandler;
+
 @end
 
 

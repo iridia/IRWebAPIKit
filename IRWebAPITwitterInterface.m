@@ -82,9 +82,7 @@
 			return;
 		
 		}
-		
-		NSLog(@"FIXME: Should do an user lookup and retrieve other values including the identifier here, to make sure things will not slide!");
-		
+
 		if (successHandler)
 		successHandler(inAuthenticator, isAuthenticated, inShouldRetry);
 	
@@ -128,6 +126,26 @@
 	
 		NSLog(@"Failed. %@", inResponseOrNil);
 		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+	
+	}];
+
+}
+
+
+	
+
+
+- (void) lookupCurrentUserWithSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	[self.engine fireAPIRequestNamed:@"1/account/verify_credentials.json" withArguments:nil options:nil validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+	
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+	
 		if (inFailureCallback)
 		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
