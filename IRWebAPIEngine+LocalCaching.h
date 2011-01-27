@@ -13,7 +13,7 @@ extern NSString * const kIRWebAPIEngineRequestContextLocalCachingTemporaryFileUR
 
 @interface IRWebAPIEngine (LocalCaching)
 
-+ (NSURL *) newTemporaryFileURL;
++ (NSURL *) newTemporaryFileURL NS_RETURNS_RETAINED;
 + (BOOL) cleanUpTemporaryFileAtURL:(NSURL *)inTemporaryFileURL;
 + (IRWebAPIResponseContextTransformer) defaultCleanUpTemporaryFilesResponseTransformer;
 

@@ -66,7 +66,7 @@
 
 - (void) uploadImageAtURL:(NSURL *)inImageURL onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	NSURL *cachingFileURL = [[self.engine class] newTemporaryFileURL];
+	NSURL *cachingFileURL = [[[self.engine class] newTemporaryFileURL] autorelease];
 
 	NSError *error = nil;
 	
