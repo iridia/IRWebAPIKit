@@ -8,6 +8,18 @@
 
 #import "IRWebAPITwitPicInterface.h"
 
+#import <QuartzCore/QuartzCore.h>
+#import <UIKit/UIKit.h>
+#import <ImageIO/ImageIO.h>
+
+
+@interface IRWebAPITwitPicInterface ()
+
+- (void) uploadCachedImageAtURL:(NSURL *)inCachedImageURL onProgress:(void(^)(float inProgressRatio))inProgressCallback onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback;
+
+//	The reason why we pile other methods here is because we want a method that cleans up after itself, so we use a cached URL.  The cached image is deleted once the method call returns.
+
+@end
 
 @implementation IRWebAPITwitPicInterface
 
@@ -29,30 +41,99 @@
 
 }
 
+- (void) uploadImage:(UIImage *)inImage onProgress:(void(^)(float inProgressRatio))inProgressCallback onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	NSData *imageDataOrNil = UIImagePNGRepresentation(inImage);
+	
+	if (!imageDataOrNil) {
+	
+		IRWebAPIKitLog(@"The incoming image can’t be turned to a PNG representation — it might be corrupted or garbled");
+
+		if (inFailureCallback)
+		inFailureCallback(nil, NO, NO);
+		
+		return;
+	
+	}
+	
+	NSURL *cachingFileURL = [[self.engine class] newTemporaryFileURL];
+	
+	[imageDataOrNil writeToURL:cachingFileURL atomically:YES];
+	
+	[self uploadCachedImageAtURL:cachingFileURL onProgress:inProgressCallback onSuccess:inSuccessCallback onFailure:inFailureCallback];
+
+}
+
 - (void) uploadImageAtURL:(NSURL *)inImageURL onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback {
 
+	NSURL *cachingFileURL = [[self.engine class] newTemporaryFileURL];
+
+	NSError *error = nil;
+	
+	if (![[NSFileManager defaultManager] copyItemAtURL:inImageURL toURL:cachingFileURL error:&error]) {
+	
+		IRWebAPIKitLog(@"Can’t copy item at %@ to %@ — aborting, calling failure handler.", inImageURL, cachingFileURL);
+		
+		if (inFailureCallback)
+		inFailureCallback(nil, NO, NO);
+		
+		return;
+	
+	}
+
+	[self uploadCachedImageAtURL:cachingFileURL onProgress:nil onSuccess:inSuccessCallback onFailure:inFailureCallback];
+
+}
+
+- (void) uploadCachedImageAtURL:(NSURL *)inCachedImageURL onProgress:(void(^)(float inProgressRatio))inProgressCallback onSuccess:(IRWebAPIInterfaceCallback)inSuccessCallback onFailure:(IRWebAPIInterfaceCallback)inFailureCallback {
+	
+	
 	NSAssert(self.apiKey, @"%@ needs an API key.", self);
 	NSAssert(self.authenticatingInterface, @"%@ needs an authenticating interface so oAuth Echo works.", self);
-	
-	NSAssert(NO, @"Implement!");
-	
-	[self.engine fireAPIRequestNamed:@"test.php" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	NSAssert([self.authenticatingInterface.authenticator isKindOfClass:[IRWebAPIXOAuthAuthenticator class]], @"Authenticator needs to be of class %@.", NSStringFromClass([IRWebAPIXOAuthAuthenticator class]));
+	NSAssert(self.authenticatingInterface.authenticator.currentCredentials.authenticated, @"%@ needs an authenticating interface with already authenticated credentials to work correctly.", self);
+
+
+//	Abstraction leaks at this line
+	NSURL *xoAuthEchoBaseURL = [NSURL URLWithString:@"1/account/verify_credentials.json" relativeToURL:self.authenticatingInterface.engine.context.baseURL];
+
+	[self.engine fireAPIRequestNamed:@"/2/upload.json" withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
 		self.apiKey, @"key",
 	
 	nil] options:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		[NSDictionary dictionaryWithObjectsAndKeys:
+		[NSMutableDictionary dictionaryWithObjectsAndKeys:
 		
-			inImageURL, @"image",
+			self.apiKey, @"key",
+			inCachedImageURL, @"media",
+			@"", @"message",
 		
 		nil], kIRWebAPIEngineRequestContextFormMultipartFieldsKey,
+		
+		[NSMutableDictionary dictionaryWithObjectsAndKeys:
+		
+			[((IRWebAPIXOAuthAuthenticator *)self.authenticatingInterface.authenticator) oAuthHeaderValueForHTTPMethod:@"GET" baseURL:xoAuthEchoBaseURL arguments:nil], @"X-Verify-Credentials-Authorization",
+			
+			[xoAuthEchoBaseURL absoluteString], @"X-Auth-Service-Provider",
+		
+		nil], kIRWebAPIEngineRequestHTTPHeaderFields,
 	
 	nil] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
 		NSLog(@"Success: %@", inResponseOrNil);
+		
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
-	} failureHandler:nil];
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+	
+		NSLog(@"Failure: %@", inResponseOrNil);
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+	
+	}];
 
 }
 
