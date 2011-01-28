@@ -123,19 +123,25 @@
 	
 		NSHTTPURLResponse *response = (NSHTTPURLResponse *)[inResponseContext objectForKey:kIRWebAPIEngineResponseContextURLResponseName];
 		
-		return (BOOL)([response statusCode] == 200);
+		if ([inResponseOrNil objectForKey:@"url"] == nil) {
+		
+			NSLog(@"Warning: No valid response (%x %@).", [response statusCode], [[response class] localizedStringForStatusCode:[response statusCode]]);
+			
+			NSLog(@"%@", inResponseContext);
+			
+			return NO;
+		
+		}
+		
+		return YES;
 	
 	} successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
-	
-		NSLog(@"Success: %@", [inResponseOrNil objectForKey:kIRWebAPIEngineResponseDictionaryIncomingData]);
-		
+			
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
 	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
-		NSLog(@"Failure: %@", inResponseOrNil);
-		
 		if (inFailureCallback)
 		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
