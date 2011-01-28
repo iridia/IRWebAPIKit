@@ -7,7 +7,6 @@
 //
 
 #import "IRWebAPIKit.h"
-#import "IRWebAPIInterface.h"
 
 
 

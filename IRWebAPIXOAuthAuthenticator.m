@@ -120,9 +120,8 @@
 			
 	nil] validator: ^ (NSDictionary *inResponseOrNil, NSDictionary *inRequestContext) {
 	
-		if (!inResponseOrNil) return NO;
-	
-		IRWebAPIKitLog(@"Validating response %@", inResponseOrNil);
+		if (!([IRWebAPIInterface defaultNoErrorValidator])(inResponseOrNil, inRequestContext))
+		return NO;
 	
 		for (id key in [NSArray arrayWithObjects:@"oauth_token", @"oauth_token_secret", nil])
 		if (!IRWebAPIKitValidResponse([inResponseOrNil objectForKey:key]))

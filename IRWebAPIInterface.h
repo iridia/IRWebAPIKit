@@ -6,11 +6,7 @@
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
-#import "IRWebAPIKit.h"
-
-
-
-
+#import <Foundation/Foundation.h>
 
 @class IRWebAPIEngine, IRWebAPIAuthenticator, IRWebAPIContext;
 
@@ -26,3 +22,5 @@
 
 
 
+
+#import "IRWebAPIInterface+Validators.h"

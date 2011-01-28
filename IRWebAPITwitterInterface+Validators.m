@@ -6,43 +6,14 @@
 //  Copyright 2011 Iridia Productions. All rights reserved.
 //
 
-#import "IRWebAPITwitterInterface+Validators.h"
+#import "IRWebAPIKit.h"
 
 
 @implementation IRWebAPITwitterInterface (Validators)
 
 - (IRWebAPIResposeValidator) defaultNoErrorValidator {
 
-	return [[(^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext) {
-	
-		NSHTTPURLResponse *response = (NSHTTPURLResponse *)[inResponseContext objectForKey:kIRWebAPIEngineResponseContextURLResponseName];
-	
-		BOOL noError = ([response statusCode] == 200);
-	
-		if (!noError) {
-			
-			IRWebAPIKitLog(@"Error: %x %@", [response statusCode], [[response class] localizedStringForStatusCode:[response statusCode]]);
-			
-			if ([inResponseOrNil isEqual:[NSNull null]]) {
-				
-				return NO;
-				
-			}
-			
-			id errorContent = nil;
-			if ((errorContent = [inResponseOrNil valueForKeyPath:@"error"])) {
-				
-				IRWebAPIKitLog(@"Error from Server: %@", errorContent);
-				
-			}
-
-			return NO;
-		
-		}
-	
-		return YES;
-	
-	}) copy] autorelease];	
+	return [IRWebAPIInterface defaultNoErrorValidator];
 
 }
 
