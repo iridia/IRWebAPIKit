@@ -119,9 +119,15 @@
 		
 		nil], kIRWebAPIEngineRequestHTTPHeaderFields,
 	
-	nil] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+	nil] validator: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext) {
 	
-		NSLog(@"Success: %@", inResponseOrNil);
+		NSHTTPURLResponse *response = (NSHTTPURLResponse *)[inResponseContext objectForKey:kIRWebAPIEngineResponseContextURLResponseName];
+		
+		return (BOOL)([response statusCode] == 200);
+	
+	} successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+	
+		NSLog(@"Success: %@", [inResponseOrNil objectForKey:kIRWebAPIEngineResponseDictionaryIncomingData]);
 		
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
