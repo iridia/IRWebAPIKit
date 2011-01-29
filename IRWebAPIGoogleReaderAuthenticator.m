@@ -44,6 +44,8 @@
 		
 		}
 		
+		NSLog(@"Transformed %@", transformedContext);
+		
 		return (NSDictionary *)transformedContext;
 	
 	} copy] retain];
@@ -95,6 +97,8 @@
 	
 		self.authToken = [inResponseOrNil valueForKey:@"Auth"];
 		self.currentCredentials = inCredentials;
+		
+		NSLog(@"Google Reader REQ -> %@", inResponseOrNil);
 		
 		if (successHandler)
 		successHandler(self, YES, outShouldRetry);
