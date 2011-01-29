@@ -127,8 +127,6 @@
 		
 			NSLog(@"Warning: No valid response (%x %@).", [response statusCode], [[response class] localizedStringForStatusCode:[response statusCode]]);
 			
-			NSLog(@"%@", inResponseContext);
-			
 			return NO;
 		
 		}
