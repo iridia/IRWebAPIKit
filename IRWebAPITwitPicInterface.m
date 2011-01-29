@@ -140,6 +140,8 @@
 	
 	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
+		*outShouldRetry = YES;
+	
 		if (inFailureCallback)
 		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	
