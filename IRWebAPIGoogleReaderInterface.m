@@ -9,6 +9,12 @@
 #import "IRWebAPIGoogleReaderInterface.h"
 
 
+@interface IRWebAPIGoogleReaderInterface ()
+
+- (NSString *) exclusionStringFromArray:(NSArray *)excludedItemsOrStates;
+
+@end
+
 @implementation IRWebAPIGoogleReaderInterface
 
 - (id) init {
@@ -22,14 +28,23 @@
 	self = [self initWithEngine:googleReaderEngine authenticator:googleReaderAuthenticator];
 	if (!self) return nil;
 	
+	self.batchSize = 200;
+	
 	
 	[self.engine.globalRequestPreTransformers addObject:[[ ^ (NSDictionary *inOriginalContext) {
 		
 		NSMutableDictionary *transformedContext = [[inOriginalContext mutableCopy] autorelease];
-		NSMutableDictionary *queryParameters = [transformedContext valueForKey:kIRWebAPIEngineRequestHTTPQueryParameters];
+		NSMutableDictionary *queryParameters = [transformedContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters];
+		
+		if (!queryParameters) {
+		
+			queryParameters = [NSMutableDictionary dictionary];
+			[transformedContext setObject:queryParameters forKey:kIRWebAPIEngineRequestHTTPQueryParameters];
+		
+		}
 		
 		[queryParameters setObject:@"IRWebAPIKit" forKey:@"client"];
-		[queryParameters setObject:[NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]] forKey:@"ck"];
+		[queryParameters setObject:[NSNumber numberWithDouble:floor([[NSDate date] timeIntervalSince1970])] forKey:@"ck"];
 		[queryParameters setObject:@"json" forKey:@"output"];
 		
 		return (NSDictionary *)transformedContext;
@@ -83,9 +98,9 @@
 
 }
 
-- (void) retrieveFeedsWithSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+- (void) retrieveSubscribedFeedsWithSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
-	[self.engine fireAPIRequestNamed:@"reader/api/0/unread-count" withArguments:nil options:nil validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+	[self.engine fireAPIRequestNamed:@"reader/api/0/subscription/list" withArguments:nil options:nil validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
@@ -99,9 +114,37 @@
 
 }
 
-- (void) retrieveItemsOfFeed:(NSURL *)feedURL crawledAfterDate:(NSDate *)crawledDate excluding:(NSArray *)itemsOrStates successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+- (void) retrieveFeedsWithUnreadItemsUsingSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	NSAssert(NO, @"Implement %s", __PRETTY_FUNCTION__);
+
+}
+
+- (void) retrieveTagsWithSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	NSAssert(NO, @"Implement %s", __PRETTY_FUNCTION__);
+
+}
+
+- (void) retrieveItemsOfFeed:(NSURL *)feedURL crawledAfterDate:(NSDate *)crawledDate excluding:(NSArray *)itemsOrStates successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	[self.engine fireAPIRequestNamed:[@"reader/api/0/stream/contents/feed/" stringByAppendingString:[feedURL absoluteString]] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+		[NSNumber numberWithInt:self.batchSize], @"n",
+		[self exclusionStringFromArray:itemsOrStates], @"xt",
+		@"d", @"r",
+	
+	nil] options:nil validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+	 
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+	
+	}];
 
 }
 
@@ -132,6 +175,18 @@
 - (void) retrieveNotesWithSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	NSAssert(NO, @"Implement %s", __PRETTY_FUNCTION__);
+
+}
+
+
+
+
+
+- (NSString *) exclusionStringFromArray:(NSArray *)excludedItemsOrStates {
+
+	NSLog(@"Implement %s !", __PRETTY_FUNCTION__);
+
+	return @"";
 
 }
 
