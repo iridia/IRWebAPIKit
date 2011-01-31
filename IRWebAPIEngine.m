@@ -254,8 +254,6 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 			NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
 			
-			IRWebAPIKitLog(@"Engine %@, Connection %@, Request %@, Context %@", self, connection, request, finalizedContext);
-			
 			[self setInternalSuccessHandler: ^ (NSData *inResponse) {
 			
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -341,8 +339,12 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 
-	NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
-	[responseContext setObject:response forKey:kIRWebAPIEngineResponseContextURLResponseName];
+	dispatch_async(self.sharedDispatchQueue, ^{
+
+		NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
+		[responseContext setObject:response forKey:kIRWebAPIEngineResponseContextURLResponseName];
+	
+	});
 
 }
 
@@ -358,10 +360,10 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 - (void) connection:(NSURLConnection *)inConnection didFailWithError:(NSError *)error {
 
-	NSLog(@"Connection did fail with error %@", error);
-
 	dispatch_async(self.sharedDispatchQueue, ^{
 	
+		NSLog(@"Connection did fail with error %@", error);
+
 		[self internalFailureHandlerForConnection:inConnection]();
 	
 	});
