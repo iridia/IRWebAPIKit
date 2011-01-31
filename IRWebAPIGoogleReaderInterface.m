@@ -9,6 +9,12 @@
 #import "IRWebAPIGoogleReaderInterface.h"
 
 
+NSString * const kIRWebAPIGoogleReaderInterfaceBatchSize = @"n";
+
+
+
+
+
 @interface IRWebAPIGoogleReaderInterface ()
 
 - (NSString *) exclusionStringFromArray:(NSArray *)excludedItemsOrStates;
@@ -130,7 +136,7 @@
 
 	[self.engine fireAPIRequestNamed:[@"reader/api/0/stream/contents/feed/" stringByAppendingString:[feedURL absoluteString]] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
-		[NSNumber numberWithInt:self.batchSize], @"n",
+		[NSNumber numberWithInt:self.batchSize], kIRWebAPIGoogleReaderInterfaceBatchSize,
 		[self exclusionStringFromArray:itemsOrStates], @"xt",
 		@"d", @"r",
 	
