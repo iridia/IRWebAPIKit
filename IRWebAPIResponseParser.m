@@ -27,7 +27,7 @@ IRWebAPIResponseParser IRWebAPIResponseDefaultParserMake () {
 	
 	};
 
-	return defaultParser;
+	return [[defaultParser copy] autorelease];
 
 }
 
@@ -70,7 +70,7 @@ IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake () {
 	
 	};
 	
-	return queryResponseParser;
+	return [[queryResponseParser copy] autorelease];
 
 }
 
@@ -125,6 +125,6 @@ IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake () {
 	
 	};
 	
-	return defaultJSONParser;
+	return [[defaultJSONParser copy] autorelease];
 	
 }
