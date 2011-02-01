@@ -23,6 +23,8 @@
 
 @implementation IRWebAPITwitPicInterface
 
+@synthesize apiKey, authenticatingInterface;
+
 - (id) init {
 
 	IRWebAPIContext *twitPicContext = [[[IRWebAPIContext alloc] initWithBaseURL:[NSURL URLWithString:@"http://api.twitpic.com/"]] autorelease];

@@ -11,6 +11,11 @@
 
 @implementation IRWebAPICredentials
 
+@synthesize identifier, identifierPlaceholder, identifierLabelText;
+@synthesize qualifier, qualifierPlaceholder, qualifierLabelText;
+@synthesize displayName, notes, userInfo;
+@synthesize authenticated;
+
 - (id) init {
 
 	self = [super init]; if (!self) return nil;

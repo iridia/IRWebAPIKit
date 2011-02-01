@@ -8,21 +8,7 @@
 
 
 @class IRWebAPIEngine, IRWebAPICredentials;
-@interface IRWebAPIAuthenticator : NSObject {
-
-	IRWebAPIEngine *engine;
-
-//	In -associateWithEngine, these blocks are made and injected into a particular engine.
-
-	IRWebAPIRequestContextTransformer globalRequestPreTransformerBlock;
-	IRWebAPIRequestContextTransformer globalRequestPostTransformerBlock;
-	
-	IRWebAPIResponseContextTransformer globalResponsePreTransformerBlock;
-	IRWebAPIResponseContextTransformer globalResponsePostTransformerBlock;
-	
-	IRWebAPICredentials *currentCredentials;
-
-}
+@interface IRWebAPIAuthenticator : NSObject
 
 - (id) initWithEngine:(IRWebAPIEngine *)inEngine;
 

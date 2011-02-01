@@ -76,6 +76,11 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 @implementation IRWebAPIEngine
 
+@synthesize parser, context;
+@synthesize globalRequestPreTransformers, requestTransformers, globalRequestPostTransformers;
+@synthesize globalResponsePreTransformers, responseTransformers, globalResponsePostTransformers;
+@synthesize sharedDispatchQueue;
+
 # pragma mark -
 # pragma mark Initializationand Memory Management
 

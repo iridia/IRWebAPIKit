@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   version = "1.1">
+   version = "1.3">
    <BuildAction
       parallelizeBuildables = "NO"
       buildImplicitDependencies = "YES">
@@ -14,12 +14,17 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FF7408231296A8D200571D46"
+               BuildableName = "libIRWebAPIKit.a"
+               BlueprintName = "IRWebAPIKit"
                ReferencedContainer = "container:IRWebAPIKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.GDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.GDB"
+      shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
       </Testables>
@@ -44,6 +49,7 @@
       buildConfiguration = "Debug">
    </ProfileAction>
    <ArchiveAction
-      buildConfiguration = "Release">
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

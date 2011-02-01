@@ -23,6 +23,8 @@ NSString * const kIRWebAPIGoogleReaderInterfaceBatchSize = @"n";
 
 @implementation IRWebAPIGoogleReaderInterface
 
+@synthesize batchSize;
+
 - (id) init {
 
 	IRWebAPIContext *googleReaderContext = [[[IRWebAPIContext alloc] initWithBaseURL:[NSURL URLWithString:@"https://www.google.com"]] autorelease];
@@ -107,6 +109,8 @@ NSString * const kIRWebAPIGoogleReaderInterfaceBatchSize = @"n";
 - (void) retrieveSubscribedFeedsWithSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	[self.engine fireAPIRequestNamed:@"reader/api/0/subscription/list" withArguments:nil options:nil validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+	
+		NSLog(@"reader/api/0/subscription/list %@", inResponseOrNil);
 		
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);

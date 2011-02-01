@@ -7,11 +7,21 @@
 		<key>IRWebAPIKit.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>1</integer>
+		</dict>
+		<key>IRWebAPIKitTest.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>36</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>FF45627712D05708000239DC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>FF7408231296A8D200571D46</key>
 		<dict>
 			<key>primary</key>

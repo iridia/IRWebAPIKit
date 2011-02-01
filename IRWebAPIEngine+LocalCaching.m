@@ -66,7 +66,8 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 	
 		NSArray *cachedFileURLs = [[inResponseContext objectForKey:kIRWebAPIEngineResponseContextOriginalRequestContextName] objectForKey:kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey];
 		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
+	//	DISPATCH_QUEUE_PRIORITY_BACKGROUND is unrecognized by LLVM 2.0 so we’re using the number it uses
+		dispatch_async(dispatch_get_global_queue(-2, 0), ^ {
 		
 			if (cachedFileURLs)
 			for (NSURL *aFileURL in cachedFileURLs)

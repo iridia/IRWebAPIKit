@@ -8,6 +8,8 @@
 
 #import "IRWebAPIEngine.h"
 
+#import <dispatch/dispatch.h>
+
 
 extern NSString * const kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey;
 

@@ -20,6 +20,7 @@
 @implementation IRWebAPIXOAuthAuthenticator
 
 @synthesize consumerKey, consumerSecret, retrievedToken, retrievedTokenSecret;
+@synthesize currentCredentials;
 
 - (id) initWithEngine:(IRWebAPIEngine *)inEngine {
 

@@ -10,6 +10,9 @@
 
 @implementation IRWebAPITwitterInterface
 
+@synthesize defaultBatchSize;
+@synthesize consumerKey, consumerSecret;
+
 - (id) init {
 
 	IRWebAPIContext *twitterContext = [[[IRWebAPIContext alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.twitter.com/"]] autorelease];
@@ -46,35 +49,37 @@
 
 - (void) setConsumerKey:(NSString *)inConsumerKey {
 
-	IRWebAPIXOAuthAuthenticator *authenticator = (IRWebAPIXOAuthAuthenticator *)(self.authenticator);
-	authenticator.consumerKey = inConsumerKey;
+	((IRWebAPIXOAuthAuthenticator *)(self.authenticator)).consumerKey = inConsumerKey;
 
 }
 
 - (NSString *) consumerKey {
 
-	IRWebAPIXOAuthAuthenticator *authenticator = (IRWebAPIXOAuthAuthenticator *)(self.authenticator);
-	return authenticator.consumerKey;
+	return ((IRWebAPIXOAuthAuthenticator *)(self.authenticator)).consumerKey;
 
 }
 
 - (void) setConsumerSecret:(NSString *)inConsumerSecret {
 
-	IRWebAPIXOAuthAuthenticator *authenticator = (IRWebAPIXOAuthAuthenticator *)(self.authenticator);
-	authenticator.consumerSecret = inConsumerSecret;
+	((IRWebAPIXOAuthAuthenticator *)(self.authenticator)).consumerSecret = inConsumerSecret;
 
 }
 
 - (NSString *) consumerSecret {
 
-	IRWebAPIXOAuthAuthenticator *authenticator = (IRWebAPIXOAuthAuthenticator *)(self.authenticator);
-	return authenticator.consumerSecret;
+	return ((IRWebAPIXOAuthAuthenticator *)(self.authenticator)).consumerSecret;
 
 }
 
 - (void) authenticateCredentials:(IRWebAPICredentials *)inCredentials onSuccess:(IRWebAPIAuthenticatorCallback)successHandler onFailure:(IRWebAPIAuthenticatorCallback)failureHandler {
 
+	NSLog(@"%@ %s", self, __PRETTY_FUNCTION__);
+	
+	NSLog(@"My authenticator , %@", self.authenticator);
+
 	[self.authenticator authenticateCredentials:inCredentials onSuccess: ^ (IRWebAPIAuthenticator *inAuthenticator, BOOL isAuthenticated, BOOL *inShouldRetry) {
+	
+		NSLog(@"authentication is done.");
 	
 		if (!isAuthenticated) {
 		
@@ -86,7 +91,14 @@
 		if (successHandler)
 		successHandler(inAuthenticator, isAuthenticated, inShouldRetry);
 	
-	} onFailure:failureHandler];
+	} onFailure: ^ (IRWebAPIAuthenticator *inAuthenticator, BOOL isAuthenticated, BOOL *inShouldRetry) {
+	
+		NSLog(@"Failed. %@", self);
+	
+		if (failureHandler)
+		failureHandler(inAuthenticator, isAuthenticated, inShouldRetry);
+	
+	}];
 
 }
 
