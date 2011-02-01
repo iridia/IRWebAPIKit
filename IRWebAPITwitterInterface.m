@@ -12,6 +12,7 @@
 
 @synthesize defaultBatchSize;
 @synthesize consumerKey, consumerSecret;
+@dynamic authenticator;
 
 - (id) init {
 
