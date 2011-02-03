@@ -30,6 +30,12 @@
 		NSMutableDictionary *transformedContext = [[inOriginalContext mutableCopy] autorelease];
 		
 		NSMutableDictionary *headerFields = [transformedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields];
+		if (![headerFields isKindOfClass:[NSMutableDictionary class]]) {
+		
+			headerFields = [[headerFields mutableCopy] autorelease];
+			[transformedContext setObject:headerFields forKey:kIRWebAPIEngineRequestHTTPHeaderFields];
+		
+		}
 		
 		if (![headerFields isEqual:[NSNull null]]) {
 		
