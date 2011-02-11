@@ -16,7 +16,7 @@ dsa_priv.pem
 *.perspectivev3
 *.pbxuser
 *.xcuserdatad/
-
+*.xcworkspace/
 
 # Generated files
 
