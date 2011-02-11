@@ -10,7 +10,7 @@
 
 
 
-#if 1
+#if 0
 
 	#define IRWebAPIKitLog( s, ... ) NSLog( @"<%s : (%d)> %@",__FUNCTION__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
 
