@@ -356,8 +356,18 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 - (void) connectionDidFinishLoading:(NSURLConnection *)inConnection {
 
 	dispatch_async(self.sharedDispatchQueue, ^{
+	
+		@try {
 
-		[self internalSuccessHandlerForConnection:inConnection]([self internalDataStoreForConnection:inConnection]);
+			[self internalSuccessHandlerForConnection:inConnection]([self internalDataStoreForConnection:inConnection]);
+		
+		} @catch (NSException *e) {
+		
+			NSLog(@"Handle Exception: %@", e);
+			
+			@throw e;
+		
+		}
 	
 	});
 	
