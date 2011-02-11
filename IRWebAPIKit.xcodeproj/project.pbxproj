@@ -622,6 +622,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PREBINDING = YES;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -634,6 +635,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PREBINDING = YES;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -644,7 +646,6 @@
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				PREBINDING = NO;
 				PRODUCT_NAME = IRWebAPIKit;
 				SDKROOT = iphoneos;
