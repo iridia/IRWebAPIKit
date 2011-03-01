@@ -42,6 +42,9 @@ typedef uint64_t IRWebAPITwitterDirectMessageID;
 
 typedef IRWebAPITwitterStatusIDRange IRWebAPITwitterDirectMessageIDRange;
 
+#define IRWebAPITwitterDirectMessageIDRangeNull IRWebAPITwitterStatusIDRangeNull
+#define IRWebAPITwitterDirectMessageIdentifierNotApplicable IRWebAPITwitterStatusIdentifierNotApplicable
+
 static inline IRWebAPITwitterDirectMessageIDRange IRWebAPITwitterDirectMessageIDRangeMake (IRWebAPITwitterDirectMessageID begin, IRWebAPITwitterDirectMessageID end) {
 
 	IRWebAPITwitterDirectMessageIDRange returnedRange;
