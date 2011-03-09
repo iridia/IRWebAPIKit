@@ -363,9 +363,9 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 		
 		} @catch (NSException *e) {
 		
-			NSLog(@"Handle Exception: %@", e);
+			NSLog(@"Handle Exception: %@ %@", e, inConnection);
 			
-			@throw e;
+			[self internalFailureHandlerForConnection:inConnection]();
 		
 		}
 	
