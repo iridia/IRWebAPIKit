@@ -46,7 +46,6 @@
 		FF7F44C412EDB52800DC1628 /* IRWebAPIImageStorageProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7F44C312EDB52800DC1628 /* IRWebAPIImageStorageProvider.h */; };
 		FF7F44E112EDB74F00DC1628 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF7F44E012EDB74F00DC1628 /* CoreFoundation.framework */; };
 		FF7F44E312EDB74F00DC1628 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF7F44E212EDB74F00DC1628 /* Foundation.framework */; };
-		FF7F44E512EDB74F00DC1628 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF7F44E412EDB74F00DC1628 /* MobileCoreServices.framework */; };
 		FF7F44E712EDB74F00DC1628 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF7F44E612EDB74F00DC1628 /* Security.framework */; };
 		FF7F44E912EDB74F00DC1628 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF7F44E812EDB74F00DC1628 /* SystemConfiguration.framework */; };
 		FF896A6B12A5666D00AE2AF3 /* IRWebAPIInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF896A6912A5666D00AE2AF3 /* IRWebAPIInterface.h */; };
@@ -63,6 +62,7 @@
 		FF9AFBF312EC5E9F0037E930 /* IRWebAPIKitDefines.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9AFB7F12EC5CB80037E930 /* IRWebAPIKitDefines.m */; };
 		FFC41B9112B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h in Headers */ = {isa = PBXBuildFile; fileRef = FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */; };
 		FFC41B9212B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m in Sources */ = {isa = PBXBuildFile; fileRef = FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */; };
+		FFDA9D0A13278C4500546B66 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFDA9D0913278C4500546B66 /* MobileCoreServices.framework */; };
 		FFF90E1C12E3805D00464897 /* IRWebAPITwitterInterface+Lists.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */; };
 		FFF90E1D12E3805D00464897 /* IRWebAPITwitterInterface+Validators.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90D0A12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m */; };
 		FFF90E1E12E3807700464897 /* IRWebAPITwitterInterface+Validators.h in Headers */ = {isa = PBXBuildFile; fileRef = FFF90D0912E37D0400464897 /* IRWebAPITwitterInterface+Validators.h */; };
@@ -137,7 +137,6 @@
 		FF7F44C312EDB52800DC1628 /* IRWebAPIImageStorageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIImageStorageProvider.h; sourceTree = "<group>"; };
 		FF7F44E012EDB74F00DC1628 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		FF7F44E212EDB74F00DC1628 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		FF7F44E412EDB74F00DC1628 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		FF7F44E612EDB74F00DC1628 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		FF7F44E812EDB74F00DC1628 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FF896A6912A5666D00AE2AF3 /* IRWebAPIInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterface.h; sourceTree = "<group>"; };
@@ -155,6 +154,7 @@
 		FF9AFB7F12EC5CB80037E930 /* IRWebAPIKitDefines.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIKitDefines.m; sourceTree = "<group>"; };
 		FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPITwitterInterface+Geo.h"; sourceTree = "<group>"; };
 		FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPITwitterInterface+Geo.m"; sourceTree = "<group>"; };
+		FFDA9D0913278C4500546B66 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		FFE2607212D084CB001AF1AF /* IRWebAPIKitEntityDefinesGenerator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = IRWebAPIKitEntityDefinesGenerator.rb; sourceTree = "<group>"; };
 		FFF90C9412E3768C00464897 /* IRWebAPITwitterInterface+Lists.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPITwitterInterface+Lists.h"; sourceTree = "<group>"; };
 		FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPITwitterInterface+Lists.m"; sourceTree = "<group>"; };
@@ -176,9 +176,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FFDA9D0A13278C4500546B66 /* MobileCoreServices.framework in Frameworks */,
 				FF7F44E112EDB74F00DC1628 /* CoreFoundation.framework in Frameworks */,
 				FF7F44E312EDB74F00DC1628 /* Foundation.framework in Frameworks */,
-				FF7F44E512EDB74F00DC1628 /* MobileCoreServices.framework in Frameworks */,
 				FF7F44E712EDB74F00DC1628 /* Security.framework in Frameworks */,
 				FF7F44E912EDB74F00DC1628 /* SystemConfiguration.framework in Frameworks */,
 			);
@@ -263,7 +263,7 @@
 				FF7408251296A8D200571D46 /* Products */,
 				FF7F44E012EDB74F00DC1628 /* CoreFoundation.framework */,
 				FF7F44E212EDB74F00DC1628 /* Foundation.framework */,
-				FF7F44E412EDB74F00DC1628 /* MobileCoreServices.framework */,
+				FFDA9D0913278C4500546B66 /* MobileCoreServices.framework */,
 				FF7F44E612EDB74F00DC1628 /* Security.framework */,
 				FF7F44E812EDB74F00DC1628 /* SystemConfiguration.framework */,
 			);
