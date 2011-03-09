@@ -205,4 +205,28 @@
 
 
 
+- (void) retrieveStatusWithIdentifier:(IRWebAPITwitterStatusID)inID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/statuses/show/%llu.json", inID] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
+	
+		[NSNumber numberWithBool:YES], @"include_entities",
+	
+	nil] options:nil validator:nil successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		
+		if (inSuccessCallback)
+		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+	 
+	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		
+		if (inFailureCallback)
+		inFailureCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
+	
+	}];
+
+}
+
+
+
+
+
 @end
