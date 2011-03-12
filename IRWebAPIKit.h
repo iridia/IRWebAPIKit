@@ -51,6 +51,8 @@
 #import "IRWebAPIImageStorageProvider.h"
 #import "IRWebAPITwitPicInterface.h"
 
+#import "IRRemoteResourcesManager.h"
+
 
 
 

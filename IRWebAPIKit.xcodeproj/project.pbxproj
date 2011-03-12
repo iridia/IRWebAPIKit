@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		FF0D4C0B12ED96E500D9B97D /* IRWebAPIHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0D4C0A12ED96E500D9B97D /* IRWebAPIHelpers.m */; };
 		FF0E874112B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0E874012B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h */; };
+		FF0E93E9132BB07000A316E1 /* IRRemoteResourcesManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0E93E7132BB07000A316E1 /* IRRemoteResourcesManager.h */; };
+		FF0E93EA132BB07000A316E1 /* IRRemoteResourcesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0E93E8132BB07000A316E1 /* IRRemoteResourcesManager.m */; };
 		FF1B23CD12F3400F00B30B99 /* IRWebAPIInterface+Validators.h in Headers */ = {isa = PBXBuildFile; fileRef = FF1B23CB12F3400F00B30B99 /* IRWebAPIInterface+Validators.h */; };
 		FF1B23CE12F3400F00B30B99 /* IRWebAPIInterface+Validators.m in Sources */ = {isa = PBXBuildFile; fileRef = FF1B23CC12F3400F00B30B99 /* IRWebAPIInterface+Validators.m */; };
 		FF25FA2F1299406200975BE3 /* IRWebAPICredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FA2D1299406200975BE3 /* IRWebAPICredentials.h */; };
@@ -91,6 +93,8 @@
 /* Begin PBXFileReference section */
 		FF0D4C0A12ED96E500D9B97D /* IRWebAPIHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIHelpers.m; sourceTree = "<group>"; };
 		FF0E874012B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterfaceURLShortening.h; sourceTree = "<group>"; };
+		FF0E93E7132BB07000A316E1 /* IRRemoteResourcesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRRemoteResourcesManager.h; sourceTree = "<group>"; };
+		FF0E93E8132BB07000A316E1 /* IRRemoteResourcesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRRemoteResourcesManager.m; sourceTree = "<group>"; };
 		FF1B23CB12F3400F00B30B99 /* IRWebAPIInterface+Validators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPIInterface+Validators.h"; sourceTree = "<group>"; };
 		FF1B23CC12F3400F00B30B99 /* IRWebAPIInterface+Validators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPIInterface+Validators.m"; sourceTree = "<group>"; };
 		FF25FA2D1299406200975BE3 /* IRWebAPICredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPICredentials.h; sourceTree = "<group>"; };
@@ -187,6 +191,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FF0E93DD132BAF9200A316E1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FF7F44E012EDB74F00DC1628 /* CoreFoundation.framework */,
+				FF7F44E212EDB74F00DC1628 /* Foundation.framework */,
+				FFDA9D0913278C4500546B66 /* MobileCoreServices.framework */,
+				FF7F44E612EDB74F00DC1628 /* Security.framework */,
+				FF7F44E812EDB74F00DC1628 /* SystemConfiguration.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FF0E93DE132BAFA200A316E1 /* Remote Resources Handling */ = {
+			isa = PBXGroup;
+			children = (
+				FF0E93E7132BB07000A316E1 /* IRRemoteResourcesManager.h */,
+				FF0E93E8132BB07000A316E1 /* IRRemoteResourcesManager.m */,
+			);
+			name = "Remote Resources Handling";
+			sourceTree = "<group>";
+		};
 		FF25FA79129944A900975BE3 /* Response Parsers and Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -257,15 +282,12 @@
 				FF25FA7B129944C200975BE3 /* Engine & Foundation */,
 				FF25FA79129944A900975BE3 /* Response Parsers and Helpers */,
 				FF25FA7A129944B300975BE3 /* Credentials and Authenticators */,
+				FF0E93DE132BAFA200A316E1 /* Remote Resources Handling */,
 				FF896B5812A5667A00AE2AF3 /* Interfacing Wrapper */,
 				FF45628512D05732000239DC /* Test */,
 				FF7408191296A88B00571D46 /* Cappuccino */,
+				FF0E93DD132BAF9200A316E1 /* Frameworks */,
 				FF7408251296A8D200571D46 /* Products */,
-				FF7F44E012EDB74F00DC1628 /* CoreFoundation.framework */,
-				FF7F44E212EDB74F00DC1628 /* Foundation.framework */,
-				FFDA9D0913278C4500546B66 /* MobileCoreServices.framework */,
-				FF7F44E612EDB74F00DC1628 /* Security.framework */,
-				FF7F44E812EDB74F00DC1628 /* SystemConfiguration.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -403,6 +425,7 @@
 				FF7F44B712EDB44400DC1628 /* IRWebAPITwitPicInterface.h in Headers */,
 				FF7F44C412EDB52800DC1628 /* IRWebAPIImageStorageProvider.h in Headers */,
 				FF1B23CD12F3400F00B30B99 /* IRWebAPIInterface+Validators.h in Headers */,
+				FF0E93E9132BB07000A316E1 /* IRRemoteResourcesManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -532,6 +555,7 @@
 				FF7F44B812EDB44400DC1628 /* IRWebAPITwitPicInterface.m in Sources */,
 				FF1B23CE12F3400F00B30B99 /* IRWebAPIInterface+Validators.m in Sources */,
 				FF4FCC6212F4637F0037F33C /* IRWebAPIResponseParser.m in Sources */,
+				FF0E93EA132BB07000A316E1 /* IRRemoteResourcesManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
