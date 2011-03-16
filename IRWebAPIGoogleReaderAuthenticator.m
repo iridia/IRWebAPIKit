@@ -37,18 +37,7 @@
 		
 		}
 		
-		if (![headerFields isEqual:[NSNull null]]) {
-		
-			if (![headerFields isKindOfClass:[NSMutableDictionary class]]) {
-
-				headerFields = [[headerFields mutableCopy] autorelease];
-				[transformedContext setObject:headerFields forKey:kIRWebAPIEngineRequestHTTPHeaderFields];
-				
-			}
-		
-			[headerFields setObject:[NSString stringWithFormat:@"GoogleLogin auth=%@", self.authToken] forKey:@"Authorization"];
-		
-		}
+		[headerFields setObject:[NSString stringWithFormat:@"GoogleLogin auth=%@", self.authToken] forKey:@"Authorization"];
 		
 		NSLog(@"Transformed %@", transformedContext);
 		
@@ -96,7 +85,12 @@
 	
 	nil] validator: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext) {
 	
-		if ([[inResponseOrNil valueForKey:@"Auth"] isEqual:[NSNull null]]) return NO;
+		if ([inResponseOrNil valueForKey:@"Auth"] == nil)
+		return NO;
+		
+		if ([inResponseOrNil valueForKey:@"Error"])
+		return NO;
+		
 		return YES;
 	
 	} successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
