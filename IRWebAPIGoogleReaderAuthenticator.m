@@ -29,7 +29,7 @@
 		
 		NSMutableDictionary *transformedContext = [[inOriginalContext mutableCopy] autorelease];
 		
-		NSMutableDictionary *headerFields = [transformedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields];
+		volatile NSMutableDictionary *headerFields = [transformedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields];
 		if (![headerFields isKindOfClass:[NSMutableDictionary class]]) {
 		
 			headerFields = [[headerFields mutableCopy] autorelease];
