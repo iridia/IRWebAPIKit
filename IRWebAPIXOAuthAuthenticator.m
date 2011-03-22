@@ -146,7 +146,11 @@
 		
 	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
-		NSLog(@"XOAuth AUTH FAIL %@", inResponseOrNil);
+		self.currentCredentials.authenticated = NO;
+		self.retrievedToken = nil;
+		self.retrievedTokenSecret = nil;
+	
+		NSLog(@"XOAuth FAIL %@, %@", inResponseOrNil, inResponseContext);
 	
 		if (failureHandler)
 		failureHandler(self, NO, outShouldRetry);
