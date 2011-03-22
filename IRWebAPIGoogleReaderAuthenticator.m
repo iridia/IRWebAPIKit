@@ -28,15 +28,9 @@
 		if (!self.authToken) return inOriginalContext;
 		
 		NSMutableDictionary *transformedContext = [[inOriginalContext mutableCopy] autorelease];
-		
 		volatile NSMutableDictionary *headerFields = [transformedContext valueForKey:kIRWebAPIEngineRequestHTTPHeaderFields];
-		if (![headerFields isKindOfClass:[NSMutableDictionary class]]) {
-		
-			headerFields = [[headerFields mutableCopy] autorelease];
-			[transformedContext setObject:headerFields forKey:kIRWebAPIEngineRequestHTTPHeaderFields];
-		
-		}
-		
+		headerFields = headerFields ? [[headerFields mutableCopy] autorelease] : [NSMutableDictionary dictionary];
+		[transformedContext setObject:headerFields forKey:kIRWebAPIEngineRequestHTTPHeaderFields];
 		[headerFields setObject:[NSString stringWithFormat:@"GoogleLogin auth=%@", self.authToken] forKey:@"Authorization"];
 		
 		NSLog(@"Transformed %@", transformedContext);
