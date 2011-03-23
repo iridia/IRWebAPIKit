@@ -11,8 +11,17 @@
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <CommonCrypto/CommonHMAC.h>
+
+#if TARGET_OS_IPHONE
+
+#warning for Iphone
+
 #import <UIKit/UIDevice.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+
+#elif TARGET_OS_MAC
+
+#endif
 
 
 # pragma mark Request Arguments Helpers

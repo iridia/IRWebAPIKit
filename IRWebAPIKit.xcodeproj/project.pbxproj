@@ -78,6 +78,70 @@
 		FFF90E2812E3808200464897 /* IRWebAPIKitTestOAuthHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF8A111812DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.m */; };
 		FFF90E2B12E3808F00464897 /* TestIRWebAPIKitStringHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45628C12D05769000239DC /* TestIRWebAPIKitStringHelpers.h */; };
 		FFF90E2C12E3808F00464897 /* IRWebAPIKitTestOAuthHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF8A111712DF22C6002C9BCA /* IRWebAPIKitTestOAuthHelpers.h */; };
+		FFFD5299133A9990006729C9 /* IRWebAPIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408291296A8E000571D46 /* IRWebAPIKit.h */; };
+		FFFD529A133A9990006729C9 /* IRWebAPIEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408451296A94900571D46 /* IRWebAPIEngine.h */; };
+		FFFD529B133A9990006729C9 /* IRWebAPIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408971296B06F00571D46 /* IRWebAPIContext.h */; };
+		FFFD529C133A9990006729C9 /* IRWebAPIResponseParser.h in Headers */ = {isa = PBXBuildFile; fileRef = FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */; };
+		FFFD529D133A9990006729C9 /* IRWebAPICredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FA2D1299406200975BE3 /* IRWebAPICredentials.h */; };
+		FFFD529E133A9990006729C9 /* IRWebAPIAuthenticator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FA311299406800975BE3 /* IRWebAPIAuthenticator.h */; };
+		FFFD529F133A9990006729C9 /* IRWebAPIGoogleReaderAuthenticator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FA7D129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.h */; };
+		FFFD52A0133A9990006729C9 /* IRWebAPIXOAuthAuthenticator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FCC812996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.h */; };
+		FFFD52A1133A9990006729C9 /* IRWebAPIHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = FF25FD7D129971EC00975BE3 /* IRWebAPIHelpers.h */; };
+		FFFD52A2133A9990006729C9 /* IRWebAPIInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF896A6912A5666D00AE2AF3 /* IRWebAPIInterface.h */; };
+		FFFD52A3133A9990006729C9 /* IRWebAPIInterfaceXOAuthAuthenticating.h in Headers */ = {isa = PBXBuildFile; fileRef = FF8974E112A57F3800AE2AF3 /* IRWebAPIInterfaceXOAuthAuthenticating.h */; };
+		FFFD52A4133A9990006729C9 /* IRWebAPIInterfaceAuthenticating.h in Headers */ = {isa = PBXBuildFile; fileRef = FF47A29A12A6486900AF729F /* IRWebAPIInterfaceAuthenticating.h */; };
+		FFFD52A5133A9990006729C9 /* IRWebAPIInterfaceURLShortening.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0E874012B9F41C00DF571E /* IRWebAPIInterfaceURLShortening.h */; };
+		FFFD52A6133A9990006729C9 /* IRWebAPIKitEntityDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45635A12D06A46000239DC /* IRWebAPIKitEntityDefines.h */; };
+		FFFD52A7133A9990006729C9 /* IRWebAPIKitEntityDefinesHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45635C12D06A50000239DC /* IRWebAPIKitEntityDefinesHeader.h */; };
+		FFFD52A8133A9990006729C9 /* IRWebAPIKitEntityDefinesFooter.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45637712D07653000239DC /* IRWebAPIKitEntityDefinesFooter.h */; };
+		FFFD52A9133A9990006729C9 /* IRWebAPITwitterInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF896DD312A567FA00AE2AF3 /* IRWebAPITwitterInterface.h */; };
+		FFFD52AA133A9990006729C9 /* IRWebAPITwitterInterface+Validators.h in Headers */ = {isa = PBXBuildFile; fileRef = FFF90D0912E37D0400464897 /* IRWebAPITwitterInterface+Validators.h */; };
+		FFFD52AB133A9990006729C9 /* IRWebAPITwitterInterface+Validators.m in Headers */ = {isa = PBXBuildFile; fileRef = FFF90D0A12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m */; };
+		FFFD52AC133A9990006729C9 /* IRWebAPITwitterInterface.m in Headers */ = {isa = PBXBuildFile; fileRef = FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */; };
+		FFFD52AD133A9990006729C9 /* IRWebAPITwitterInterface+Timeline.h in Headers */ = {isa = PBXBuildFile; fileRef = FF5147BC12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.h */; };
+		FFFD52AE133A9990006729C9 /* IRWebAPITwitterInterface+Timeline.m in Headers */ = {isa = PBXBuildFile; fileRef = FF5147BD12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m */; };
+		FFFD52AF133A9990006729C9 /* IRWebAPITwitterInterface+Lists.h in Headers */ = {isa = PBXBuildFile; fileRef = FFF90C9412E3768C00464897 /* IRWebAPITwitterInterface+Lists.h */; };
+		FFFD52B0133A9990006729C9 /* IRWebAPITwitterInterface+Lists.m in Headers */ = {isa = PBXBuildFile; fileRef = FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */; };
+		FFFD52B1133A9990006729C9 /* IRWebAPITwitterInterface+Geo.h in Headers */ = {isa = PBXBuildFile; fileRef = FFC41B8F12B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.h */; };
+		FFFD52B2133A9990006729C9 /* IRWebAPITwitterInterface+Geo.m in Headers */ = {isa = PBXBuildFile; fileRef = FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */; };
+		FFFD52B3133A9990006729C9 /* IRWebAPIGoogleReaderInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF48661412A6329900B75591 /* IRWebAPIGoogleReaderInterface.h */; };
+		FFFD52B4133A9990006729C9 /* IRWebAPIGoogleReaderInterface.m in Headers */ = {isa = PBXBuildFile; fileRef = FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */; };
+		FFFD52B5133A9990006729C9 /* IRWebAPITwitterInterface+DirectMessages.h in Headers */ = {isa = PBXBuildFile; fileRef = FF609D1D12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.h */; };
+		FFFD52B6133A9990006729C9 /* IRWebAPIEngine+LocalCaching.h in Headers */ = {isa = PBXBuildFile; fileRef = FF9AFB4012EC59040037E930 /* IRWebAPIEngine+LocalCaching.h */; };
+		FFFD52B7133A9990006729C9 /* IRWebAPIKitDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = FF9AFB4B12EC597C0037E930 /* IRWebAPIKitDefines.h */; };
+		FFFD52B8133A9990006729C9 /* IRWebAPIEngine+FormMultipart.h in Headers */ = {isa = PBXBuildFile; fileRef = FF9AFB7112EC5C060037E930 /* IRWebAPIEngine+FormMultipart.h */; };
+		FFFD52B9133A9990006729C9 /* IRWebAPIInterfaceOAuthEchoReliance.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7F44A612EDB36E00DC1628 /* IRWebAPIInterfaceOAuthEchoReliance.h */; };
+		FFFD52BA133A9990006729C9 /* IRWebAPITwitPicInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7F44B512EDB44400DC1628 /* IRWebAPITwitPicInterface.h */; };
+		FFFD52BB133A9990006729C9 /* IRWebAPIImageStorageProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7F44C312EDB52800DC1628 /* IRWebAPIImageStorageProvider.h */; };
+		FFFD52BC133A9990006729C9 /* IRWebAPIInterface+Validators.h in Headers */ = {isa = PBXBuildFile; fileRef = FF1B23CB12F3400F00B30B99 /* IRWebAPIInterface+Validators.h */; };
+		FFFD52BD133A9990006729C9 /* IRRemoteResourcesManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0E93E7132BB07000A316E1 /* IRRemoteResourcesManager.h */; };
+		FFFD52BE133A9994006729C9 /* IRWebAPIKitDefines.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9AFB7F12EC5CB80037E930 /* IRWebAPIKitDefines.m */; };
+		FFFD52BF133A9994006729C9 /* IRWebAPIInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF896A6A12A5666D00AE2AF3 /* IRWebAPIInterface.m */; };
+		FFFD52C0133A9994006729C9 /* IRWebAPIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408981296B06F00571D46 /* IRWebAPIContext.m */; };
+		FFFD52C1133A9994006729C9 /* IRWebAPITwitterInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF896DD412A567FA00AE2AF3 /* IRWebAPITwitterInterface.m */; };
+		FFFD52C2133A9994006729C9 /* IRWebAPIAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FA321299406800975BE3 /* IRWebAPIAuthenticator.m */; };
+		FFFD52C3133A9994006729C9 /* IRWebAPICredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FA2E1299406200975BE3 /* IRWebAPICredentials.m */; };
+		FFFD52C4133A9994006729C9 /* IRWebAPIGoogleReaderAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FA7E129944E800975BE3 /* IRWebAPIGoogleReaderAuthenticator.m */; };
+		FFFD52C5133A9994006729C9 /* IRWebAPIXOAuthAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF25FCC912996A5600975BE3 /* IRWebAPIXOAuthAuthenticator.m */; };
+		FFFD52C6133A9994006729C9 /* IRWebAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408461296A94900571D46 /* IRWebAPIEngine.m */; };
+		FFFD52C7133A9994006729C9 /* IRWebAPIGoogleReaderInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */; };
+		FFFD52C8133A9994006729C9 /* IRWebAPITwitterInterface+Geo.m in Sources */ = {isa = PBXBuildFile; fileRef = FFC41B9012B8C59B008EF3D4 /* IRWebAPITwitterInterface+Geo.m */; };
+		FFFD52C9133A9994006729C9 /* IRWebAPITwitterInterface+Timeline.m in Sources */ = {isa = PBXBuildFile; fileRef = FF5147BD12BBBBC000F7424F /* IRWebAPITwitterInterface+Timeline.m */; };
+		FFFD52CA133A9994006729C9 /* IRWebAPITwitterInterface+Lists.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */; };
+		FFFD52CB133A9994006729C9 /* IRWebAPITwitterInterface+Validators.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF90D0A12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m */; };
+		FFFD52CC133A9994006729C9 /* IRWebAPITwitterInterface+DirectMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = FF609D1E12E4A13E00CD61EB /* IRWebAPITwitterInterface+DirectMessages.m */; };
+		FFFD52CD133A9994006729C9 /* IRWebAPIEngine+LocalCaching.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9AFB4112EC59040037E930 /* IRWebAPIEngine+LocalCaching.m */; };
+		FFFD52CE133A9994006729C9 /* IRWebAPIEngine+FormMultipart.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9AFB7212EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m */; };
+		FFFD52CF133A9994006729C9 /* IRWebAPIHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0D4C0A12ED96E500D9B97D /* IRWebAPIHelpers.m */; };
+		FFFD52D0133A9994006729C9 /* IRWebAPITwitPicInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7F44B612EDB44400DC1628 /* IRWebAPITwitPicInterface.m */; };
+		FFFD52D1133A9994006729C9 /* IRWebAPIInterface+Validators.m in Sources */ = {isa = PBXBuildFile; fileRef = FF1B23CC12F3400F00B30B99 /* IRWebAPIInterface+Validators.m */; };
+		FFFD52D2133A9994006729C9 /* IRWebAPIResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FF4FCC6112F4637F0037F33C /* IRWebAPIResponseParser.m */; };
+		FFFD52D3133A9994006729C9 /* IRRemoteResourcesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0E93E8132BB07000A316E1 /* IRRemoteResourcesManager.m */; };
+		FFFD52D8133A99AC006729C9 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFFD52D7133A99AC006729C9 /* CoreFoundation.framework */; };
+		FFFD52DA133A99C7006729C9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFFD52D9133A99C7006729C9 /* Foundation.framework */; };
+		FFFD52DC133A99C7006729C9 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFFD52DB133A99C7006729C9 /* Security.framework */; };
+		FFFD52DE133A99C7006729C9 /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFFD52DD133A99C7006729C9 /* SecurityFoundation.framework */; };
+		FFFD52E0133A99C7006729C9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFFD52DF133A99C7006729C9 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -164,6 +228,12 @@
 		FFF90C9512E3768C00464897 /* IRWebAPITwitterInterface+Lists.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPITwitterInterface+Lists.m"; sourceTree = "<group>"; };
 		FFF90D0912E37D0400464897 /* IRWebAPITwitterInterface+Validators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPITwitterInterface+Validators.h"; sourceTree = "<group>"; };
 		FFF90D0A12E37D0400464897 /* IRWebAPITwitterInterface+Validators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPITwitterInterface+Validators.m"; sourceTree = "<group>"; };
+		FFFD5284133A995A006729C9 /* libIRWebAPIKitMac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libIRWebAPIKitMac.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FFFD52D7133A99AC006729C9 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		FFFD52D9133A99C7006729C9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FFFD52DB133A99C7006729C9 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		FFFD52DD133A99C7006729C9 /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
+		FFFD52DF133A99C7006729C9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +255,18 @@
 				FF7F44E312EDB74F00DC1628 /* Foundation.framework in Frameworks */,
 				FF7F44E712EDB74F00DC1628 /* Security.framework in Frameworks */,
 				FF7F44E912EDB74F00DC1628 /* SystemConfiguration.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FFFD5282133A995A006729C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFFD52D8133A99AC006729C9 /* CoreFoundation.framework in Frameworks */,
+				FFFD52DA133A99C7006729C9 /* Foundation.framework in Frameworks */,
+				FFFD52DC133A99C7006729C9 /* Security.framework in Frameworks */,
+				FFFD52DE133A99C7006729C9 /* SecurityFoundation.framework in Frameworks */,
+				FFFD52E0133A99C7006729C9 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +370,11 @@
 				FF7408191296A88B00571D46 /* Cappuccino */,
 				FF0E93DD132BAF9200A316E1 /* Frameworks */,
 				FF7408251296A8D200571D46 /* Products */,
+				FFFD52D7133A99AC006729C9 /* CoreFoundation.framework */,
+				FFFD52D9133A99C7006729C9 /* Foundation.framework */,
+				FFFD52DB133A99C7006729C9 /* Security.framework */,
+				FFFD52DD133A99C7006729C9 /* SecurityFoundation.framework */,
+				FFFD52DF133A99C7006729C9 /* SystemConfiguration.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -309,6 +396,7 @@
 			children = (
 				FF7408241296A8D200571D46 /* libIRWebAPIKit.a */,
 				FF45627812D05708000239DC /* IRWebAPIKitTest.octest */,
+				FFFD5284133A995A006729C9 /* libIRWebAPIKitMac.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -438,6 +526,50 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FFFD5280133A995A006729C9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFFD5299133A9990006729C9 /* IRWebAPIKit.h in Headers */,
+				FFFD529A133A9990006729C9 /* IRWebAPIEngine.h in Headers */,
+				FFFD529B133A9990006729C9 /* IRWebAPIContext.h in Headers */,
+				FFFD529C133A9990006729C9 /* IRWebAPIResponseParser.h in Headers */,
+				FFFD529D133A9990006729C9 /* IRWebAPICredentials.h in Headers */,
+				FFFD529E133A9990006729C9 /* IRWebAPIAuthenticator.h in Headers */,
+				FFFD529F133A9990006729C9 /* IRWebAPIGoogleReaderAuthenticator.h in Headers */,
+				FFFD52A0133A9990006729C9 /* IRWebAPIXOAuthAuthenticator.h in Headers */,
+				FFFD52A1133A9990006729C9 /* IRWebAPIHelpers.h in Headers */,
+				FFFD52A2133A9990006729C9 /* IRWebAPIInterface.h in Headers */,
+				FFFD52A3133A9990006729C9 /* IRWebAPIInterfaceXOAuthAuthenticating.h in Headers */,
+				FFFD52A4133A9990006729C9 /* IRWebAPIInterfaceAuthenticating.h in Headers */,
+				FFFD52A5133A9990006729C9 /* IRWebAPIInterfaceURLShortening.h in Headers */,
+				FFFD52A6133A9990006729C9 /* IRWebAPIKitEntityDefines.h in Headers */,
+				FFFD52A7133A9990006729C9 /* IRWebAPIKitEntityDefinesHeader.h in Headers */,
+				FFFD52A8133A9990006729C9 /* IRWebAPIKitEntityDefinesFooter.h in Headers */,
+				FFFD52A9133A9990006729C9 /* IRWebAPITwitterInterface.h in Headers */,
+				FFFD52AA133A9990006729C9 /* IRWebAPITwitterInterface+Validators.h in Headers */,
+				FFFD52AB133A9990006729C9 /* IRWebAPITwitterInterface+Validators.m in Headers */,
+				FFFD52AC133A9990006729C9 /* IRWebAPITwitterInterface.m in Headers */,
+				FFFD52AD133A9990006729C9 /* IRWebAPITwitterInterface+Timeline.h in Headers */,
+				FFFD52AE133A9990006729C9 /* IRWebAPITwitterInterface+Timeline.m in Headers */,
+				FFFD52AF133A9990006729C9 /* IRWebAPITwitterInterface+Lists.h in Headers */,
+				FFFD52B0133A9990006729C9 /* IRWebAPITwitterInterface+Lists.m in Headers */,
+				FFFD52B1133A9990006729C9 /* IRWebAPITwitterInterface+Geo.h in Headers */,
+				FFFD52B2133A9990006729C9 /* IRWebAPITwitterInterface+Geo.m in Headers */,
+				FFFD52B3133A9990006729C9 /* IRWebAPIGoogleReaderInterface.h in Headers */,
+				FFFD52B4133A9990006729C9 /* IRWebAPIGoogleReaderInterface.m in Headers */,
+				FFFD52B5133A9990006729C9 /* IRWebAPITwitterInterface+DirectMessages.h in Headers */,
+				FFFD52B6133A9990006729C9 /* IRWebAPIEngine+LocalCaching.h in Headers */,
+				FFFD52B7133A9990006729C9 /* IRWebAPIKitDefines.h in Headers */,
+				FFFD52B8133A9990006729C9 /* IRWebAPIEngine+FormMultipart.h in Headers */,
+				FFFD52B9133A9990006729C9 /* IRWebAPIInterfaceOAuthEchoReliance.h in Headers */,
+				FFFD52BA133A9990006729C9 /* IRWebAPITwitPicInterface.h in Headers */,
+				FFFD52BB133A9990006729C9 /* IRWebAPIImageStorageProvider.h in Headers */,
+				FFFD52BC133A9990006729C9 /* IRWebAPIInterface+Validators.h in Headers */,
+				FFFD52BD133A9990006729C9 /* IRRemoteResourcesManager.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -477,6 +609,23 @@
 			productReference = FF7408241296A8D200571D46 /* libIRWebAPIKit.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		FFFD5283133A995A006729C9 /* IRWebAPIKitMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FFFD528E133A9979006729C9 /* Build configuration list for PBXNativeTarget "IRWebAPIKitMac" */;
+			buildPhases = (
+				FFFD5280133A995A006729C9 /* Headers */,
+				FFFD5281133A995A006729C9 /* Sources */,
+				FFFD5282133A995A006729C9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IRWebAPIKitMac;
+			productName = IRWebAPIKitMac;
+			productReference = FFFD5284133A995A006729C9 /* libIRWebAPIKitMac.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -499,6 +648,7 @@
 			targets = (
 				FF7408231296A8D200571D46 /* IRWebAPIKit */,
 				FF45627712D05708000239DC /* IRWebAPIKitTest */,
+				FFFD5283133A995A006729C9 /* IRWebAPIKitMac */,
 			);
 		};
 /* End PBXProject section */
@@ -556,6 +706,35 @@
 				FF1B23CE12F3400F00B30B99 /* IRWebAPIInterface+Validators.m in Sources */,
 				FF4FCC6212F4637F0037F33C /* IRWebAPIResponseParser.m in Sources */,
 				FF0E93EA132BB07000A316E1 /* IRRemoteResourcesManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FFFD5281133A995A006729C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFFD52BE133A9994006729C9 /* IRWebAPIKitDefines.m in Sources */,
+				FFFD52BF133A9994006729C9 /* IRWebAPIInterface.m in Sources */,
+				FFFD52C0133A9994006729C9 /* IRWebAPIContext.m in Sources */,
+				FFFD52C1133A9994006729C9 /* IRWebAPITwitterInterface.m in Sources */,
+				FFFD52C2133A9994006729C9 /* IRWebAPIAuthenticator.m in Sources */,
+				FFFD52C3133A9994006729C9 /* IRWebAPICredentials.m in Sources */,
+				FFFD52C4133A9994006729C9 /* IRWebAPIGoogleReaderAuthenticator.m in Sources */,
+				FFFD52C5133A9994006729C9 /* IRWebAPIXOAuthAuthenticator.m in Sources */,
+				FFFD52C6133A9994006729C9 /* IRWebAPIEngine.m in Sources */,
+				FFFD52C7133A9994006729C9 /* IRWebAPIGoogleReaderInterface.m in Sources */,
+				FFFD52C8133A9994006729C9 /* IRWebAPITwitterInterface+Geo.m in Sources */,
+				FFFD52C9133A9994006729C9 /* IRWebAPITwitterInterface+Timeline.m in Sources */,
+				FFFD52CA133A9994006729C9 /* IRWebAPITwitterInterface+Lists.m in Sources */,
+				FFFD52CB133A9994006729C9 /* IRWebAPITwitterInterface+Validators.m in Sources */,
+				FFFD52CC133A9994006729C9 /* IRWebAPITwitterInterface+DirectMessages.m in Sources */,
+				FFFD52CD133A9994006729C9 /* IRWebAPIEngine+LocalCaching.m in Sources */,
+				FFFD52CE133A9994006729C9 /* IRWebAPIEngine+FormMultipart.m in Sources */,
+				FFFD52CF133A9994006729C9 /* IRWebAPIHelpers.m in Sources */,
+				FFFD52D0133A9994006729C9 /* IRWebAPITwitPicInterface.m in Sources */,
+				FFFD52D1133A9994006729C9 /* IRWebAPIInterface+Validators.m in Sources */,
+				FFFD52D2133A9994006729C9 /* IRWebAPIResponseParser.m in Sources */,
+				FFFD52D3133A9994006729C9 /* IRRemoteResourcesManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,6 +870,56 @@
 			};
 			name = Release;
 		};
+		FFFD5285133A995B006729C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = IRWebAPIKitMac;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FFFD5286133A995B006729C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = IRWebAPIKitMac;
+				SDKROOT = macosx;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -717,6 +946,15 @@
 			buildConfigurations = (
 				FF7408261296A8D400571D46 /* Debug */,
 				FF7408271296A8D400571D46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FFFD528E133A9979006729C9 /* Build configuration list for PBXNativeTarget "IRWebAPIKitMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FFFD5285133A995B006729C9 /* Debug */,
+				FFFD5286133A995B006729C9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

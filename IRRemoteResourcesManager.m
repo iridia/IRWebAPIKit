@@ -465,7 +465,6 @@
 	if (!returnedImage) {
 	
 		[self retrieveResourceAtRemoteURL:inRemoteURL forceReload:YES];
-		
 		return nil;
 	
 	}

@@ -8,7 +8,12 @@
 
 #import <objc/runtime.h>
 #import <Foundation/Foundation.h>
+
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#elif TARGET_OS_MAC
+#import <Cocoa/Cocoa.h>
+#endif
 
 #import "IRWebAPIKit.h"
 
@@ -42,8 +47,11 @@ typedef void (^MLRemoteResourcesManagerCallback) (NSData *mappedCachedDataOrNil)
 //	Can return NSData* or nil, if the resource is not cached.
 //	The latter calls inSkipsIO:YES
 
-
+#if TARGET_OS_IPHONE
 - (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL;	//	Convenience wrapper around +resourceAtRemoteURL:
+#elif TARGET_OS_MAC
+- (NSImage *) imageAtRemoteURL:(NSURL *)inRemoteURL;	//	Convenience wrapper around +resourceAtRemoteURL:
+#endif
 
 - (id) cachedResourceAtRemoteURL:(NSURL *)inRemoteURL;	//	Only returns NSData* if the resource is in a memory-backed cache
 
