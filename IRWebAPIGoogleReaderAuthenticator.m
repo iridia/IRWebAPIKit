@@ -91,6 +91,7 @@
 	
 		self.authToken = [inResponseOrNil valueForKey:@"Auth"];
 		self.currentCredentials = inCredentials;
+		self.currentCredentials.authenticated = YES;
 		
 		NSLog(@"Google Reader REQ -> %@", inResponseOrNil);
 		
