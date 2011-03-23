@@ -14,8 +14,6 @@
 
 #if TARGET_OS_IPHONE
 
-#warning for Iphone
-
 #import <UIKit/UIDevice.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
