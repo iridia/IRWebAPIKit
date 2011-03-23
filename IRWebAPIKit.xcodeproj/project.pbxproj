@@ -133,7 +133,6 @@
 		FFFD52CD133A9994006729C9 /* IRWebAPIEngine+LocalCaching.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9AFB4112EC59040037E930 /* IRWebAPIEngine+LocalCaching.m */; };
 		FFFD52CE133A9994006729C9 /* IRWebAPIEngine+FormMultipart.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9AFB7212EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m */; };
 		FFFD52CF133A9994006729C9 /* IRWebAPIHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0D4C0A12ED96E500D9B97D /* IRWebAPIHelpers.m */; };
-		FFFD52D0133A9994006729C9 /* IRWebAPITwitPicInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7F44B612EDB44400DC1628 /* IRWebAPITwitPicInterface.m */; };
 		FFFD52D1133A9994006729C9 /* IRWebAPIInterface+Validators.m in Sources */ = {isa = PBXBuildFile; fileRef = FF1B23CC12F3400F00B30B99 /* IRWebAPIInterface+Validators.m */; };
 		FFFD52D2133A9994006729C9 /* IRWebAPIResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FF4FCC6112F4637F0037F33C /* IRWebAPIResponseParser.m */; };
 		FFFD52D3133A9994006729C9 /* IRRemoteResourcesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0E93E8132BB07000A316E1 /* IRRemoteResourcesManager.m */; };
@@ -731,7 +730,6 @@
 				FFFD52CD133A9994006729C9 /* IRWebAPIEngine+LocalCaching.m in Sources */,
 				FFFD52CE133A9994006729C9 /* IRWebAPIEngine+FormMultipart.m in Sources */,
 				FFFD52CF133A9994006729C9 /* IRWebAPIHelpers.m in Sources */,
-				FFFD52D0133A9994006729C9 /* IRWebAPITwitPicInterface.m in Sources */,
 				FFFD52D1133A9994006729C9 /* IRWebAPIInterface+Validators.m in Sources */,
 				FFFD52D2133A9994006729C9 /* IRWebAPIResponseParser.m in Sources */,
 				FFFD52D3133A9994006729C9 /* IRRemoteResourcesManager.m in Sources */,

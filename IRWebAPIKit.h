@@ -49,7 +49,10 @@
 #import "IRWebAPIGoogleReaderInterface.h"
 
 #import "IRWebAPIImageStorageProvider.h"
+
+#if TARGET_OS_IPHONE
 #import "IRWebAPITwitPicInterface.h"
+#endif
 
 #import "IRRemoteResourcesManager.h"
 

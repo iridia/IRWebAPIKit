@@ -190,7 +190,11 @@ NSString * IRWebAPIStringByDecodingXMLEntities (NSString *inString) {
 		NSUInteger charCode;
 		NSString *xForHex = @"";
 		
+		#if TARGET_OS_IPHONE
 		if ([scanner scanString:@"x" intoString:NULL] ? [scanner scanHexInt:&charCode] : [scanner scanInt:(int*)&charCode]) {
+		#elif TARGET_OS_MAC
+		if ([scanner scanString:@"x" intoString:NULL] ? [scanner scanHexInt:(unsigned int *)&charCode] : [scanner scanInt:(int*)&charCode]) {
+		#endif
 
 			[scanner scanString:@";" intoString:NULL];
 			return (NSString *)[NSString stringWithFormat:@"%C", charCode];
@@ -265,7 +269,11 @@ NSString * IRWebAPIKitNonce () {
 	uuid = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, theUUID) autorelease];
 	CFRelease(theUUID);
 	
+	#if TARGET_OS_IPHONE
 	return [NSString stringWithFormat:@"%@-%@-%@", IRWebAPIKitTimestamp(), uuid, [UIDevice currentDevice].uniqueIdentifier];
+	#elif TARGET_OS_MAC
+	return [NSString stringWithFormat:@"%@-%@", IRWebAPIKitTimestamp(), uuid];
+	#endif
 	
 }
 

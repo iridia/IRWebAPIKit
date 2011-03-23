@@ -84,7 +84,9 @@
 	
 	[self initializeCacheDirectoryAndRefreshCachedURLs];
 	
+	#if TARGET_OS_IPHONE
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+	#endif
 	
 	return self;
 
@@ -453,6 +455,8 @@
 
 }
 
+#if TARGET_OS_IPHONE
+
 - (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL {
 
 	NSData *imageData = [self resourceAtRemoteURL:inRemoteURL];
@@ -472,6 +476,8 @@
 	return returnedImage;
 
 }
+
+#endif
 
 
 

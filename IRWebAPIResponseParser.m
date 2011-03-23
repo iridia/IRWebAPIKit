@@ -44,6 +44,8 @@ IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake () {
 	
 	NSDictionary * (^queryResponseParser) (NSData *) = ^ NSDictionary * (NSData *inData) {
 	
+		#if TARGET_OS_IPHONE
+	
 		NSString *responseString = [[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease];
 		
 		NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"([^=&\n\r]+)=([^=&\n\r]+)[\n\r&]?" options:NSRegularExpressionCaseInsensitive error:nil];
@@ -65,6 +67,12 @@ IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake () {
 			return [NSDictionary dictionary];
 			
 		}
+		
+		#else
+		
+			NSDictionary *returnedResponse = nil;
+		
+		#endif
 
 		return returnedResponse;
 	
