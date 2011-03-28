@@ -140,6 +140,8 @@
 
 		[self.currentCredentials.userInfo setObject:self.retrievedToken forKey:@"oauth_token"];
 		[self.currentCredentials.userInfo setObject:self.retrievedTokenSecret forKey:@"oauth_token_secret"];
+		
+		NSParameterAssert(self.currentCredentials && self.currentCredentials.authenticated);
 
 		if (successHandler)
 		successHandler(self, YES, outShouldRetry);
