@@ -478,4 +478,50 @@
 
 
 
+- (void) retrieveResource:(NSURL *)resourceURL withCallback:(void(^)(NSData *returnedDataOrNil))aBlock {
+
+	NSURL *downloadingURLOrNil = [self downloadingResourceURLMatchingURL:resourceURL];
+	NSURL *notifiedURL = downloadingURLOrNil ? downloadingURLOrNil : resourceURL;
+	
+	NSData *probableData = [self resourceAtRemoteURL:notifiedURL skippingUncachedFile:NO];
+
+	if (probableData) {
+
+		if (aBlock)
+		aBlock(probableData);
+
+		return;
+
+	}
+	
+	__block id opaqueReference = nil;
+	
+	opaqueReference = [[[NSNotificationCenter defaultCenter] addObserverForName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:notifiedURL queue:nil usingBlock:^(NSNotification *arg1) {
+	
+		NSData *ensuredData = [self resourceAtRemoteURL:notifiedURL skippingUncachedFile:NO];
+
+		if (!ensuredData) {
+		
+			NSLog(@"EHEM, there shall be data.");
+		
+		}
+
+		if (aBlock)
+		aBlock(ensuredData);
+
+		[[NSNotificationCenter defaultCenter] removeObserver:opaqueReference];
+		
+		[opaqueReference autorelease];
+	
+	}] retain];
+	
+	if (notifiedURL != downloadingURLOrNil)
+	[self retrieveResourceAtRemoteURL:notifiedURL forceReload:YES];
+
+}
+
+
+
+
+
 @end

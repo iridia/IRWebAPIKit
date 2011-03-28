@@ -31,6 +31,7 @@ typedef void (^MLRemoteResourcesManagerCallback) (NSData *mappedCachedDataOrNil)
 @interface IRRemoteResourcesManager : NSObject
 
 + (IRRemoteResourcesManager *) sharedManager;
+- (void) retrieveResource:(NSURL *)resourceURL withCallback:(void(^)(NSData *returnedDataOrNil))aBlock;
 
 - (void) clearCacheDirectory;
 
