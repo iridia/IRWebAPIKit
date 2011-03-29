@@ -485,7 +485,7 @@
 	
 	NSData *probableData = [self resourceAtRemoteURL:notifiedURL skippingUncachedFile:NO];
 
-	if (probableData) {
+	if (probableData && [probableData length]) {
 
 		if (aBlock)
 		aBlock(probableData);
