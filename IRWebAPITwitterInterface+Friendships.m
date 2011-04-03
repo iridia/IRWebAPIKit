@@ -11,11 +11,73 @@
 
 @implementation IRWebAPITwitterInterface (Friendships)
 
-- (void) retrieveFriendIDsWithSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
++ (BOOL) repeatedlyCalledSuccessHandlerResponseExhausted:(NSDictionary *)response {
 
-	NSMutableArray *returnedStatus = [NSMutableArray array]; // in the future, maybe mapped, sequential and mutable NSData object?
+	if (!response || ![[response objectForKey:@"ids"] count])
+	return YES;
 	
+	if ([[response objectForKey:@"next_cursor"] isEqual:[response objectForKey:@"previous_cursor"]])
+	return YES;
 	
+	return NO;
+
+}
+
+- (void) retrieveFriendIDsWithConcatnatedSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	NSMutableDictionary *actualResponseOrNil = [NSMutableDictionary dictionary]; //	Get everything
+
+	void (^enqueueIdentifiersFromResponse)(NSDictionary *response) = ^ (NSDictionary *response) {
+	
+		NSMutableArray *actualIDs = [actualResponseOrNil objectForKey:@"ids"];
+		
+		if (![actualIDs isKindOfClass:[NSMutableArray class]]) {
+		
+			actualIDs = [[actualIDs mutableCopy] autorelease];
+			[actualResponseOrNil setObject:actualIDs forKey:@"ids"];
+		
+		}
+		
+		[actualIDs addObjectsFromArray:[response objectForKey:@"ids"]];
+	
+	};
+	
+	BOOL (^responseExhausted)(NSDictionary *responseBody) = ^ (NSDictionary *responseBody) { return [[self class] repeatedlyCalledSuccessHandlerResponseExhausted:responseBody]; };
+	
+	__block void (^workingBlock)(unsigned long long queuedCursorID);
+	
+	workingBlock = ^ (unsigned long long queuedCursorID) {
+	
+		[self retrieveFriendIDsWithCursor:queuedCursorID successHandler: ^ (NSDictionary *inResponseOrNil, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		
+			enqueueIdentifiersFromResponse(inResponseOrNil);
+			
+			if (responseExhausted(inResponseOrNil)) {
+			
+				if (inSuccessCallback)
+				inSuccessCallback(actualResponseOrNil, outNotifyDelegate, outShouldRetry);
+				
+				NSLog(@"actually returning %@", actualResponseOrNil);
+			
+				return;
+			
+			}
+			
+			workingBlock([[inResponseOrNil objectForKey:@"next_cursor"] unsignedLongLongValue]);
+		
+		} failureHandler: ^ (NSDictionary *inResponseOrNil, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		
+			NSLog(@"FAIL %@", inResponseOrNil);
+		
+		}];
+	
+	};
+	
+	workingBlock(-1); // -1 starts pagination, and the cursor defaults to -1 per official docs
+
+}
+
+- (void) retrieveFriendIDsWithRepeatedlyCalledSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 }
 
@@ -28,6 +90,8 @@
 		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:cursorID]), @"cursor",
 	
 	nil] options:nil validator:[self defaultNoErrorValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+	
+		NSLog(@"ID query with %llu returned %@", cursorID, inResponseOrNil);
 		
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
