@@ -25,6 +25,18 @@
 
 - (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withConcatenatedSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
+	[self retrieveFriendsOfUser:userID withCallbackStyle:IRWebAPIInterfaceCallbackStyleConcatenatedCallback successHandler:inSuccessCallback failureHandler:inFailureCallback];
+
+}
+
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withRepeatedlyCalledSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
+	[self retrieveFriendsOfUser:userID withCallbackStyle:IRWebAPIInterfaceCallbackStyleManyCallbacks successHandler:inSuccessCallback failureHandler:inFailureCallback];
+
+}
+
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withCallbackStyle:(IRWebAPIInterfaceCallbackStyle)style successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+
 	NSMutableDictionary *actualResponseOrNil = [NSMutableDictionary dictionary]; //	Get everything
 
 	void (^enqueueIdentifiersFromResponse)(NSDictionary *response) = ^ (NSDictionary *response) {
@@ -50,19 +62,48 @@
 	
 		[self retrieveFriendsOfUser:userID withCursor:queuedCursorID successHandler: ^ (NSDictionary *inResponseOrNil, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
-			enqueueIdentifiersFromResponse(inResponseOrNil);
+			switch (style) {
 			
-			if (responseExhausted(inResponseOrNil)) {
+				case IRWebAPIInterfaceCallbackStyleConcatenatedCallback: {
 			
-				if (inSuccessCallback)
-				inSuccessCallback(actualResponseOrNil, outNotifyDelegate, outShouldRetry);
+					enqueueIdentifiersFromResponse(inResponseOrNil);
+			
+					if (responseExhausted(inResponseOrNil)) {
+					
+						if (inSuccessCallback)
+						inSuccessCallback(actualResponseOrNil, outNotifyDelegate, outShouldRetry);
+					
+						return;
+					
+					}
+						
+					break;
 				
-				NSLog(@"actually returning %@", actualResponseOrNil);
+				}
+				
+				case IRWebAPIInterfaceCallbackStyleManyCallbacks : {
+				
+					if (inSuccessCallback)
+					inSuccessCallback(actualResponseOrNil, outNotifyDelegate, outShouldRetry);
 			
-				return;
+					if (responseExhausted(inResponseOrNil)) {
+
+						return;
+					
+					}
+
+					break;
+				
+				}
+				
+				default: {
+				
+					NSParameterAssert(NO);
+				
+				}
 			
 			}
-			
+					
 			workingBlock([[inResponseOrNil objectForKey:@"next_cursor"] unsignedLongLongValue]);
 		
 		} failureHandler: ^ (NSDictionary *inResponseOrNil, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
@@ -74,12 +115,6 @@
 	};
 	
 	workingBlock(-1); // -1 starts pagination, and the cursor defaults to -1 per official docs
-
-}
-
-- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withRepeatedlyCalledSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
-
-	
 
 }
 
