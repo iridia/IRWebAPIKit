@@ -23,6 +23,8 @@
 //	Thought of integrating response, and found that way is not sustainable on mobile devices, and generally just bad
 //	A nil-response success callback is fired again when things are really done
 
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withCallbackStyle:(IRWebAPIInterfaceCallbackStyle)style successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+
 - (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withCursor:(unsigned long long)cursorID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback; // the primitive one
 
 @end
