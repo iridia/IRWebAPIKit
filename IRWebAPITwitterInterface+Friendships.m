@@ -84,7 +84,7 @@
 				case IRWebAPIInterfaceCallbackStyleManyCallbacks : {
 				
 					if (inSuccessCallback)
-					inSuccessCallback(actualResponseOrNil, outNotifyDelegate, outShouldRetry);
+					inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 			
 					if (responseExhausted(inResponseOrNil)) {
 
