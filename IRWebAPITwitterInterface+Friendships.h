@@ -16,13 +16,13 @@
 + (BOOL) repeatedlyCalledSuccessHandlerResponseExhausted:(NSDictionary *)response;
 //	returns YES if the engine agrees that the success handler is not going to be called any more in the same context
 
-- (void) retrieveFriendIDsWithConcatenatedSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withConcatenatedSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
 //	Stitches everything in memory and return a large chunk
 
-- (void) retrieveFriendIDsWithRepeatedlyCalledSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withRepeatedlyCalledSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback;
 //	Thought of integrating response, and found that way is not sustainable on mobile devices, and generally just bad
 //	A nil-response success callback is fired again when things are really done
 
-- (void) retrieveFriendIDsWithCursor:(unsigned long long)cursorID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback; // the primitive one
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withCursor:(unsigned long long)cursorID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback; // the primitive one
 
 @end

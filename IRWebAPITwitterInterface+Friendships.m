@@ -23,7 +23,7 @@
 
 }
 
-- (void) retrieveFriendIDsWithConcatnatedSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withConcatenatedSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	NSMutableDictionary *actualResponseOrNil = [NSMutableDictionary dictionary]; //	Get everything
 
@@ -48,7 +48,7 @@
 	
 	workingBlock = ^ (unsigned long long queuedCursorID) {
 	
-		[self retrieveFriendIDsWithCursor:queuedCursorID successHandler: ^ (NSDictionary *inResponseOrNil, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
+		[self retrieveFriendsOfUser:userID withCursor:queuedCursorID successHandler: ^ (NSDictionary *inResponseOrNil, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 		
 			enqueueIdentifiersFromResponse(inResponseOrNil);
 			
@@ -77,17 +77,18 @@
 
 }
 
-- (void) retrieveFriendIDsWithRepeatedlyCalledSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withRepeatedlyCalledSuccessHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 }
 
-- (void) retrieveFriendIDsWithCursor:(unsigned long long)cursorID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
+- (void) retrieveFriendsOfUser:(IRWebAPITwitterUserID)userID withCursor:(unsigned long long)cursorID successHandler:(IRWebAPIInterfaceCallback)inSuccessCallback failureHandler:(IRWebAPIInterfaceCallback)inFailureCallback {
 
 	NSAssert(self.authenticator.currentCredentials.identifier, @"Error: %s requires that the current credentials be present.", __PRETTY_FUNCTION__);
 		
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/friends/ids.json"] withArguments:[NSDictionary dictionaryWithObjectsAndKeys:
 	
 		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:cursorID]), @"cursor",
+		IRWebAPIKitNumberOrNull([NSNumber numberWithUnsignedLongLong:userID]), @"user_id",
 	
 	nil] options:nil validator:[self defaultNoErrorValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
