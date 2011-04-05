@@ -129,8 +129,6 @@
 	
 	nil] options:nil validator:[self defaultNoErrorValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
-		NSLog(@"ID query with %llu returned %@", cursorID, inResponseOrNil);
-		
 		if (inSuccessCallback)
 		inSuccessCallback(inResponseOrNil, outNotifyDelegate, outShouldRetry);
 	 
