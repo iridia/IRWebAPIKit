@@ -265,8 +265,18 @@ var	kIRWebAPIEngineConnectionTimeoutTimeIntervalUserInfoDictionaryKey = @"IRWebA
 		serializer = kIRWebAPIEngineSerializationSchemes[serializationScheme],
 		isPOSTRequest = ([inArguments valueForKey:@"IRWebAPIKitPOST"] === YES);
 
-	var	serializedArguments = serializer(argumentsToSend) + "&callback=${JSONP_CALLBACK}";
-		urlToCall = isPOSTRequest ? [context connectionURLForPOSTMethodNamed:methodName] : [context connectionURLForMethodNamed:methodName additions:serializedArguments],
+	var	serializedArguments = serializer(argumentsToSend) + "&callback=${JSONP_CALLBACK}",
+		urlToCall = ((function(){
+		
+			if (isPOSTRequest)
+			return [context connectionURLForPOSTMethodNamed:methodName];
+		
+			if ([context respondsToSelector:@selector(connectionURLForMethodNamed:arguments:serializer:)])
+			return [context connectionURLForMethodNamed:methodName arguments:argumentsToSend serializer:serializer];
+		
+			return [context connectionURLForMethodNamed:methodName additions:serializedArguments];
+		
+		})()),
 		request = [CPURLRequest requestWithURL:urlToCall];
 	
 		if (isPOSTRequest) {
