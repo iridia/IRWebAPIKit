@@ -266,7 +266,6 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				
 				NSDictionary *responseContext = [self internalResponseContextForConnection:connection];
-
 				NSDictionary *parsedResponse = [self parsedResponseForData:inResponse withContext:finalizedContext];
 				NSDictionary *transformedResponse = [self responseByTransformingResponse:parsedResponse withRequestContext:responseContext forMethodNamed:inMethodName];
 				
