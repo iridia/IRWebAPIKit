@@ -9,7 +9,7 @@
 #import "IRRemoteResourcesManager.h"
 
 
-@interface IRRemoteResourcesManager ()
+@interface IRRemoteResourcesManager () <NSCacheDelegate>
 
 @property (nonatomic, readonly, assign) dispatch_queue_t fileHandleDispatchQueue;
 
