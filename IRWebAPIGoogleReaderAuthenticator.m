@@ -33,8 +33,6 @@
 		[transformedContext setObject:headerFields forKey:kIRWebAPIEngineRequestHTTPHeaderFields];
 		[headerFields setObject:[NSString stringWithFormat:@"GoogleLogin auth=%@", self.authToken] forKey:@"Authorization"];
 		
-		NSLog(@"Transformed %@", transformedContext);
-		
 		return (NSDictionary *)transformedContext;
 	
 	} copy] retain];
@@ -93,15 +91,11 @@
 		self.currentCredentials = inCredentials;
 		self.currentCredentials.authenticated = YES;
 		
-		NSLog(@"Google Reader REQ -> %@", inResponseOrNil);
-		
 		if (successHandler)
 		successHandler(self, YES, outShouldRetry);
 	
 	} failureHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	
-		NSLog(@"Authentication Failure: %@", inResponseOrNil);
-		
 		*outShouldRetry = NO;
 
 		if (failureHandler)

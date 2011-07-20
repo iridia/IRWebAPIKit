@@ -82,6 +82,8 @@ static inline IRWebAPITwitterDirectMessageIDRange IRWebAPITwitterDirectMessageID
 #import "IRWebAPITwitterInterface+Geo.h"
 #import "IRWebAPITwitterInterface+Lists.h"
 #import "IRWebAPITwitterInterface+DirectMessages.h"
+#import "IRWebAPITwitterInterface+Friendships.h"
+#import "IRWebAPITwitterInterface+User.h"
 
 
 

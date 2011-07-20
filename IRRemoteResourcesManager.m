@@ -9,7 +9,7 @@
 #import "IRRemoteResourcesManager.h"
 
 
-@interface IRRemoteResourcesManager ()
+@interface IRRemoteResourcesManager () <NSCacheDelegate>
 
 @property (nonatomic, readonly, assign) dispatch_queue_t fileHandleDispatchQueue;
 
@@ -40,7 +40,7 @@
 
 @implementation IRRemoteResourcesManager
 
-@synthesize fileHandleDispatchQueue, cachedURLs, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache;
+@synthesize fileHandleDispatchQueue, cachedURLs, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache, delegate;
 
 + (IRRemoteResourcesManager *) sharedManager {
 
@@ -296,6 +296,8 @@
 
 			CFDictionaryAddValue(connectionsToRemoteURLs, connection, inRemoteURL);
 			CFDictionaryAddValue(connectionsToFileHandles, connection, fileHandle);
+			
+			[self.delegate remoteResourcesManager:self didBeginDownloadingResourceAtURL:inRemoteURL];
 							
 			[connection start];
 	
@@ -353,9 +355,38 @@
 			CFDictionaryRemoveValue(connectionsToFileHandles, connection);
 					
 		});
+		
+		[self.delegate remoteResourcesManager:self didFinishDownloadingResourceAtURL:remoteURL];
 	
 	});
 	
+}
+
+- (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+
+	NSURL *remoteURL = [[(NSURL *)(CFDictionaryGetValue(connectionsToRemoteURLs, connection)) retain] autorelease];
+	
+	[self.downloadingURLs removeObject:remoteURL];
+
+	NSFileHandle *fileHandle = (NSFileHandle *)(CFDictionaryGetValue(connectionsToFileHandles, connection));
+	
+	dispatch_async(self.fileHandleDispatchQueue, ^ {
+	
+		[fileHandle closeFile];
+		
+		//	FIXME: Remove the file
+		
+		dispatch_async(dispatch_get_main_queue(), ^ {
+
+			CFDictionaryRemoveValue(connectionsToRemoteURLs, connection);
+			CFDictionaryRemoveValue(connectionsToFileHandles, connection);
+					
+		});
+		
+		[self.delegate remoteResourcesManager:self didFailDownloadingResourceAtURL:remoteURL];
+	
+	});
+
 }
 
 
@@ -364,9 +395,7 @@
 
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL {
 
-        [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL] postingStyle:NSPostNow coalesceMask:NSNotificationNoCoalescing forModes:nil];
-
-//	[[NSNotificationCenter defaultCenter] postNotificationName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL];
+	[[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL] postingStyle:NSPostNow coalesceMask:NSNotificationNoCoalescing forModes:nil];
 
 }
 
@@ -471,6 +500,52 @@
 	}
 	
 	return returnedImage;
+
+}
+
+
+
+
+
+- (void) retrieveResource:(NSURL *)resourceURL withCallback:(void(^)(NSData *returnedDataOrNil))aBlock {
+
+	NSURL *downloadingURLOrNil = [self downloadingResourceURLMatchingURL:resourceURL];
+	NSURL *notifiedURL = downloadingURLOrNil ? downloadingURLOrNil : resourceURL;
+	
+	NSData *probableData = [self resourceAtRemoteURL:notifiedURL skippingUncachedFile:NO];
+
+	if (probableData && [probableData length]) {
+
+		if (aBlock)
+		aBlock(probableData);
+
+		return;
+
+	}
+	
+	__block id opaqueReference = nil;
+	
+	opaqueReference = [[[NSNotificationCenter defaultCenter] addObserverForName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:notifiedURL queue:nil usingBlock:^(NSNotification *arg1) {
+	
+		NSData *ensuredData = [self resourceAtRemoteURL:notifiedURL skippingUncachedFile:NO];
+
+		if (!ensuredData) {
+		
+			NSLog(@"EHEM, there shall be data.");
+		
+		}
+
+		if (aBlock)
+		aBlock(ensuredData);
+
+		[[NSNotificationCenter defaultCenter] removeObserver:opaqueReference];
+		
+		[opaqueReference autorelease];
+	
+	}] retain];
+	
+	if (notifiedURL != downloadingURLOrNil)
+	[self retrieveResourceAtRemoteURL:notifiedURL forceReload:YES];
 
 }
 
