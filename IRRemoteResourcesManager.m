@@ -40,7 +40,7 @@
 
 @implementation IRRemoteResourcesManager
 
-@synthesize fileHandleDispatchQueue, cachedURLs, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache;
+@synthesize fileHandleDispatchQueue, cachedURLs, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache, delegate;
 
 + (IRRemoteResourcesManager *) sharedManager {
 
@@ -296,6 +296,8 @@
 
 			CFDictionaryAddValue(connectionsToRemoteURLs, connection, inRemoteURL);
 			CFDictionaryAddValue(connectionsToFileHandles, connection, fileHandle);
+			
+			[self.delegate remoteResourcesManager:self didBeginDownloadingResourceAtURL:inRemoteURL];
 							
 			[connection start];
 	
@@ -353,9 +355,38 @@
 			CFDictionaryRemoveValue(connectionsToFileHandles, connection);
 					
 		});
+		
+		[self.delegate remoteResourcesManager:self didFinishDownloadingResourceAtURL:remoteURL];
 	
 	});
 	
+}
+
+- (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+
+	NSURL *remoteURL = [[(NSURL *)(CFDictionaryGetValue(connectionsToRemoteURLs, connection)) retain] autorelease];
+	
+	[self.downloadingURLs removeObject:remoteURL];
+
+	NSFileHandle *fileHandle = (NSFileHandle *)(CFDictionaryGetValue(connectionsToFileHandles, connection));
+	
+	dispatch_async(self.fileHandleDispatchQueue, ^ {
+	
+		[fileHandle closeFile];
+		
+		//	FIXME: Remove the file
+		
+		dispatch_async(dispatch_get_main_queue(), ^ {
+
+			CFDictionaryRemoveValue(connectionsToRemoteURLs, connection);
+			CFDictionaryRemoveValue(connectionsToFileHandles, connection);
+					
+		});
+		
+		[self.delegate remoteResourcesManager:self didFailDownloadingResourceAtURL:remoteURL];
+	
+	});
+
 }
 
 
@@ -364,9 +395,7 @@
 
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL {
 
-        [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL] postingStyle:NSPostNow coalesceMask:NSNotificationNoCoalescing forModes:nil];
-
-//	[[NSNotificationCenter defaultCenter] postNotificationName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL];
+	[[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL] postingStyle:NSPostNow coalesceMask:NSNotificationNoCoalescing forModes:nil];
 
 }
 
