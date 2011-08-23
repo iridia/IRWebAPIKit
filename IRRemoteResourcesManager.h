@@ -1,6 +1,6 @@
 //
-//  MLRemoteResourcesManager.h
-//  Milk
+//  IRRemoteResourcesManager.h
+//  IRWebAPIKit
 //
 //  Created by Evadne Wu on 12/21/10.
 //  Copyright 2010 Iridia Productions. All rights reserved.
@@ -13,19 +13,13 @@
 #import "IRWebAPIKit.h"
 
 
+#ifndef __IRRemoteResourcesManager__
+#define __IRRemoteResourcesManager__
 
-
-#ifndef __MLRemoteResourcesManager__
-#define __MLRemoteResourcesManager__
-
-typedef void (^MLRemoteResourcesManagerCallback) (NSData *mappedCachedDataOrNil);
-
-#define MLRemoteResourcesManagerDidRetrieveResourceNotification @"MLRemoteResourcesManagerDidRetrieveResourceNotification"
+typedef void (^IRRemoteResourcesManagerCallback) (NSData *mappedCachedDataOrNil);
+extern NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification;
 
 #endif
-
-
-
 
 
 @class IRRemoteResourcesManager;
@@ -38,28 +32,20 @@ typedef void (^MLRemoteResourcesManagerCallback) (NSData *mappedCachedDataOrNil)
 @end
 
 
-
-
-
 @interface IRRemoteResourcesManager : NSObject
 
 + (IRRemoteResourcesManager *) sharedManager;
-- (void) retrieveResource:(NSURL *)resourceURL withCallback:(void(^)(NSData *returnedDataOrNil))aBlock;
+
+@property (nonatomic, readwrite, assign) NSUInteger maximumNumberOfConnections;
+@property (nonatomic, readwrite, assign) id<IRRemoteResourcesManagerDelegate> delegate;
 
 - (void) clearCacheDirectory;
 - (void) retrieveResourceAtRemoteURL:(NSURL *)inRemoteURL forceReload:(BOOL)inForceReload;
 - (id) resourceAtRemoteURL:(NSURL *)inRemoteURL skippingUncachedFile:(BOOL)inSkipsIO;
 - (id) resourceAtRemoteURL:(NSURL *)inRemoteURL;
-
-//	Can return NSData* or nil, if the resource is not cached.
-//	The latter calls inSkipsIO:YES
-
-- (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL;	//	Convenience wrapper around +resourceAtRemoteURL:
-
-- (id) cachedResourceAtRemoteURL:(NSURL *)inRemoteURL;	//	Only returns NSData* if the resource is in a memory-backed cache
-- (BOOL) hasStableResourceForRemoteURL:(NSURL *)inRemoteURL;	//	Returns YES if the file is downloaded, e.g. cached, and is not being redownloaded
-- (NSURL *) downloadingResourceURLMatchingURL:(NSURL *)inRemoteURL;	//	Returns an NSURL that is being downloaded, useful when registering for notifications
-
-@property (nonatomic, readwrite, assign) id<IRRemoteResourcesManagerDelegate> delegate;
+- (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL;
+- (id) cachedResourceAtRemoteURL:(NSURL *)inRemoteURL;
+- (BOOL) hasStableResourceForRemoteURL:(NSURL *)inRemoteURL;
+- (NSURL *) downloadingResourceURLMatchingURL:(NSURL *)inRemoteURL;
 
 @end

@@ -1,6 +1,6 @@
 //
-//  MLRemoteResourcesManager.m
-//  Milk
+//  IRRemoteResourcesManager.m
+//  IRWebAPIKit
 //
 //  Created by Evadne Wu on 12/21/10.
 //  Copyright 2010 Iridia Productions. All rights reserved.
@@ -9,28 +9,28 @@
 #import "IRRemoteResourcesManager.h"
 
 
+NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IRRemoteResourcesManagerDidRetrieveResourceNotification";
+
+
 @interface IRRemoteResourcesManager () <NSCacheDelegate>
 
-@property (nonatomic, readonly, assign) dispatch_queue_t fileHandleDispatchQueue;
+@property (readwrite, retain) NSMutableArray *queuedURLs;
+- (void) enqueueURLForDownload:(NSURL *)enqueuedURL;
 
-@property (readwrite, retain) NSMutableSet *cachedURLs;
 @property (readwrite, retain) NSMutableSet *downloadingURLs;
-
 @property (nonatomic, readwrite, retain) NSString *cacheDirectoryPath;
-
+@property (nonatomic, readonly, assign) dispatch_queue_t fileHandleDispatchQueue;
 @property (nonatomic, readwrite, assign) CFMutableDictionaryRef connectionsToRemoteURLs;
 @property (nonatomic, readwrite, assign) CFMutableDictionaryRef connectionsToFileHandles;
 
-- (void) initializeCacheDirectoryAndRefreshCachedURLs;
+@property (nonatomic, readwrite, retain) NSCache *cache;
+@property (readwrite, retain) NSMutableSet *cachedURLs;
 
+- (void) initializeCacheDirectoryAndRefreshCachedURLs;
 - (BOOL) hasCachedResourceForRemoteURL:(NSURL *)inRemoteURL;
 - (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL;
-
 - (void) createFileHandlerAssociatedWithNewURLRequestForRemoteURL:(NSURL *)inRemoteURL;
-
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL;
-
-@property (nonatomic, readwrite, retain) NSCache *cache;
 
 @end
 
@@ -40,30 +40,33 @@
 
 @implementation IRRemoteResourcesManager
 
-@synthesize fileHandleDispatchQueue, cachedURLs, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache, delegate;
+@synthesize fileHandleDispatchQueue, queuedURLs, cachedURLs, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache, maximumNumberOfConnections, delegate;
 
 + (IRRemoteResourcesManager *) sharedManager {
 
-	static IRRemoteResourcesManager* sharedManagerInstance = nil;
-	
-	if (!sharedManagerInstance) {
-	
+	static IRRemoteResourcesManager *sharedManagerInstance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
 		sharedManagerInstance = [[self alloc] init];
-		
-	}
-	
+	});
+
 	return sharedManagerInstance;
 
 }
 
 - (id) init {
 
-	self = [super init]; if (!self) return nil;
+	self = [super init];
 	
-	fileHandleDispatchQueue = dispatch_queue_create("com.iridia.milk.remoteResourcesManager", NULL);
+	if (!self)
+		return nil;
 	
+	fileHandleDispatchQueue = dispatch_queue_create("com.iridia.irwebapikit.remoteResourcesManager", NULL);
+	
+	self.queuedURLs = [NSMutableArray array];
 	self.cachedURLs = [NSMutableSet set];
 	self.downloadingURLs = [NSMutableSet set];
+	self.maximumNumberOfConnections = 10;
 	
 	connectionsToRemoteURLs = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
 	CFRetain(connectionsToRemoteURLs);
@@ -71,16 +74,11 @@
 	connectionsToFileHandles = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
 	CFRetain(connectionsToFileHandles);
 	
-	NSString *applicationCacheDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-	NSString *preferredCacheDirectoryPath = [applicationCacheDirectory stringByAppendingPathComponent:@"MLRemoteResourcesManager"];
-	self.cacheDirectoryPath = preferredCacheDirectoryPath;
-	
-//		for (id anURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[[[NSURL alloc] initFileURLWithPath:self.cacheDirectoryPath] autorelease] includingPropertiesForKeys:nil options:0 error:nil])
-//		[[NSFileManager defaultManager] removeItemAtURL:anURL error:nil];
+	self.cacheDirectoryPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:NSStringFromClass([self class])];
 	
 	self.cache = [[[NSCache alloc] init] autorelease];
 	self.cache.delegate = self;
-	[self.cache setTotalCostLimit:1024 * 1024 * 5];	//	1024 Bs * 1024 KBs * 5
+	self.cache.totalCostLimit = 1024 * 1024 * 5;	//	1024 Bs * 1024 KBs * 5
 	
 	[self initializeCacheDirectoryAndRefreshCachedURLs];
 	
@@ -101,22 +99,20 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 
 	dispatch_release(fileHandleDispatchQueue);
-
-	self.cachedURLs = nil;
-	self.downloadingURLs = nil;
+	
+	[queuedURLs release];
+	[cachedURLs release];
+	[downloadingURLs release];
 	
 	CFRelease(connectionsToRemoteURLs);
 	CFRelease(connectionsToFileHandles);
 	
-	self.cacheDirectoryPath = nil;
-	self.cache = nil;
+	[cacheDirectoryPath release];
+	[cache release];
 		
 	[super dealloc];
 
 }
-
-
-
 
 
 - (NSString *) pathForCachedContentsOfRemoteURL:(NSURL *)inRemoteURL {
@@ -134,16 +130,8 @@
 - (void) clearCacheDirectory {
 
 	NSError *error;
-	
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *cachePath = [self cacheDirectoryPath];
-
-	if (![fileManager removeItemAtPath:cachePath error:&error]) {
-	
+	if (![[NSFileManager defaultManager] removeItemAtPath:[self cacheDirectoryPath] error:&error])
 		NSLog(@"Error occurred while removing the cache directory; %@", error);
-		return;
-	
-	}
 
 }
 
@@ -183,9 +171,7 @@
 
 - (BOOL) hasCachedResourceForRemoteURL:(NSURL *)inRemoteURL {
 
-	NSSet *copiedCachedURLs = [[self.cachedURLs copy] autorelease];
-
-	return ([[copiedCachedURLs objectsPassingTest: ^ (id obj, BOOL *stop) {
+	return ([[[[self.cachedURLs copy] autorelease] objectsPassingTest: ^ (id obj, BOOL *stop) {
 	
 		BOOL equals = [[obj absoluteURL] isEqual:[inRemoteURL absoluteURL]];
 		
@@ -198,9 +184,7 @@
 
 - (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL {
 
-	NSSet *copiedDownloadingURLs = [[self.downloadingURLs copy] autorelease];
-
-	return ([[copiedDownloadingURLs objectsPassingTest: ^ (id obj, BOOL *stop) {
+	return ([[[[self.downloadingURLs copy] autorelease] objectsPassingTest: ^ (id obj, BOOL *stop) {
 	
 		BOOL equals = [[obj absoluteURL] isEqual:[inRemoteURL absoluteURL]];
 		
@@ -213,16 +197,11 @@
 
 - (NSURL *) downloadingResourceURLMatchingURL:(NSURL *)inRemoteURL {
 
-	NSSet *copiedDownloadingURLs = [[[self.downloadingURLs copy] autorelease] objectsPassingTest:^(id obj, BOOL *stop) {
-	
+	return [[[[self.downloadingURLs copy] autorelease] objectsPassingTest:^(id obj, BOOL *stop) {
+		
 		return [[obj absoluteURL] isEqual:inRemoteURL];
-	
-	}];
-	
-	if ([copiedDownloadingURLs count] > 0)
-	return [copiedDownloadingURLs anyObject];
-	
-	return nil;
+		
+	}] anyObject];
 
 }
 
@@ -232,7 +211,8 @@
 
 - (void) retrieveResourceAtRemoteURL:(NSURL *)inRemoteURL forceReload:(BOOL)inForceReload {
 
-	if (!inRemoteURL) return;
+	if (!inRemoteURL)
+		return;
 	
 	if (!inForceReload)
 	if ([self.cache objectForKey:[inRemoteURL absoluteString]] || [self hasCachedResourceForRemoteURL:inRemoteURL]) {
@@ -242,11 +222,34 @@
 	
 	}
 	
-	if ([self isDownloadingResourceFromRemoteURL:inRemoteURL])
-	return;
-
-	[self createFileHandlerAssociatedWithNewURLRequestForRemoteURL:inRemoteURL];
+	if (![self isDownloadingResourceFromRemoteURL:inRemoteURL])
+		[self enqueueURLForDownload:inRemoteURL];
 	
+}
+
+
+- (void) enqueueURLForDownload:(NSURL *)enqueuedURL {
+
+	if ([self.queuedURLs containsObject:enqueuedURL])
+		[self.queuedURLs removeObject:enqueuedURL];
+	
+	[self.queuedURLs insertObject:enqueuedURL atIndex:0];
+	
+	NSInteger numberOfAccommodatableConnections = self.maximumNumberOfConnections - [self.downloadingURLs count];
+	numberOfAccommodatableConnections = MIN([self.queuedURLs count], numberOfAccommodatableConnections);
+	
+	if (numberOfAccommodatableConnections > 0)
+	if ([self.downloadingURLs count] < self.maximumNumberOfConnections) {
+	
+		NSArray *takenURLs = [self.queuedURLs objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, numberOfAccommodatableConnections)]];
+		
+		[self.queuedURLs removeObjectsInArray:takenURLs];
+		
+		for (NSURL *anURL in takenURLs)
+			[self createFileHandlerAssociatedWithNewURLRequestForRemoteURL:anURL];
+			
+	}
+
 }
 
 
@@ -395,7 +398,7 @@
 
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL {
 
-	[[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL] postingStyle:NSPostNow coalesceMask:NSNotificationNoCoalescing forModes:nil];
+	[[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:kIRRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL] postingStyle:NSPostNow coalesceMask:NSNotificationNoCoalescing forModes:nil];
 
 }
 
@@ -525,7 +528,7 @@
 	
 	__block id opaqueReference = nil;
 	
-	opaqueReference = [[[NSNotificationCenter defaultCenter] addObserverForName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:notifiedURL queue:nil usingBlock:^(NSNotification *arg1) {
+	opaqueReference = [[[NSNotificationCenter defaultCenter] addObserverForName:kIRRemoteResourcesManagerDidRetrieveResourceNotification object:notifiedURL queue:nil usingBlock:^(NSNotification *arg1) {
 	
 		NSData *ensuredData = [self resourceAtRemoteURL:notifiedURL skippingUncachedFile:NO];
 
