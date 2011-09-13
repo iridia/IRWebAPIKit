@@ -10,6 +10,7 @@
 
 
 NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IRRemoteResourcesManagerDidRetrieveResourceNotification";
+NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManagerFilePath";
 
 
 @interface IRRemoteResourcesManager () <NSCacheDelegate>
@@ -24,13 +25,15 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 @property (nonatomic, readwrite, assign) CFMutableDictionaryRef connectionsToFileHandles;
 
 @property (nonatomic, readwrite, retain) NSCache *cache;
-@property (readwrite, retain) NSMutableSet *cachedURLs;
+@property (readwrite, retain) NSMutableDictionary *cachedURLsToFilePaths;
 
 - (void) initializeCacheDirectoryAndRefreshCachedURLs;
 - (BOOL) hasCachedResourceForRemoteURL:(NSURL *)inRemoteURL;
 - (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL;
 - (void) createFileHandlerAssociatedWithNewURLRequestForRemoteURL:(NSURL *)inRemoteURL;
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL;
+
+- (BOOL) persistCacheRegistry;
 
 @end
 
@@ -40,7 +43,7 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 @implementation IRRemoteResourcesManager
 
-@synthesize fileHandleDispatchQueue, queuedURLs, cachedURLs, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache, maximumNumberOfConnections, delegate;
+@synthesize fileHandleDispatchQueue, queuedURLs, cachedURLsToFilePaths, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache, maximumNumberOfConnections, delegate;
 
 + (IRRemoteResourcesManager *) sharedManager {
 
@@ -64,15 +67,12 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 	fileHandleDispatchQueue = dispatch_queue_create("com.iridia.irwebapikit.remoteResourcesManager", NULL);
 	
 	self.queuedURLs = [NSMutableArray array];
-	self.cachedURLs = [NSMutableSet set];
+	self.cachedURLsToFilePaths = [NSMutableDictionary dictionary];
 	self.downloadingURLs = [NSMutableSet set];
 	self.maximumNumberOfConnections = 10;
 	
-	connectionsToRemoteURLs = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
-	CFRetain(connectionsToRemoteURLs);
-	
-	connectionsToFileHandles = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
-	CFRetain(connectionsToFileHandles);
+	self.connectionsToRemoteURLs = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+	self.connectionsToFileHandles = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 	
 	self.cacheDirectoryPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:NSStringFromClass([self class])];
 	
@@ -83,7 +83,9 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 	[self initializeCacheDirectoryAndRefreshCachedURLs];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+		
 	return self;
 
 }
@@ -94,6 +96,18 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 }
 
+- (void) handleWillResignActive:(NSNotification *)aNotification {
+
+	[self persistCacheRegistry];
+
+}
+
+- (void) handleWillTerminate:(NSNotification *)aNotification {
+
+	[self persistCacheRegistry];
+
+}
+
 - (void) dealloc {
 
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -101,7 +115,7 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 	dispatch_release(fileHandleDispatchQueue);
 	
 	[queuedURLs release];
-	[cachedURLs release];
+	[cachedURLsToFilePaths release];
 	[downloadingURLs release];
 	
 	CFRelease(connectionsToRemoteURLs);
@@ -117,7 +131,12 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (NSString *) pathForCachedContentsOfRemoteURL:(NSURL *)inRemoteURL {
 
-	return [[self cacheDirectoryPath] stringByAppendingPathComponent:IRWebAPIKitRFC3986EncodedStringMake([inRemoteURL absoluteString])];
+	NSString *existingPath = [self.cachedURLsToFilePaths objectForKey:[inRemoteURL absoluteString]];
+	
+	if (existingPath)
+		return existingPath;
+	
+	return [[self cacheDirectoryPath] stringByAppendingPathComponent:IRWebAPIKitNonce()];
 
 }
 
@@ -143,26 +162,21 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 	NSString *cachePath = [self cacheDirectoryPath];
 
 	if (![fileManager createDirectoryAtPath:cachePath withIntermediateDirectories:YES attributes:nil error:&error]) {
-	
-		NSLog(@"Erorr occurred while creating or assuring cache directory: %@", error);
-		return;
-	
+		NSLog(@"Error occurred while creating or assuring cache directory: %@", error);
+		return;	
 	};
 	
-	NSArray *cachedURLRepresentations = nil;
-	
-	if (!(cachedURLRepresentations = [fileManager contentsOfDirectoryAtPath:cachePath error:&error])) {
-	
-		NSLog(@"Error retrieving list of cached files: %@", error);
-		return;
-	
+	NSString *cacheRegistryPath = [cachePath stringByAppendingPathComponent:@"cacheRegistry"];
+	if ([fileManager fileExistsAtPath:cacheRegistryPath]) {
+		self.cachedURLsToFilePaths = [NSDictionary dictionaryWithContentsOfFile:cacheRegistryPath];
 	}
 	
-	[[self cachedURLs] removeAllObjects];
-	
-	for (NSString *urlRepresentation in cachedURLRepresentations)
-	[[self cachedURLs] addObject:[NSURL URLWithString:IRWebAPIKitRFC3986DecodedStringMake(urlRepresentation)]];
-		
+}
+
+- (BOOL) persistCacheRegistry {
+
+	return [self.cachedURLsToFilePaths writeToFile:[[self cacheDirectoryPath] stringByAppendingPathComponent:@"cacheRegistry"] atomically:YES];
+
 }
 
 
@@ -170,15 +184,10 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 
 - (BOOL) hasCachedResourceForRemoteURL:(NSURL *)inRemoteURL {
-
-	return ([[[[self.cachedURLs copy] autorelease] objectsPassingTest: ^ (id obj, BOOL *stop) {
 	
-		BOOL equals = [[obj absoluteURL] isEqual:[inRemoteURL absoluteURL]];
-		
-		*stop = equals;	
-		return equals;
-	
-	}] count] > 0);
+	return (BOOL)!!([[[self.cachedURLsToFilePaths allKeys] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+		return [evaluatedObject isEqual:[inRemoteURL absoluteString]];
+	}]] count]);
 
 }
 
@@ -258,11 +267,13 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) createFileHandlerAssociatedWithNewURLRequestForRemoteURL:(NSURL *)inRemoteURL {
 
-	for (id existingObject in [self.cachedURLs objectsPassingTest: ^ (id obj, BOOL *stop) {
-	
-		return [obj isEqual:inRemoteURL];
-	
-	}]) [self.cachedURLs removeObject:existingObject];
+
+
+	for (id existingObject in [[self.cachedURLsToFilePaths allKeys] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+		return [evaluatedObject isEqual:[inRemoteURL absoluteString]];
+	}]]) {
+		[self.cachedURLsToFilePaths removeObjectForKey:[inRemoteURL absoluteString]];
+	}
 	
 	[self.cache removeObjectForKey:[inRemoteURL absoluteString]];
 	
@@ -278,18 +289,15 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 		NSString *filePath = [self pathForCachedContentsOfRemoteURL:inRemoteURL];
 		NSURL *fileURL = [NSURL fileURLWithPath:filePath];
 		
-		if (![[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil]) {
-		
-			NSLog(@"Error creating file at path %@", filePath);
-		
-		}
+		if (![[NSData data] writeToFile:filePath options:NSDataWritingFileProtectionNone error:&error])
+			NSLog(@"Error creating file at path %@: %@", filePath, error);
 		
 		if (!(fileHandle = [NSFileHandle fileHandleForWritingToURL:fileURL error:&error])) {
-		
 			NSLog(@"error getting file handle to write cache file for URL %@ to local path %@: %@", inRemoteURL, fileURL, error);
-			return;
-		
+			return;		
 		}
+		
+		objc_setAssociatedObject(fileHandle, &kIRRemoteResourcesManagerFilePath, filePath, OBJC_ASSOCIATION_COPY_NONATOMIC);
 		
 		[fileHandle truncateFileAtOffset:0];
 		
@@ -338,9 +346,10 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 	NSURL *remoteURL = [[(NSURL *)(CFDictionaryGetValue(connectionsToRemoteURLs, connection)) retain] autorelease];
 	
 	[self.downloadingURLs removeObject:remoteURL];
-	[self.cachedURLs addObject:remoteURL];
 
 	NSFileHandle *fileHandle = (NSFileHandle *)(CFDictionaryGetValue(connectionsToFileHandles, connection));
+	NSString *filePath = objc_getAssociatedObject(fileHandle, &kIRRemoteResourcesManagerFilePath);
+	[self.cachedURLsToFilePaths setObject:filePath forKey:[remoteURL absoluteString]];
 	
 	dispatch_async(self.fileHandleDispatchQueue, ^ {
 	
