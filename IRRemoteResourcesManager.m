@@ -355,9 +355,12 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 	
 		[fileHandle closeFile];
 		
-		NSPurgeableData *purgableCachedData = [[[NSPurgeableData alloc] initWithContentsOfMappedFile:[self pathForCachedContentsOfRemoteURL:remoteURL]] autorelease];
-	
-		[self.cache setObject:purgableCachedData forKey:[self pathForCachedContentsOfRemoteURL:remoteURL] cost:[purgableCachedData length]];	
+		NSPurgeableData *purgableCachedData = [[[NSPurgeableData alloc] initWithContentsOfMappedFile:filePath] autorelease];
+		
+		if (purgableCachedData)
+			[self.cache setObject:purgableCachedData forKey:[remoteURL absoluteString] cost:[purgableCachedData length]];	
+		else
+			NSLog(@"Warning: %s did not get any purgable cached data", __PRETTY_FUNCTION__);
 
 		[self notifyUpdatedResourceForRemoteURL:remoteURL];
 		
@@ -441,11 +444,14 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 			[self.cache removeObjectForKey:cacheKey];
 		
 			if (![self hasStableResourceForRemoteURL:inRemoteURL])
-			return;
-
-			NSPurgeableData *purgableCachedData = [NSPurgeableData dataWithContentsOfMappedFile:[self pathForCachedContentsOfRemoteURL:inRemoteURL]];
+				return;
+			
+			NSPurgeableData *purgableCachedData = [NSPurgeableData dataWithContentsOfMappedFile:[self pathForCachedContentsOfRemoteURL:[self.cachedURLsToFilePaths objectForKey:[inRemoteURL absoluteString]]]];
 		
-			[self.cache setObject:purgableCachedData forKey:cacheKey cost:[purgableCachedData length]];	
+			if (purgableCachedData)
+				[self.cache setObject:purgableCachedData forKey:[inRemoteURL absoluteString] cost:[purgableCachedData length]];	
+			else
+				NSLog(@"Warning: %s did not get any purgable cached data", __PRETTY_FUNCTION__);
 		
 		};
 		
@@ -484,7 +490,10 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 		
 			NSPurgeableData *purgableCachedData = [NSPurgeableData dataWithContentsOfMappedFile:[self pathForCachedContentsOfRemoteURL:inRemoteURL]];
 		
-			[self.cache setObject:purgableCachedData forKey:cacheKey cost:[purgableCachedData length]];	
+			if (purgableCachedData)
+				[self.cache setObject:purgableCachedData forKey:cacheKey cost:[purgableCachedData length]];	
+			else
+				NSLog(@"Warning: %s did not get any purgable cached data", __PRETTY_FUNCTION__);
 		
 		});
 
