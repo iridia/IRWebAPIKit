@@ -9,7 +9,7 @@
 #import <objc/runtime.h>
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
 #import <UIKit/UIKit.h>
 #else
 #import <Cocoa/Cocoa.h>
@@ -41,7 +41,7 @@ extern NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification
 
 + (IRRemoteResourcesManager *) sharedManager;
 
-@property (nonatomic, readwrite, assign) NSUInteger maximumNumberOfConnections;
+@property (nonatomic, readonly, retain) NSOperationQueue *queue;
 @property (nonatomic, readwrite, assign) id<IRRemoteResourcesManagerDelegate> delegate;
 
 - (void) clearCacheDirectory;
@@ -51,6 +51,5 @@ extern NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification
 - (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL;
 - (id) cachedResourceAtRemoteURL:(NSURL *)inRemoteURL;
 - (BOOL) hasStableResourceForRemoteURL:(NSURL *)inRemoteURL;
-- (NSURL *) downloadingResourceURLMatchingURL:(NSURL *)inRemoteURL;
 
 @end
