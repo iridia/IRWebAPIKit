@@ -514,29 +514,26 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 	id cachedObjectOrNil = [self cachedResourceAtRemoteURL:inRemoteURL];
 	if (!cachedObjectOrNil || ([cachedObjectOrNil length] == 0)) {
 		
-		if (inSkipsIO) {
+		if (inSkipsIO)
 			return nil;
-		}
+		
+		if (![self hasStableResourceForRemoteURL:inRemoteURL])
+			return nil;
 		
 		id cacheKey = [inRemoteURL absoluteString];
 		[self.cache removeObjectForKey:cacheKey];
-	
-		if (![self hasStableResourceForRemoteURL:inRemoteURL]) {
-			return nil;
-		}
-		
 		
 		BOOL isProspectivePath = NO;
 		NSString *filePath = [self pathForCachedContentsOfRemoteURL:inRemoteURL usedProspectiveURL:&isProspectivePath];
-		
 		NSParameterAssert(filePath && !isProspectivePath);
+		
 		NSPurgeableData *purgableCachedData = [NSPurgeableData dataWithContentsOfMappedFile:filePath];
+		NSParameterAssert(purgableCachedData);
 		
 		[self.cache setObject:purgableCachedData forKey:[inRemoteURL absoluteString] cost:[purgableCachedData length]];
 		
-		NSData *returnedCachedResource = [self cachedResourceAtRemoteURL:inRemoteURL];
-		NSParameterAssert(returnedCachedResource);
-		return returnedCachedResource;
+		//	Even though the object could have been cached, it might NOT be cached at all
+		return purgableCachedData;
 	
 	}
 
