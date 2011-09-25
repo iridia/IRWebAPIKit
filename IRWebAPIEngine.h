@@ -9,15 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "IRWebAPIKit.h"
 
-
-
-
-
 extern NSString * const kIRWebAPIEngineResponseDictionaryIncomingData;
 extern NSString * const kIRWebAPIEngineResponseDictionaryOutgoingContext;
-
-
-
+extern NSString * const kIRWebAPIEngineAssociatedDataStore;
+extern NSString * const kIRWebAPIEngineAssociatedResponseContext;
+extern NSString * const kIRWebAPIEngineAssociatedSuccessHandler;
+extern NSString * const kIRWebAPIEngineAssociatedFailureHandler;
+extern NSString * const kIRWebAPIEngineUnderlyingError;
 
 
 @interface IRWebAPIEngine : NSObject

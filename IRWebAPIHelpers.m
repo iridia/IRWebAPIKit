@@ -265,7 +265,7 @@ NSString * IRWebAPIKitNonce () {
 	uuid = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, theUUID) autorelease];
 	CFRelease(theUUID);
 	
-	return [NSString stringWithFormat:@"%@-%@-%@", IRWebAPIKitTimestamp(), uuid, [UIDevice currentDevice].uniqueIdentifier];
+	return [NSString stringWithFormat:@"%@-%@", IRWebAPIKitTimestamp(), uuid];
 	
 }
 

@@ -21,6 +21,8 @@ NSString * const kIRWebAPIEngineAssociatedResponseContext = @"kIRWebAPIEngineAss
 NSString * const kIRWebAPIEngineAssociatedSuccessHandler = @"kIRWebAPIEngineAssociatedSuccessHandler";
 NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAssociatedFailureHandler";
 
+NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingError";
+
 
 
 
@@ -294,7 +296,7 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 			[self setInternalFailureHandler: ^ {
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
-				NSDictionary *responseContext = [self internalResponseContextForConnection:connection];
+				NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
 				
 				if (inFailureHandler)
 				inFailureHandler([NSDictionary dictionary], responseContext, &notifyDelegate, &shouldRetry);
@@ -376,8 +378,7 @@ NSString * const kIRWebAPIEngineAssociatedFailureHandler = @"kIRWebAPIEngineAsso
 
 	dispatch_async(self.sharedDispatchQueue, ^{
 	
-		NSLog(@"Connection did fail with error %@", error);
-
+		[[self internalResponseContextForConnection:inConnection] setObject:error forKey:kIRWebAPIEngineUnderlyingError];
 		[self internalFailureHandlerForConnection:inConnection]();
 	
 	});

@@ -1,92 +1,121 @@
 //
-//  MLRemoteResourcesManager.m
-//  Milk
+//  IRRemoteResourcesManager.m
+//  IRWebAPIKit
 //
 //  Created by Evadne Wu on 12/21/10.
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
 #import "IRRemoteResourcesManager.h"
+#import "IRRemoteResourceDownloadOperation.h"
+
+NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IRRemoteResourcesManagerDidRetrieveResourceNotification";
+NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManagerFilePath";
 
 
 @interface IRRemoteResourcesManager () <NSCacheDelegate>
 
-@property (nonatomic, readonly, assign) dispatch_queue_t fileHandleDispatchQueue;
+@property (nonatomic, readwrite, retain) NSOperationQueue *queue;
+@property (nonatomic, readwrite, retain) NSMutableArray *enqueuedOperations;
 
-@property (readwrite, retain) NSMutableSet *cachedURLs;
-@property (readwrite, retain) NSMutableSet *downloadingURLs;
+- (void) enqueueURLForDownload:(NSURL *)enqueuedURL;
+- (void) enqueueOperationsIfNeeded;
 
-@property (nonatomic, readwrite, retain) NSString *cacheDirectoryPath;
+@property (nonatomic, readwrite, retain) NSCache *cache;
+@property (nonatomic, readonly, retain) NSString *cacheDirectoryPath;
+@property (nonatomic, readonly, retain) NSString *cacheRegistryPath;
 
-@property (nonatomic, readwrite, assign) CFMutableDictionaryRef connectionsToRemoteURLs;
-@property (nonatomic, readwrite, assign) CFMutableDictionaryRef connectionsToFileHandles;
+@property (nonatomic, readwrite, retain) NSMutableDictionary *cacheRegistry;
+- (BOOL) persistCacheRegistry;
 
-- (void) initializeCacheDirectoryAndRefreshCachedURLs;
+- (NSString *) pathForCachedContentsOfRemoteURL:(NSURL *)inRemoteURL usedProspectiveURL:(BOOL *)returnedProspectiveURL;
 
 - (BOOL) hasCachedResourceForRemoteURL:(NSURL *)inRemoteURL;
 - (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL;
-
-- (void) createFileHandlerAssociatedWithNewURLRequestForRemoteURL:(NSURL *)inRemoteURL;
-
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL;
-
-@property (nonatomic, readwrite, retain) NSCache *cache;
 
 @end
 
 
-
-
-
 @implementation IRRemoteResourcesManager
 
-@synthesize fileHandleDispatchQueue, cachedURLs, downloadingURLs, cacheDirectoryPath, connectionsToRemoteURLs, connectionsToFileHandles, cache, delegate;
+@synthesize queue, enqueuedOperations;
+@synthesize cache, delegate;
+@synthesize cacheRegistry, cacheDirectoryPath, cacheRegistryPath;
 
 + (IRRemoteResourcesManager *) sharedManager {
 
-	static IRRemoteResourcesManager* sharedManagerInstance = nil;
-	
-	if (!sharedManagerInstance) {
-	
+	static IRRemoteResourcesManager *sharedManagerInstance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
 		sharedManagerInstance = [[self alloc] init];
-		
-	}
-	
+	});
+
 	return sharedManagerInstance;
 
 }
 
 - (id) init {
 
-	self = [super init]; if (!self) return nil;
+	self = [super init];
 	
-	fileHandleDispatchQueue = dispatch_queue_create("com.iridia.milk.remoteResourcesManager", NULL);
+	if (!self)
+		return nil;
+		
+	queue = [[NSOperationQueue alloc] init];
+	queue.maxConcurrentOperationCount = 1;
 	
-	self.cachedURLs = [NSMutableSet set];
-	self.downloadingURLs = [NSMutableSet set];
+	enqueuedOperations = [[NSMutableArray array] retain];
 	
-	connectionsToRemoteURLs = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
-	CFRetain(connectionsToRemoteURLs);
+	cache = [[NSCache alloc] init];
+	cache.delegate = self;
+	cache.totalCostLimit = 1024 * 1024 * 5;	//	1024 Bs * 1024 KBs * 5
 	
-	connectionsToFileHandles = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);	
-	CFRetain(connectionsToFileHandles);
-	
-	NSString *applicationCacheDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-	NSString *preferredCacheDirectoryPath = [applicationCacheDirectory stringByAppendingPathComponent:@"MLRemoteResourcesManager"];
-	self.cacheDirectoryPath = preferredCacheDirectoryPath;
-	
-//		for (id anURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[[[NSURL alloc] initFileURLWithPath:self.cacheDirectoryPath] autorelease] includingPropertiesForKeys:nil options:0 error:nil])
-//		[[NSFileManager defaultManager] removeItemAtURL:anURL error:nil];
-	
-	self.cache = [[[NSCache alloc] init] autorelease];
-	self.cache.delegate = self;
-	[self.cache setTotalCostLimit:1024 * 1024 * 5];	//	1024 Bs * 1024 KBs * 5
-	
-	[self initializeCacheDirectoryAndRefreshCachedURLs];
+	NSError *cacheDirectoryCreationError;	
+	if (![[NSFileManager defaultManager] createDirectoryAtPath:[self cacheDirectoryPath] withIntermediateDirectories:YES attributes:nil error:&cacheDirectoryCreationError]) {
+		NSLog(@"Error occurred while creating or assuring cache directory: %@", cacheDirectoryCreationError);
+	};
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+		
 	return self;
+
+}
+
+- (NSString *) cacheDirectoryPath {
+
+	if (!cacheDirectoryPath)
+		cacheDirectoryPath = [[[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:NSStringFromClass([self class])] retain];
+	
+	return cacheDirectoryPath;
+
+}
+
+- (NSString *) cacheRegistryPath {
+
+	if (!cacheRegistryPath)
+		cacheRegistryPath = [[[self cacheDirectoryPath] stringByAppendingPathComponent:@"cacheRegistry"] retain];
+	
+	return cacheRegistryPath;
+
+}
+
+- (NSMutableDictionary *) cacheRegistry {
+
+	if (!cacheRegistry) {
+	
+		NSString *ownCacheRegistryPath = [self cacheRegistryPath];
+	
+		if ([[NSFileManager defaultManager] fileExistsAtPath:ownCacheRegistryPath])
+			cacheRegistry = [[NSMutableDictionary dictionaryWithContentsOfFile:ownCacheRegistryPath] retain];
+		else
+			cacheRegistry = [[NSMutableDictionary dictionary] retain];
+		
+	}
+	
+	return cacheRegistry;
 
 }
 
@@ -96,318 +125,196 @@
 
 }
 
+- (void) handleWillResignActive:(NSNotification *)aNotification {
+
+	[self persistCacheRegistry];
+
+}
+
+- (void) handleWillTerminate:(NSNotification *)aNotification {
+
+	[self persistCacheRegistry];
+
+}
+
 - (void) dealloc {
 
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-
-	dispatch_release(fileHandleDispatchQueue);
-
-	self.cachedURLs = nil;
-	self.downloadingURLs = nil;
 	
-	CFRelease(connectionsToRemoteURLs);
-	CFRelease(connectionsToFileHandles);
-	
-	self.cacheDirectoryPath = nil;
-	self.cache = nil;
+	[queue release];
+	[enqueuedOperations release];
+	[cache release];
+	[cacheRegistry release];
+	[cacheDirectoryPath release];
+	[cacheRegistryPath release];
 		
 	[super dealloc];
 
 }
 
 
+- (NSString *) pathForCachedContentsOfRemoteURL:(NSURL *)inRemoteURL usedProspectiveURL:(BOOL *)returnedProspectiveURL {
 
-
-
-- (NSString *) pathForCachedContentsOfRemoteURL:(NSURL *)inRemoteURL {
-
-	return [[self cacheDirectoryPath] stringByAppendingPathComponent:IRWebAPIKitRFC3986EncodedStringMake([inRemoteURL absoluteString])];
-
-}
-
-- (NSURL *) urlForCachedContentWithName:(NSString *)inName {
-
-	return [NSURL URLWithString:IRWebAPIKitRFC3986DecodedStringMake(inName)];
+	NSString *existingPath = [self.cacheRegistry objectForKey:[inRemoteURL absoluteString]];
+	
+	if (existingPath) {
+		
+		if (returnedProspectiveURL)
+			*returnedProspectiveURL = NO;
+		
+		return existingPath;
+		
+	}
+	
+	if (returnedProspectiveURL)
+			*returnedProspectiveURL = YES;
+	
+	return [[self cacheDirectoryPath] stringByAppendingPathComponent:IRWebAPIKitNonce()];
 
 }
 
 - (void) clearCacheDirectory {
 
 	NSError *error;
-	
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *cachePath = [self cacheDirectoryPath];
-
-	if (![fileManager removeItemAtPath:cachePath error:&error]) {
-	
+	if (![[NSFileManager defaultManager] removeItemAtPath:[self cacheDirectoryPath] error:&error])
 		NSLog(@"Error occurred while removing the cache directory; %@", error);
-		return;
-	
-	}
 
 }
 
-- (void) initializeCacheDirectoryAndRefreshCachedURLs {
-	
-	NSError *error;
-	
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *cachePath = [self cacheDirectoryPath];
+- (BOOL) persistCacheRegistry {
 
-	if (![fileManager createDirectoryAtPath:cachePath withIntermediateDirectories:YES attributes:nil error:&error]) {
-	
-		NSLog(@"Erorr occurred while creating or assuring cache directory: %@", error);
-		return;
-	
-	};
-	
-	NSArray *cachedURLRepresentations = nil;
-	
-	if (!(cachedURLRepresentations = [fileManager contentsOfDirectoryAtPath:cachePath error:&error])) {
-	
-		NSLog(@"Error retrieving list of cached files: %@", error);
-		return;
-	
-	}
-	
-	[[self cachedURLs] removeAllObjects];
-	
-	for (NSString *urlRepresentation in cachedURLRepresentations)
-	[[self cachedURLs] addObject:[NSURL URLWithString:IRWebAPIKitRFC3986DecodedStringMake(urlRepresentation)]];
-		
+	return [self.cacheRegistry writeToFile:[self cacheRegistryPath] atomically:YES];
+
 }
-
-
-
-
 
 - (BOOL) hasCachedResourceForRemoteURL:(NSURL *)inRemoteURL {
 
-	NSSet *copiedCachedURLs = [[self.cachedURLs copy] autorelease];
-
-	return ([[copiedCachedURLs objectsPassingTest: ^ (id obj, BOOL *stop) {
+	return !![self.cache objectForKey:[inRemoteURL absoluteString]];
 	
-		BOOL equals = [[obj absoluteURL] isEqual:[inRemoteURL absoluteURL]];
-		
-		*stop = equals;	
-		return equals;
-	
-	}] count] > 0);
-
 }
 
 - (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL {
 
-	NSSet *copiedDownloadingURLs = [[self.downloadingURLs copy] autorelease];
+	NSParameterAssert(inRemoteURL);
 
-	return ([[copiedDownloadingURLs objectsPassingTest: ^ (id obj, BOOL *stop) {
+	NSArray *allRecognizedOperations = [self.queue.operations arrayByAddingObjectsFromArray:self.enqueuedOperations];
+	BOOL result = !![[allRecognizedOperations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock: ^ (IRRemoteResourceDownloadOperation *operation, NSDictionary *bindings) {
+		return [[operation.url absoluteString] isEqual:[inRemoteURL absoluteString]];
+	}]] count];
 	
-		BOOL equals = [[obj absoluteURL] isEqual:[inRemoteURL absoluteURL]];
-		
-		*stop = equals;	
-		return equals;
-	
-	}] count] > 0);
+	return result;
 
 }
-
-- (NSURL *) downloadingResourceURLMatchingURL:(NSURL *)inRemoteURL {
-
-	NSSet *copiedDownloadingURLs = [[[self.downloadingURLs copy] autorelease] objectsPassingTest:^(id obj, BOOL *stop) {
-	
-		return [[obj absoluteURL] isEqual:inRemoteURL];
-	
-	}];
-	
-	if ([copiedDownloadingURLs count] > 0)
-	return [copiedDownloadingURLs anyObject];
-	
-	return nil;
-
-}
-
-
-
-
 
 - (void) retrieveResourceAtRemoteURL:(NSURL *)inRemoteURL forceReload:(BOOL)inForceReload {
 
-	if (!inRemoteURL) return;
-	
-	if (!inForceReload)
-	if ([self.cache objectForKey:[inRemoteURL absoluteString]] || [self hasCachedResourceForRemoteURL:inRemoteURL]) {
-	
-		[self notifyUpdatedResourceForRemoteURL:inRemoteURL];
+	if (!inRemoteURL)
 		return;
 	
+	if (!inForceReload)
+	if ([self.cache objectForKey:[inRemoteURL absoluteString]] || [self hasCachedResourceForRemoteURL:inRemoteURL])
+		return;
+	
+	[self enqueueURLForDownload:inRemoteURL];
+	
+}
+
+
+- (void) enqueueURLForDownload:(NSURL *)enqueuedURL {
+
+	if ([self isDownloadingResourceFromRemoteURL:enqueuedURL])
+		return;
+	
+	NSString *oldFilePath = [self.cacheRegistry objectForKey:[enqueuedURL absoluteString]];
+	
+	if (oldFilePath) {
+		[[NSFileManager defaultManager] removeItemAtPath:oldFilePath error:nil];
+		[self.cacheRegistry removeObjectForKey:[enqueuedURL absoluteString]];
+		[self.cache removeObjectForKey:[enqueuedURL absoluteString]];
 	}
-	
-	if ([self isDownloadingResourceFromRemoteURL:inRemoteURL])
-	return;
 
-	[self createFileHandlerAssociatedWithNewURLRequestForRemoteURL:inRemoteURL];
+	__block IRRemoteResourceDownloadOperation *operation;
+	operation = [IRRemoteResourceDownloadOperation operationWithURL:enqueuedURL path:[self pathForCachedContentsOfRemoteURL:enqueuedURL usedProspectiveURL:NULL] prelude: ^ {
 	
-}
-
-
-
-
-
-- (void) createFileHandlerAssociatedWithNewURLRequestForRemoteURL:(NSURL *)inRemoteURL {
-
-	for (id existingObject in [self.cachedURLs objectsPassingTest: ^ (id obj, BOOL *stop) {
-	
-		return [obj isEqual:inRemoteURL];
-	
-	}]) [self.cachedURLs removeObject:existingObject];
-	
-	[self.cache removeObjectForKey:[inRemoteURL absoluteString]];
-	
-	
-	[self.downloadingURLs addObject:inRemoteURL];
-	
-	dispatch_async(self.fileHandleDispatchQueue, ^ {
-	
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-		NSError *error;
-		NSFileHandle *fileHandle;
-		NSString *filePath = [self pathForCachedContentsOfRemoteURL:inRemoteURL];
-		NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+		dispatch_async(dispatch_get_main_queue(), ^ {
+			
+			[self.delegate remoteResourcesManager:self didBeginDownloadingResourceAtURL:operation.url];
+			
+		});
 		
-		if (![[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil]) {
-		
-			NSLog(@"Error creating file at path %@", filePath);
-		
-		}
-		
-		if (!(fileHandle = [NSFileHandle fileHandleForWritingToURL:fileURL error:&error])) {
-		
-			NSLog(@"error getting file handle to write cache file for URL %@ to local path %@: %@", inRemoteURL, fileURL, error);
-			return;
-		
-		}
-		
-		[fileHandle truncateFileAtOffset:0];
+	} completion: ^ {
+	
+		BOOL didFinish = !!(operation.path);
+		NSString *operationPath = operation.path;
+		NSURL *operationURL = operation.url;
 		
 		dispatch_async(dispatch_get_main_queue(), ^ {
 		
-			NSURLConnection *connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:inRemoteURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10] delegate:self];
-
-			CFDictionaryAddValue(connectionsToRemoteURLs, connection, inRemoteURL);
-			CFDictionaryAddValue(connectionsToFileHandles, connection, fileHandle);
+			if (didFinish) {
 			
-			[self.delegate remoteResourcesManager:self didBeginDownloadingResourceAtURL:inRemoteURL];
-							
-			[connection start];
-	
+				[self.cacheRegistry setObject:operationPath forKey:[operationURL absoluteString]];		
+				[self notifyUpdatedResourceForRemoteURL:operationURL];
+				[self.delegate remoteResourcesManager:self didFinishDownloadingResourceAtURL:operationURL];
+			
+			} else {
+
+				[self.delegate remoteResourcesManager:self didFailDownloadingResourceAtURL:operationURL];
+			
+			}
+			
+			[self enqueueOperationsIfNeeded];
+		
 		});
 		
-		[pool drain];
+	}];
 	
-	});
-	
-}
-
-- (void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-
-	NSFileHandle *fileHandle = (NSFileHandle *)(CFDictionaryGetValue(connectionsToFileHandles, connection));
-
-	dispatch_async(self.fileHandleDispatchQueue, ^ {
-	
-		@try {
-		
-			[fileHandle writeData:data];	
-		
-		}  @catch (NSException *e) {
-			
-			NSLog(@"File handle %@",fileHandle);
-			NSLog(@"Warning: Exception %@", e);
-			
-		}
-
-	});
+	[self.enqueuedOperations addObject:operation];
+	[self enqueueOperationsIfNeeded];
+	//	[self.queue addOperation:operation];
 
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+- (void) enqueueOperationsIfNeeded {
 
-	NSURL *remoteURL = [[(NSURL *)(CFDictionaryGetValue(connectionsToRemoteURLs, connection)) retain] autorelease];
+	if (self.queue.operationCount == self.queue.maxConcurrentOperationCount)
+		return;
 	
-	[self.downloadingURLs removeObject:remoteURL];
-	[self.cachedURLs addObject:remoteURL];
-
-	NSFileHandle *fileHandle = (NSFileHandle *)(CFDictionaryGetValue(connectionsToFileHandles, connection));
+	NSParameterAssert(self.queue.maxConcurrentOperationCount > self.queue.operationCount);
+	NSUInteger blottedOperationCount = MIN([self.enqueuedOperations count], (self.queue.maxConcurrentOperationCount - self.queue.operationCount));
+	if (!blottedOperationCount)
+		return;
 	
-	dispatch_async(self.fileHandleDispatchQueue, ^ {
+	NSArray *movedOperations = [self.enqueuedOperations objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:(NSRange){ 0, blottedOperationCount }]];
 	
-		[fileHandle closeFile];
-		
-		NSPurgeableData *purgableCachedData = [[[NSPurgeableData alloc] initWithContentsOfMappedFile:[self pathForCachedContentsOfRemoteURL:remoteURL]] autorelease];
-	
-		[self.cache setObject:purgableCachedData forKey:[self pathForCachedContentsOfRemoteURL:remoteURL] cost:[purgableCachedData length]];	
-
-		[self notifyUpdatedResourceForRemoteURL:remoteURL];
-		
-		dispatch_async(dispatch_get_main_queue(), ^ {
-
-			CFDictionaryRemoveValue(connectionsToRemoteURLs, connection);
-			CFDictionaryRemoveValue(connectionsToFileHandles, connection);
-					
-		});
-		
-		[self.delegate remoteResourcesManager:self didFinishDownloadingResourceAtURL:remoteURL];
-	
-	});
-	
-}
-
-- (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-
-	NSURL *remoteURL = [[(NSURL *)(CFDictionaryGetValue(connectionsToRemoteURLs, connection)) retain] autorelease];
-	
-	[self.downloadingURLs removeObject:remoteURL];
-
-	NSFileHandle *fileHandle = (NSFileHandle *)(CFDictionaryGetValue(connectionsToFileHandles, connection));
-	
-	dispatch_async(self.fileHandleDispatchQueue, ^ {
-	
-		[fileHandle closeFile];
-		
-		//	FIXME: Remove the file
-		
-		dispatch_async(dispatch_get_main_queue(), ^ {
-
-			CFDictionaryRemoveValue(connectionsToRemoteURLs, connection);
-			CFDictionaryRemoveValue(connectionsToFileHandles, connection);
-					
-		});
-		
-		[self.delegate remoteResourcesManager:self didFailDownloadingResourceAtURL:remoteURL];
-	
-	});
+	[self.enqueuedOperations removeObjectsInArray:movedOperations];
+	[self.queue addOperations:movedOperations waitUntilFinished:NO];
 
 }
-
-
-
-
 
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL {
 
-	[[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL] postingStyle:NSPostNow coalesceMask:NSNotificationNoCoalescing forModes:nil];
+	inRemoteURL = [[inRemoteURL copy] autorelease];
+	
+	dispatch_async(dispatch_get_main_queue(), ^ {
+
+		[[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:kIRRemoteResourcesManagerDidRetrieveResourceNotification object:inRemoteURL] postingStyle:NSPostNow coalesceMask:NSNotificationNoCoalescing forModes:nil];
+	
+	});
 
 }
 
 - (BOOL) hasStableResourceForRemoteURL:(NSURL *)inRemoteURL {
 
+	if ([self hasCachedResourceForRemoteURL:inRemoteURL])
+		return YES;
+	
 	if ([self isDownloadingResourceFromRemoteURL:inRemoteURL])
-	return NO;
+		return NO;
 	
-	if (![self hasCachedResourceForRemoteURL:inRemoteURL])
-	return NO;
+	if ([self.cacheRegistry objectForKey:[inRemoteURL absoluteString]])
+		return YES;
 	
-	return YES;
+	return NO;
 	
 }
 
@@ -421,136 +328,95 @@
 
 	id cachedObjectOrNil = [self cachedResourceAtRemoteURL:inRemoteURL];
 	if (!cachedObjectOrNil || ([cachedObjectOrNil length] == 0)) {
-	
-		void (^operation)() = ^ {
 		
-			id cacheKey = [inRemoteURL absoluteString];
-			
-			[self.cache removeObjectForKey:cacheKey];
-		
-			if (![self hasStableResourceForRemoteURL:inRemoteURL])
-			return;
-
-			NSPurgeableData *purgableCachedData = [NSPurgeableData dataWithContentsOfMappedFile:[self pathForCachedContentsOfRemoteURL:inRemoteURL]];
-		
-			[self.cache setObject:purgableCachedData forKey:cacheKey cost:[purgableCachedData length]];	
-		
-		};
-		
-		if (inSkipsIO) {
-		
+		if (inSkipsIO)
 			return nil;
 		
-		} else {
+		if (![self hasStableResourceForRemoteURL:inRemoteURL])
+			return nil;
 		
-			operation();
-			
-			return [self cachedResourceAtRemoteURL:inRemoteURL];
+		id cacheKey = [inRemoteURL absoluteString];
+		[self.cache removeObjectForKey:cacheKey];
 		
-		}
+		BOOL isProspectivePath = NO;
+		NSString *filePath = [self pathForCachedContentsOfRemoteURL:inRemoteURL usedProspectiveURL:&isProspectivePath];
+		NSParameterAssert(filePath && !isProspectivePath);
+		
+		NSPurgeableData *purgableCachedData = [NSPurgeableData dataWithContentsOfMappedFile:filePath];
+		NSParameterAssert(purgableCachedData);
+		
+		[self.cache setObject:purgableCachedData forKey:[inRemoteURL absoluteString] cost:[purgableCachedData length]];
+		
+		//	Even though the object could have been cached, it might NOT be cached at all
+		return purgableCachedData;
 	
 	}
 
+	NSParameterAssert(cachedObjectOrNil);
 	return cachedObjectOrNil;
 
 }
+
 
 - (id) resourceAtRemoteURL:(NSURL *)inRemoteURL {
 
 	return [self resourceAtRemoteURL:inRemoteURL skippingUncachedFile:YES];
-	
-	id cachedObjectOrNil = [self cachedResourceAtRemoteURL:inRemoteURL];
-	
-	if (!cachedObjectOrNil) {
-	
-		dispatch_async(self.fileHandleDispatchQueue, ^ {
-		
-			if (![self hasStableResourceForRemoteURL:inRemoteURL])
-			return;
-
-			id cacheKey = [inRemoteURL absoluteString];
-		
-			NSPurgeableData *purgableCachedData = [NSPurgeableData dataWithContentsOfMappedFile:[self pathForCachedContentsOfRemoteURL:inRemoteURL]];
-		
-			[self.cache setObject:purgableCachedData forKey:cacheKey cost:[purgableCachedData length]];	
-		
-		});
-
-	}
-	
-	return cachedObjectOrNil;
 
 }
+
 
 - (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL {
 
 	NSData *imageData = [self resourceAtRemoteURL:inRemoteURL];
 		
 	if (!imageData)
-	return nil;
+		return nil;
 	
 	UIImage *returnedImage = [UIImage imageWithData:[self resourceAtRemoteURL:inRemoteURL]];
 	
-	if (!returnedImage) {
+	if (returnedImage)
+		return returnedImage;
 	
-		[self retrieveResourceAtRemoteURL:inRemoteURL forceReload:YES];
-		
-		return nil;
-	
-	}
-	
-	return returnedImage;
+	[self retrieveResourceAtRemoteURL:inRemoteURL forceReload:YES];
+	return nil;
 
 }
 
 
-
-
-
 - (void) retrieveResource:(NSURL *)resourceURL withCallback:(void(^)(NSData *returnedDataOrNil))aBlock {
-
-	NSURL *downloadingURLOrNil = [self downloadingResourceURLMatchingURL:resourceURL];
-	NSURL *notifiedURL = downloadingURLOrNil ? downloadingURLOrNil : resourceURL;
 	
-	NSData *probableData = [self resourceAtRemoteURL:notifiedURL skippingUncachedFile:NO];
+	NSData *probableData = [self resourceAtRemoteURL:resourceURL skippingUncachedFile:NO];
 
 	if (probableData && [probableData length]) {
 
 		if (aBlock)
-		aBlock(probableData);
+			aBlock(probableData);
 
 		return;
 
 	}
 	
-	__block id opaqueReference = nil;
-	
-	opaqueReference = [[[NSNotificationCenter defaultCenter] addObserverForName:MLRemoteResourcesManagerDidRetrieveResourceNotification object:notifiedURL queue:nil usingBlock:^(NSNotification *arg1) {
-	
-		NSData *ensuredData = [self resourceAtRemoteURL:notifiedURL skippingUncachedFile:NO];
-
-		if (!ensuredData) {
+	__block id opaqueReference = [[[NSNotificationCenter defaultCenter] addObserverForName:kIRRemoteResourcesManagerDidRetrieveResourceNotification object:nil queue:nil usingBlock:^(NSNotification *notification) {
 		
-			NSLog(@"EHEM, there shall be data.");
+		NSURL *incomingURL = (NSURL *)[notification object];
 		
-		}
+		if (![[incomingURL absoluteString] isEqual:[resourceURL absoluteString]])
+			return;
+	
+		NSData *ensuredData = [self resourceAtRemoteURL:incomingURL skippingUncachedFile:NO];
+		NSParameterAssert(ensuredData);
 
 		if (aBlock)
-		aBlock(ensuredData);
+			aBlock(ensuredData);
 
 		[[NSNotificationCenter defaultCenter] removeObserver:opaqueReference];
-		
 		[opaqueReference autorelease];
 	
 	}] retain];
 	
-	if (notifiedURL != downloadingURLOrNil)
-	[self retrieveResourceAtRemoteURL:notifiedURL forceReload:YES];
+	if (![self isDownloadingResourceFromRemoteURL:resourceURL])
+		[self retrieveResourceAtRemoteURL:resourceURL forceReload:YES];
 
 }
-
-
-
-
 
 @end

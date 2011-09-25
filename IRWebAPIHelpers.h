@@ -8,11 +8,16 @@
 
 #import "IRWebAPIKit.h"
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIDevice.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#else
+#import <CoreServices/CoreServices.h>
+#endif
+
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <CommonCrypto/CommonHMAC.h>
-#import <UIKit/UIDevice.h>
-#import <MobileCoreServices/MobileCoreServices.h>
 
 
 # pragma mark Request Arguments Helpers
