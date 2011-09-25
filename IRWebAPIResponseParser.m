@@ -80,51 +80,68 @@ IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake () {
 
 IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake () {
 
-	NSDictionary * (^defaultJSONParser) (NSData *) = ^ NSDictionary * (NSData *inData) {
-
-		Class classCJSONDeserializer = NSClassFromString(@"CJSONDeserializer");
-		
-		if (!classCJSONDeserializer)
-		return nil;
-
-		if (![(NSObject *)classCJSONDeserializer respondsToSelector:@selector(deserializer)])
-		return nil;
-				
-		id deserializer = [classCJSONDeserializer performSelector:@selector(deserializer)];
-
-		if (!deserializer)
-		return nil;
-		
-		SEL selDeserialize = @selector(deserialize:error:);
-		
-		if (![deserializer respondsToSelector:selDeserialize])
-		return nil;
-		
-		id incomingObject;
-
-		NSError *error = nil;
-		NSError **errorPointer = &error;
-		
-		NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[deserializer methodSignatureForSelector:selDeserialize]];
-
-		[invocation setTarget:deserializer];
-		[invocation setSelector:selDeserialize];
-		[invocation setArgument:&inData atIndex:2]; 
-		[invocation setArgument:&errorPointer atIndex:3];
-
-		[invocation invoke];
-		[invocation getReturnValue:&incomingObject];
-		
-		if (!incomingObject)
-		return nil;
-
-		if ([incomingObject isKindOfClass:[NSDictionary class]])
-		return (NSDictionary *)incomingObject;
-		
-		return [NSDictionary dictionaryWithObject:incomingObject forKey:@"response"];
+	static id parserInstance = nil;
+	static IRWebAPIResponseParser parserBlock = nil;
 	
+	if (parserBlock)
+		return parserBlock;
+	
+	NSDictionary * (^dictionarize)(id<NSObject>) = ^ (id<NSObject> incomingObject) {
+
+		if (!incomingObject)
+			return (NSDictionary *)nil;
+
+		if (![incomingObject isKindOfClass:[NSDictionary class]])
+			return [NSDictionary dictionaryWithObject:incomingObject forKey:@"response"];
+		
+		return (NSDictionary *)incomingObject;
+
 	};
 	
-	return [[defaultJSONParser copy] autorelease];
+	Class classJSONKit = NSClassFromString(@"JSONDecoder");
+	if (classJSONKit) {
+	
+		parserInstance = [classJSONKit performSelector:@selector(decoder)];
+		[parserInstance retain];
+	
+		parserBlock = (IRWebAPIResponseParser)[[^ (NSData *incomingData) {
+			return dictionarize([parserInstance performSelector:@selector(objectWithData:) withObject:incomingData]);
+		} copy] autorelease];
+		
+		return parserBlock;
+		
+	}
+	
+	Class classTouchJSON = NSClassFromString(@"CJSONDeserializer");
+	if (classTouchJSON) {
+		
+		parserInstance = [classTouchJSON performSelector:@selector(deserializer)];
+		[parserInstance retain];
+		
+		parserBlock = (IRWebAPIResponseParser)[[^ (NSData *incomingData) {
+			
+			SEL selDeserialize = @selector(deserialize:error:);
+			id incomingObject;
+
+			NSError *error = nil;
+			NSError **errorPointer = &error;
+			NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[parserInstance methodSignatureForSelector:selDeserialize]];
+			
+			[invocation setTarget:parserInstance];
+			[invocation setSelector:selDeserialize];
+			[invocation setArgument:&incomingData atIndex:2]; 
+			[invocation setArgument:&errorPointer atIndex:3];
+			[invocation invoke];
+			[invocation getReturnValue:&incomingObject];
+			
+			return dictionarize(incomingObject);
+			
+		} copy] autorelease];
+		
+		return parserBlock;
+	
+	}
+	
+	return IRWebAPIResponseDefaultParserMake();
 	
 }
