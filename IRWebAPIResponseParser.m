@@ -153,12 +153,53 @@ IRWebAPIResponseParser IRWebAPIResponseDefaultXMLParserMake () {
 	if (parserBlock)
 		return parserBlock;
 	
-	Class classTouchXMLDocument = NSClassFromString(@"CXHTMLDocument");
+	__block NSDictionary * (^dictionarize)(id<NSObject>);
+	dictionarize = [[^ (id<NSObject> incomingObject) {
+
+		if (!incomingObject)
+			return (NSDictionary *)nil;
+			
+		NSArray *children = [incomingObject performSelector:@selector(children)];
+		NSArray *attributes = [incomingObject respondsToSelector:@selector(attributes)] ? [incomingObject performSelector:@selector(attributes)] : nil;
+		
+		NSMutableDictionary *returnedDictionary = [NSMutableDictionary dictionary];
+		
+		if ([children count]) {
+		
+			NSMutableArray *childrenDictionaries = [NSMutableArray array];
+			
+			for (id element in children)
+				[childrenDictionaries addObject:dictionarize(element)];
+			
+			[returnedDictionary setObject:childrenDictionaries forKey:@"children"];
+		
+		}
+		
+		if ([attributes count]) {
+		
+			NSMutableArray *attributesDictionaries = [NSMutableArray array];
+			
+			for (id element in attributes)
+				[attributesDictionaries addObject:dictionarize(element)];
+			
+			[returnedDictionary setObject:attributesDictionaries forKey:@"attributes"];
+		
+		}
+		
+		[returnedDictionary setObject:[incomingObject performSelector:@selector(stringValue)] forKey:@"value"];
+	
+		return returnedDictionary;
+
+	} copy] autorelease];
+	
+	[dictionarize retain];
+	
+	Class classTouchXMLDocument = NSClassFromString(@"CXMLDocument");
 	if (classTouchXMLDocument) {
 	
 		parserBlock = (IRWebAPIResponseParser)[[^ (NSData *incomingData) {
 	
-			SEL selInstantiate = @selector(initWithXHTMLData:encoding:options:error:);
+			SEL selInstantiate = @selector(initWithData:encoding:options:error:);
 			id incomingObject = nil;
 			
 			NSError *error = nil;
@@ -178,6 +219,8 @@ IRWebAPIResponseParser IRWebAPIResponseDefaultXMLParserMake () {
 			[invocation setArgument:&errorPointer atIndex:5]; 
 			[invocation invoke];
 			[invocation getReturnValue:&incomingObject];
+			
+			return dictionarize([incomingObject performSelector:@selector(rootElement)]);
 	
 		} copy] autorelease];
 		
