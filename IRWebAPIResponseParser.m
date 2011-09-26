@@ -145,3 +145,46 @@ IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake () {
 	return IRWebAPIResponseDefaultParserMake();
 	
 }
+
+IRWebAPIResponseParser IRWebAPIResponseDefaultXMLParserMake () {
+
+	static IRWebAPIResponseParser parserBlock = nil;
+	
+	if (parserBlock)
+		return parserBlock;
+	
+	Class classTouchXMLDocument = NSClassFromString(@"CXHTMLDocument");
+	if (classTouchXMLDocument) {
+	
+		parserBlock = (IRWebAPIResponseParser)[[^ (NSData *incomingData) {
+	
+			SEL selInstantiate = @selector(initWithXHTMLData:encoding:options:error:);
+			id incomingObject = nil;
+			
+			NSError *error = nil;
+			NSError **errorPointer = &error;
+			
+			id parserInstance = [classTouchXMLDocument performSelector:@selector(alloc)];
+			NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[parserInstance methodSignatureForSelector:selInstantiate]];
+			
+			NSStringEncoding stringEncoding = NSUTF8StringEncoding;
+			NSUInteger options = 0;
+			
+			[invocation setTarget:parserInstance];
+			[invocation setSelector:selInstantiate];
+			[invocation setArgument:&incomingData atIndex:2]; 
+			[invocation setArgument:&stringEncoding atIndex:3];
+			[invocation setArgument:&options atIndex:4]; 
+			[invocation setArgument:&errorPointer atIndex:5]; 
+			[invocation invoke];
+			[invocation getReturnValue:&incomingObject];
+	
+		} copy] autorelease];
+		
+		return parserBlock;
+		
+	}
+	
+	return IRWebAPIResponseDefaultParserMake();
+
+}
