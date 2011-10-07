@@ -34,7 +34,7 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 	
 	};
 	
-	NSURL *fileURL = [NSURL fileURLWithPath:[preferredCacheDirectoryPath stringByAppendingPathComponent:IRWebAPIKitNonce()]];	
+	NSURL *fileURL = [[NSURL fileURLWithPath:[preferredCacheDirectoryPath stringByAppendingPathComponent:IRWebAPIKitNonce()]] retain];	
 	return fileURL;
 	
 }
