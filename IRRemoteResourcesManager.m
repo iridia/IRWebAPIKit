@@ -84,6 +84,22 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 
 }
 
+- (void) dealloc {
+
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	[queue release];
+	[enqueuedOperations release];
+	[cache release];
+	[cacheRegistry release];
+	[cacheDirectoryPath release];
+	[cacheRegistryPath release];
+		
+	[super dealloc];
+
+}
+
+
 - (NSString *) cacheDirectoryPath {
 
 	if (!cacheDirectoryPath)
@@ -134,21 +150,6 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 - (void) handleWillTerminate:(NSNotification *)aNotification {
 
 	[self persistCacheRegistry];
-
-}
-
-- (void) dealloc {
-
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	
-	[queue release];
-	[enqueuedOperations release];
-	[cache release];
-	[cacheRegistry release];
-	[cacheDirectoryPath release];
-	[cacheRegistryPath release];
-		
-	[super dealloc];
 
 }
 
