@@ -76,9 +76,13 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 		NSLog(@"Error occurred while creating or assuring cache directory: %@", cacheDirectoryCreationError);
 	};
 	
+	#if TARGET_OS_IPHONE
+	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+	
+	#endif
 		
 	return self;
 
@@ -366,24 +370,6 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 }
 
 
-- (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL {
-
-	NSData *imageData = [self resourceAtRemoteURL:inRemoteURL];
-		
-	if (!imageData)
-		return nil;
-	
-	UIImage *returnedImage = [UIImage imageWithData:[self resourceAtRemoteURL:inRemoteURL]];
-	
-	if (returnedImage)
-		return returnedImage;
-	
-	[self retrieveResourceAtRemoteURL:inRemoteURL forceReload:YES];
-	return nil;
-
-}
-
-
 - (void) retrieveResource:(NSURL *)resourceURL withCallback:(void(^)(NSData *returnedDataOrNil))aBlock {
 	
 	NSData *probableData = [self resourceAtRemoteURL:resourceURL skippingUncachedFile:NO];
@@ -419,5 +405,31 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 		[self retrieveResourceAtRemoteURL:resourceURL forceReload:YES];
 
 }
+
+@end
+
+
+@implementation IRRemoteResourcesManager (ImageLoading)
+
+#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+
+- (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL {
+
+	NSData *imageData = [self resourceAtRemoteURL:inRemoteURL];
+		
+	if (!imageData)
+		return nil;
+	
+	UIImage *returnedImage = [UIImage imageWithData:[self resourceAtRemoteURL:inRemoteURL]];
+	
+	if (returnedImage)
+		return returnedImage;
+	
+	[self retrieveResourceAtRemoteURL:inRemoteURL forceReload:YES];
+	return nil;
+
+}
+
+#endif
 
 @end

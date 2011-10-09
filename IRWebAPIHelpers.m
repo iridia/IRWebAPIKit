@@ -187,7 +187,7 @@ NSString * IRWebAPIStringByDecodingXMLEntities (NSString *inString) {
 
 		}
 
-		NSUInteger charCode;
+		unsigned int charCode;
 		NSString *xForHex = @"";
 		
 		if ([scanner scanString:@"x" intoString:NULL] ? [scanner scanHexInt:&charCode] : [scanner scanInt:(int*)&charCode]) {

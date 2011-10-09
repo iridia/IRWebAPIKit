@@ -48,8 +48,23 @@ extern NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification
 - (void) retrieveResourceAtRemoteURL:(NSURL *)inRemoteURL forceReload:(BOOL)inForceReload;
 - (id) resourceAtRemoteURL:(NSURL *)inRemoteURL skippingUncachedFile:(BOOL)inSkipsIO;
 - (id) resourceAtRemoteURL:(NSURL *)inRemoteURL;
-- (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL;
 - (id) cachedResourceAtRemoteURL:(NSURL *)inRemoteURL;
 - (BOOL) hasStableResourceForRemoteURL:(NSURL *)inRemoteURL;
 
 @end
+
+
+@interface IRRemoteResourcesManager (ImageLoading)
+
+#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+
+- (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL;
+
+#else
+
+//	NOPE
+
+#endif
+
+@end
+

@@ -38,8 +38,8 @@ extern NSString * IRWebAPIStringByDecodingXMLEntities (NSString *inString);
 
 # pragma mark Randomness and Order
 
-extern NSString * IRWebAPIKitTimestamp ();
-extern NSString * IRWebAPIKitNonce ();
+extern NSString * IRWebAPIKitTimestamp (void);
+extern NSString * IRWebAPIKitNonce (void);
 
 
 # pragma mark Crypto Helpers
