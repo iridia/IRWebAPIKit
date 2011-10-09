@@ -15,7 +15,8 @@ dsa_priv.pem
 *.perspective
 *.perspectivev3
 *.pbxuser
-xcuserdata/
+xcuserdata/*
+xcuserdata
 *.xcuserdatad/
 *.xcworkspace/
 
