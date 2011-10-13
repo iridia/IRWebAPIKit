@@ -299,10 +299,9 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 
 - (void) enqueueOperationsIfNeeded {
 
-	if (self.queue.operationCount == self.queue.maxConcurrentOperationCount)
+	if (self.queue.operationCount >= self.queue.maxConcurrentOperationCount)
 		return;
 	
-	NSParameterAssert(self.queue.maxConcurrentOperationCount > self.queue.operationCount);
 	NSUInteger blottedOperationCount = MIN([self.enqueuedOperations count], (self.queue.maxConcurrentOperationCount - self.queue.operationCount));
 	if (!blottedOperationCount)
 		return;
