@@ -202,4 +202,10 @@
 
 }
 
+- (NSString *) description {
+
+	return [NSString stringWithFormat:@"<%@: 0x%x> URL: %@", NSStringFromClass([self class]), (unsigned int)self, self.url];
+
+}
+
 @end

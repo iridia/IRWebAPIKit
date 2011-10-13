@@ -31,7 +31,10 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 - (NSString *) pathForCachedContentsOfRemoteURL:(NSURL *)inRemoteURL usedProspectiveURL:(BOOL *)returnedProspectiveURL;
 
 - (BOOL) hasCachedResourceForRemoteURL:(NSURL *)inRemoteURL;
+
 - (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL;
+- (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL usedEnqueuedOperations:(NSArray **)matchingOperations;
+
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL;
 
 @end
@@ -200,14 +203,24 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 
 - (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL {
 
-	NSParameterAssert(inRemoteURL);
+	return [self isDownloadingResourceFromRemoteURL:inRemoteURL usedEnqueuedOperations:nil];
 
-	NSArray *allRecognizedOperations = [self.queue.operations arrayByAddingObjectsFromArray:self.enqueuedOperations];
-	BOOL result = !![[allRecognizedOperations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock: ^ (IRRemoteResourceDownloadOperation *operation, NSDictionary *bindings) {
+}
+
+- (BOOL) isDownloadingResourceFromRemoteURL:(NSURL *)inRemoteURL usedEnqueuedOperations:(NSArray **)matchingOperations {
+
+	NSPredicate *predicate = [NSPredicate predicateWithBlock: ^ (IRRemoteResourceDownloadOperation *operation, NSDictionary *bindings) {
 		return [[operation.url absoluteString] isEqual:[inRemoteURL absoluteString]];
-	}]] count];
+	}];
+
+	NSParameterAssert(inRemoteURL);
+	NSArray *operationsWorking = [[[self.queue.operations mutableCopy] autorelease] filteredArrayUsingPredicate:predicate];
+	NSArray *operationsEnqueued = [[[self.enqueuedOperations mutableCopy] autorelease] filteredArrayUsingPredicate:predicate];
 	
-	return result;
+	if (matchingOperations)
+		*matchingOperations = operationsEnqueued;
+	
+	return !!([operationsWorking count] + [operationsEnqueued count]);
 
 }
 
@@ -227,10 +240,16 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 
 - (void) enqueueURLForDownload:(NSURL *)enqueuedURL {
 
-	if ([self isDownloadingResourceFromRemoteURL:enqueuedURL])
-		return;
+	NSArray *enqueued = nil;
+	if ([self isDownloadingResourceFromRemoteURL:enqueuedURL usedEnqueuedOperations:&enqueued]) {
 	
-	NSString *oldFilePath = [self.cacheRegistry objectForKey:[enqueuedURL absoluteString]];
+		[self.enqueuedOperations removeObjectsInArray:enqueued];
+		[self.enqueuedOperations insertObjects:enqueued atIndexes:[NSIndexSet indexSetWithIndexesInRange:(NSRange){ 0, [enqueued count] }]];
+		return;
+		
+	}
+	
+	NSString *oldFilePath = [self.cacheRegistry objectForKey:[	enqueuedURL absoluteString]];
 	
 	if (oldFilePath) {
 		[[NSFileManager defaultManager] removeItemAtPath:oldFilePath error:nil];
@@ -275,7 +294,6 @@ NSString * const kIRRemoteResourcesManagerFilePath = @"kIRRemoteResourcesManager
 	
 	[self.enqueuedOperations addObject:operation];
 	[self enqueueOperationsIfNeeded];
-	//	[self.queue addOperation:operation];
 
 }
 
