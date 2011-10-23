@@ -66,7 +66,14 @@
 
 - (void) onMainQueue:(void(^)(void))aBlock {
 	
-	self.actualDispatchQueue = dispatch_get_current_queue();
+	if (!self.actualDispatchQueue)
+		self.actualDispatchQueue = dispatch_get_current_queue();
+	
+	if ([NSThread isMainThread]) {
+		aBlock();
+		return;
+	}
+	
 	dispatch_async(dispatch_get_main_queue(), ^ {
 		aBlock();
 	});
