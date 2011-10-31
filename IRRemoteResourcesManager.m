@@ -234,12 +234,17 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 		};
 		
 		void (^stitch)(void) = ^ {
+			
+			if (!aBlock)
+				return;
+			
 			[operation appendCompletionBlock: ^ {
 				NSString *capturedPath = operation.path;
 				[nrSelf performInBackground: ^ {
 					pounce([NSURL fileURLWithPath:capturedPath]);
 				}];
 			}];
+			
 		};
 	
 		if ((!operation) && (operation = [self runningOperationForURL:anURL]))
