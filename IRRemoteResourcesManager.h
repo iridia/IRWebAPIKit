@@ -6,33 +6,31 @@
 //  Copyright 2010 Iridia Productions. All rights reserved.
 //
 
+#import "IRWebAPIKit.h"
+
 #import <objc/runtime.h>
 #import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-#import <UIKit/UIKit.h>
+	#import <UIKit/UIKit.h>
+	#define IRRemoteResourcesManagerImage UIImage
 #else
-#import <Cocoa/Cocoa.h>
+	#import <Cocoa/Cocoa.h>
+	#define IRRemoteResourcesManagerImage NSImage
 #endif
 
-#import "IRWebAPIKit.h"
-
-
-#ifndef __IRRemoteResourcesManager__
-#define __IRRemoteResourcesManager__
-
-typedef void (^IRRemoteResourcesManagerCallback) (NSData *mappedCachedDataOrNil);
-extern NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification;
-
-#endif
+enum {
+  IRFirstInFirstOutStragery = 0,
+  IRPostponeLowerPriorityOperationsStrategy,
+}; typedef NSUInteger IRSchedulingStrategy;
 
 
 @class IRRemoteResourcesManager;
 @protocol IRRemoteResourcesManagerDelegate <NSObject>
 
-- (void) remoteResourcesManager:(IRRemoteResourcesManager *)managed didBeginDownloadingResourceAtURL:(NSURL *)anURL;
-- (void) remoteResourcesManager:(IRRemoteResourcesManager *)managed didFinishDownloadingResourceAtURL:(NSURL *)anURL;
-- (void) remoteResourcesManager:(IRRemoteResourcesManager *)managed didFailDownloadingResourceAtURL:(NSURL *)anURL;
+- (void) remoteResourcesManager:(IRRemoteResourcesManager *)manager didBeginDownloadingResourceAtURL:(NSURL *)anURL;
+- (void) remoteResourcesManager:(IRRemoteResourcesManager *)manager didFinishDownloadingResourceAtURL:(NSURL *)anURL;
+- (void) remoteResourcesManager:(IRRemoteResourcesManager *)manager didFailDownloadingResourceAtURL:(NSURL *)anURL;
 
 @end
 
@@ -44,27 +42,17 @@ extern NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification
 @property (nonatomic, readonly, retain) NSOperationQueue *queue;
 @property (nonatomic, readwrite, assign) id<IRRemoteResourcesManagerDelegate> delegate;
 
-- (void) clearCacheDirectory;
-- (void) retrieveResourceAtRemoteURL:(NSURL *)inRemoteURL forceReload:(BOOL)inForceReload;
-- (id) resourceAtRemoteURL:(NSURL *)inRemoteURL skippingUncachedFile:(BOOL)inSkipsIO;
-- (id) resourceAtRemoteURL:(NSURL *)inRemoteURL;
-- (id) cachedResourceAtRemoteURL:(NSURL *)inRemoteURL;
-- (BOOL) hasStableResourceForRemoteURL:(NSURL *)inRemoteURL;
+- (void) retrieveResourceAtURL:(NSURL *)inRemoteURL withCompletionBlock:(void(^)(NSURL *tempFileURLOrNil))aBlock;
+- (void) retrieveResourceAtURL:(NSURL *)inRemoteURL usingPriority:(NSOperationQueuePriority)priority forced:(BOOL)forcesReload withCompletionBlock:(void(^)(NSURL *tempFileURLOrNil))aBlock;
+@property (nonatomic, readwrite, assign) IRSchedulingStrategy schedulingStrategy;	//	Defaults to IRPostponeLowerPriorityOperationsStrategy
 
 @end
+
+
 
 
 @interface IRRemoteResourcesManager (ImageLoading)
 
-#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-
-- (UIImage *) imageAtRemoteURL:(NSURL *)inRemoteURL;
-
-#else
-
-//	NOPE
-
-#endif
+- (void) retrieveImageAtURL:(NSURL *)inRemoteURL forced:(BOOL)forcesReload withCompletionBlock:(void(^)(IRRemoteResourcesManagerImage *tempImage))aBlock;
 
 @end
-

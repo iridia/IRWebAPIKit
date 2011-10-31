@@ -14,12 +14,14 @@
 @property (nonatomic, readwrite, retain) NSURL *url;
 @property (nonatomic, readwrite, assign) long long processedBytes;
 @property (nonatomic, readwrite, assign) long long totalBytes;
+@property (nonatomic, readwrite, assign) long long preferredByteOffset;
 @property (nonatomic, readwrite, assign, getter=isExecuting) BOOL executing;
 @property (nonatomic, readwrite, assign, getter=isFinished) BOOL finished;
+@property (nonatomic, readwrite, assign, getter=isCancelled) BOOL cancelled;
 @property (nonatomic, readwrite, retain) NSFileHandle *fileHandle;
 @property (nonatomic, readwrite, retain) NSURLConnection *connection;
-
 @property (nonatomic, readwrite, assign) dispatch_queue_t actualDispatchQueue;
+@property (nonatomic, readwrite, retain) NSMutableArray *appendedCompletionBlocks;
 
 - (void) onMainQueue:(void(^)(void))aBlock;
 - (void) onOriginalQueue:(void(^)(void))aBlock;
@@ -31,10 +33,11 @@
 
 @implementation IRRemoteResourceDownloadOperation
 
-@synthesize path, url, processedBytes, totalBytes, executing, finished;
+@synthesize path, url, processedBytes, totalBytes, preferredByteOffset, executing, finished, cancelled;
 @synthesize fileHandle, connection;
 @synthesize actualDispatchQueue;
 @synthesize onMain;
+@synthesize appendedCompletionBlocks;
 
 + (IRRemoteResourceDownloadOperation *) operationWithURL:(NSURL *)aRemoteURL path:(NSString *)aLocalPath prelude:(void(^)(void))aPrelude completion:(void(^)(void))aBlock {
 
@@ -59,6 +62,7 @@
 	});
 	
 	[onMain release];
+	[appendedCompletionBlocks release];
 	
 	[super dealloc];
 
@@ -122,8 +126,26 @@
 	
 }
 
+- (void) cancel {
+
+	[self onMainQueue: ^ {		
+		[self.connection cancel];
+	}];
+	
+	[self onOriginalQueue: ^ {
+		[self.fileHandle closeFile];
+	}];
+
+	self.cancelled = YES;
+	self.executing = NO;
+	self.finished = YES;
+
+}
+
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 
+	NSParameterAssert(![self isCancelled]);
+	
 	[self onOriginalQueue: ^ {
 
 		self.totalBytes = response.expectedContentLength;
@@ -133,6 +155,8 @@
 }
 
 - (void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+
+	NSParameterAssert(![self isCancelled]);
 
 	[self onOriginalQueue: ^ {
 	
@@ -145,6 +169,8 @@
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
 
+	NSParameterAssert(![self isCancelled]);
+	
 	[self onOriginalQueue: ^ {
 	
 		[self.fileHandle closeFile];
@@ -157,6 +183,8 @@
 }
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+
+	NSParameterAssert(![self isCancelled]);
 
 	[self onOriginalQueue: ^ {
 	
@@ -211,7 +239,78 @@
 
 - (NSString *) description {
 
-	return [NSString stringWithFormat:@"<%@: 0x%x> URL: %@", NSStringFromClass([self class]), (unsigned int)self, self.url];
+	return [NSString stringWithFormat:
+	
+		@"<%@: 0x%x> "
+		
+		//	@"Offset: %lu, "
+		
+		@"URL: %@, "
+		@"Path: %@, "
+		@"Completion Blocks: %@, "
+		
+		@"Executing: %x, "
+		@"Cancelled: %x, "
+		@"Finished: %x ",
+		
+		NSStringFromClass([self class]), (unsigned int)self, 
+
+		//	self.preferredByteOffset,
+		
+		self.url, 
+		self.path, 
+		self.appendedCompletionBlocks,
+		
+		self.executing,
+		self.cancelled,
+		self.finished
+		
+	];
+
+}
+
+- (NSMutableArray *) appendedCompletionBlocks {
+
+	if (appendedCompletionBlocks)
+		return appendedCompletionBlocks;
+	
+	appendedCompletionBlocks = [[NSMutableArray array] retain];
+	return appendedCompletionBlocks;
+
+}
+
+- (void) appendCompletionBlock:(void (^)(void))aBlock {
+
+	[self.appendedCompletionBlocks addObject:[[aBlock copy] autorelease]];
+
+}
+
+- (void) invokeCompletionBlocks {
+
+	for (void(^aBlock)(void) in [[self.appendedCompletionBlocks copy] autorelease])
+		aBlock();
+	
+	self.appendedCompletionBlocks = [NSMutableArray array];
+
+}
+
+- (IRRemoteResourceDownloadOperation *) continuationOperationCancellingCurrentOperation:(BOOL)cancelsCurrentOperation {
+
+	__block IRRemoteResourceDownloadOperation *continuationOperation = [[[[self class] alloc] init] autorelease];
+	continuationOperation.path = self.path;
+	continuationOperation.url = self.url;
+	continuationOperation.preferredByteOffset = self.processedBytes;
+	continuationOperation.totalBytes = self.totalBytes;
+	continuationOperation.appendedCompletionBlocks = self.appendedCompletionBlocks;
+
+	if (cancelsCurrentOperation) {
+		[self.connection cancel];
+		[self cancel];
+	}
+	
+	NSLog(@"%s: Self = %@, continuationOperation = %@", __PRETTY_FUNCTION__, self, continuationOperation);
+	
+	return continuationOperation;
 
 }
 
