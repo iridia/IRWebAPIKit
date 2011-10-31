@@ -308,8 +308,6 @@
 		[self cancel];
 	}
 	
-	NSLog(@"%s: Self = %@, continuationOperation = %@", __PRETTY_FUNCTION__, self, continuationOperation);
-	
 	return continuationOperation;
 
 }
