@@ -41,14 +41,12 @@ enum {
 
 @property (nonatomic, readonly, retain) NSOperationQueue *queue;
 @property (nonatomic, readwrite, assign) id<IRRemoteResourcesManagerDelegate> delegate;
+@property (nonatomic, readwrite, assign) IRSchedulingStrategy schedulingStrategy;	//	Defaults to IRPostponeLowerPriorityOperationsStrategy
 
 - (void) retrieveResourceAtURL:(NSURL *)inRemoteURL withCompletionBlock:(void(^)(NSURL *tempFileURLOrNil))aBlock;
 - (void) retrieveResourceAtURL:(NSURL *)inRemoteURL usingPriority:(NSOperationQueuePriority)priority forced:(BOOL)forcesReload withCompletionBlock:(void(^)(NSURL *tempFileURLOrNil))aBlock;
-@property (nonatomic, readwrite, assign) IRSchedulingStrategy schedulingStrategy;	//	Defaults to IRPostponeLowerPriorityOperationsStrategy
 
 @end
-
-
 
 
 @interface IRRemoteResourcesManager (ImageLoading)
