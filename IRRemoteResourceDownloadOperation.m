@@ -135,16 +135,17 @@
 	[self onOriginalQueue: ^ {
 		[self.fileHandle closeFile];
 	}];
-
-	self.cancelled = YES;
+	
 	self.executing = NO;
 	self.finished = YES;
+	self.cancelled = YES;
 
 }
 
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 
-	NSParameterAssert(![self isCancelled]);
+	if ([self isCancelled])
+		return;
 	
 	[self onOriginalQueue: ^ {
 
@@ -156,8 +157,9 @@
 
 - (void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
 
-	NSParameterAssert(![self isCancelled]);
-
+	if ([self isCancelled])
+			return;
+		
 	[self onOriginalQueue: ^ {
 	
 		self.processedBytes += [data length];
@@ -169,7 +171,8 @@
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
 
-	NSParameterAssert(![self isCancelled]);
+	if ([self isCancelled])
+			return;	
 	
 	[self onOriginalQueue: ^ {
 	
@@ -184,8 +187,9 @@
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
 
-	NSParameterAssert(![self isCancelled]);
-
+	if ([self isCancelled])
+		return;
+		
 	[self onOriginalQueue: ^ {
 	
 		[self.fileHandle closeFile];
@@ -287,10 +291,14 @@
 
 - (void) invokeCompletionBlocks {
 
-	for (void(^aBlock)(void) in [[self.appendedCompletionBlocks copy] autorelease])
-		aBlock();
+	@synchronized (self) {	
+
+		for (void(^aBlock)(void) in [[self.appendedCompletionBlocks copy] autorelease])
+			aBlock();
+		
+		self.appendedCompletionBlocks = [NSMutableArray array];
 	
-	self.appendedCompletionBlocks = [NSMutableArray array];
+	}
 
 }
 
@@ -301,7 +309,13 @@
 	continuationOperation.url = self.url;
 	continuationOperation.preferredByteOffset = self.processedBytes;
 	continuationOperation.totalBytes = self.totalBytes;
-	continuationOperation.appendedCompletionBlocks = self.appendedCompletionBlocks;
+	
+	@synchronized (self) {
+	
+		continuationOperation.appendedCompletionBlocks = self.appendedCompletionBlocks;
+		[self.appendedCompletionBlocks removeAllObjects];
+		
+	}
 
 	if (cancelsCurrentOperation) {
 		[self.connection cancel];

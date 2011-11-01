@@ -225,6 +225,8 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 	[nrSelf performInBackground: ^ {
 	
+		[self.queue setSuspended:YES];
+	
 		__block IRRemoteResourceDownloadOperation *operation = nil;
 		BOOL operationRunning = NO, operationEnqueued = NO;
 		
@@ -262,9 +264,18 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 			operationEnqueued = !!operation;
 		
 		if (!operation) {
+			
+			//	NSLog(@"Enqueuing %x for %@", (unsigned int)operation, anURL);
+			
 			operation = [self prospectiveOperationForURL:anURL enqueue:YES];
 			operationEnqueued = !!operation;
+			
+			[self runningOperationForURL:anURL];
+			[self enqueuedOperationForURL:anURL];
+			
 		}
+		
+		[self.queue setSuspended:NO];
 		
 		if (!operation) {
 			pounce(nil);
@@ -295,11 +306,19 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 		return [filteredArray filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:predicate]];
 	};
 	
-	for (NSOperation *anOperation in self.queue.operations)
+	NSArray *usableCurrentOperations = filtered(self.queue.operations, ^ (NSOperation *anOperation, NSDictionary *bindings){
+		return (BOOL)![anOperation isCancelled];
+	});
+	
+	NSArray *usableEnqueuedOperations = filtered(self.enqueuedOperations, ^ (NSOperation *anOperation, NSDictionary *bindings){
+		return (BOOL)![anOperation isCancelled];
+	});
+	
+	for (NSOperation *anOperation in usableCurrentOperations)
 		NSParameterAssert(![anOperation isCancelled]);
 	
 	NSArray *sortedCurrentOperations = sorted(self.queue.operations);
-	NSArray *sortedEnqueuedOperations = sorted(self.enqueuedOperations);
+	NSArray *sortedEnqueuedOperations = sorted(usableEnqueuedOperations);
 	NSArray *sortedAllOperations = sorted([sortedCurrentOperations arrayByAddingObjectsFromArray:sortedEnqueuedOperations]);
 	
 	NSArray *legitimateOperations = [sortedAllOperations objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
