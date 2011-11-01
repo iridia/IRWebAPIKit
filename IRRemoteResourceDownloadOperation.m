@@ -136,8 +136,11 @@
 		[self.fileHandle closeFile];
 	}];
 	
-	self.executing = NO;
-	self.finished = YES;
+	if (self.executing) {
+		self.executing = NO;
+		self.finished = YES;
+	}
+	
 	self.cancelled = YES;
 
 }
@@ -178,8 +181,10 @@
 	
 		[self.fileHandle closeFile];
 		
-		self.executing = NO;
-		self.finished = YES;
+		if (self.executing) {
+			self.executing = NO;
+			self.finished = YES;
+		}
 	
 	}];
 
@@ -197,9 +202,11 @@
 		[[NSFileManager defaultManager] removeItemAtPath:self.path error:nil];
 		self.path = nil;
 		
-		self.executing = NO;
-		self.finished = YES;
-	
+		if (self.executing) {
+			self.executing = NO;
+			self.finished = YES;
+		}
+		
 	}];
 
 }
