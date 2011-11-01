@@ -133,7 +133,7 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 	NSArray *allMatches = [self.queue.operations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock: ^ (IRRemoteResourceDownloadOperation *anOperation, NSDictionary *bindings) {
 	
-		return [[anOperation.url absoluteString] isEqual:[anURL absoluteString]];
+		return (BOOL)(![anOperation isCancelled] && [[anOperation.url absoluteString] isEqual:[anURL absoluteString]]);
 		
 	}]];
 	
@@ -249,8 +249,9 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 			
 		};
 	
-		if ((!operation) && (operation = [self runningOperationForURL:anURL]))
+		if ((!operation) && (operation = [self runningOperationForURL:anURL])) {
 			operationRunning = !!operation;
+		}
 		
 		if (operationRunning && forcesReload) {
 			IRRemoteResourceDownloadOperation *cancelledOperation = operation;
@@ -260,18 +261,14 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 			operationEnqueued = YES;
 		}
 		
-		if ((!operation) && (operation = [self enqueuedOperationForURL:anURL]))
+		if ((!operation) && (operation = [self enqueuedOperationForURL:anURL])) {
 			operationEnqueued = !!operation;
+		}
 		
 		if (!operation) {
 			
-			//	NSLog(@"Enqueuing %x for %@", (unsigned int)operation, anURL);
-			
 			operation = [self prospectiveOperationForURL:anURL enqueue:YES];
 			operationEnqueued = !!operation;
-			
-			[self runningOperationForURL:anURL];
-			[self enqueuedOperationForURL:anURL];
 			
 		}
 		
