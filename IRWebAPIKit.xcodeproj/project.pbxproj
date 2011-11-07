@@ -60,6 +60,8 @@
 		FF7408991296B06F00571D46 /* IRWebAPIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7408971296B06F00571D46 /* IRWebAPIContext.h */; };
 		FF74089A1296B06F00571D46 /* IRWebAPIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7408981296B06F00571D46 /* IRWebAPIContext.m */; };
 		FF740CAA1296EB0C00571D46 /* IRWebAPIResponseParser.h in Headers */ = {isa = PBXBuildFile; fileRef = FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */; };
+		FF7EB68A1467B876002718DC /* IRWebAPIEngine+FormURLEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7EB6881467B876002718DC /* IRWebAPIEngine+FormURLEncoding.h */; };
+		FF7EB68B1467B876002718DC /* IRWebAPIEngine+FormURLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7EB6891467B876002718DC /* IRWebAPIEngine+FormURLEncoding.m */; };
 		FF7F44A712EDB36E00DC1628 /* IRWebAPIInterfaceOAuthEchoReliance.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7F44A612EDB36E00DC1628 /* IRWebAPIInterfaceOAuthEchoReliance.h */; };
 		FF7F44B712EDB44400DC1628 /* IRWebAPITwitPicInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7F44B512EDB44400DC1628 /* IRWebAPITwitPicInterface.h */; };
 		FF7F44B812EDB44400DC1628 /* IRWebAPITwitPicInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7F44B612EDB44400DC1628 /* IRWebAPITwitPicInterface.m */; };
@@ -167,6 +169,8 @@
 		FF7408971296B06F00571D46 /* IRWebAPIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIContext.h; sourceTree = "<group>"; };
 		FF7408981296B06F00571D46 /* IRWebAPIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPIContext.m; sourceTree = "<group>"; };
 		FF740CA91296EB0C00571D46 /* IRWebAPIResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIResponseParser.h; sourceTree = "<group>"; };
+		FF7EB6881467B876002718DC /* IRWebAPIEngine+FormURLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IRWebAPIEngine+FormURLEncoding.h"; sourceTree = "<group>"; };
+		FF7EB6891467B876002718DC /* IRWebAPIEngine+FormURLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IRWebAPIEngine+FormURLEncoding.m"; sourceTree = "<group>"; };
 		FF7F44A612EDB36E00DC1628 /* IRWebAPIInterfaceOAuthEchoReliance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPIInterfaceOAuthEchoReliance.h; sourceTree = "<group>"; };
 		FF7F44B512EDB44400DC1628 /* IRWebAPITwitPicInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRWebAPITwitPicInterface.h; sourceTree = "<group>"; };
 		FF7F44B612EDB44400DC1628 /* IRWebAPITwitPicInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRWebAPITwitPicInterface.m; sourceTree = "<group>"; };
@@ -449,6 +453,8 @@
 				FF9AFB4112EC59040037E930 /* IRWebAPIEngine+LocalCaching.m */,
 				FF9AFB7112EC5C060037E930 /* IRWebAPIEngine+FormMultipart.h */,
 				FF9AFB7212EC5C060037E930 /* IRWebAPIEngine+FormMultipart.m */,
+				FF7EB6881467B876002718DC /* IRWebAPIEngine+FormURLEncoding.h */,
+				FF7EB6891467B876002718DC /* IRWebAPIEngine+FormURLEncoding.m */,
 			);
 			name = "IRWebAPIEngine Additions ";
 			sourceTree = "<group>";
@@ -518,6 +524,7 @@
 				FF3DD7BA1348839D000C6380 /* IRWebAPITwitterInterface+Friendships.h in Headers */,
 				FFAA4351134A8CA600341FAE /* IRWebAPITwitterInterface+User.h in Headers */,
 				FFB882B714234CBF00DA2876 /* IRRemoteResourceDownloadOperation.h in Headers */,
+				FF7EB68A1467B876002718DC /* IRWebAPIEngine+FormURLEncoding.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,6 +710,7 @@
 				FF3DD7BB1348839D000C6380 /* IRWebAPITwitterInterface+Friendships.m in Sources */,
 				FFAA4352134A8CA600341FAE /* IRWebAPITwitterInterface+User.m in Sources */,
 				FFB882B814234CBF00DA2876 /* IRRemoteResourceDownloadOperation.m in Sources */,
+				FF7EB68B1467B876002718DC /* IRWebAPIEngine+FormURLEncoding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -920,6 +928,7 @@
 				FF59A3A81441C94500BB1FDC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FF7408111296A88400571D46 /* Build configuration list for PBXProject "IRWebAPIKit" */ = {
 			isa = XCConfigurationList;

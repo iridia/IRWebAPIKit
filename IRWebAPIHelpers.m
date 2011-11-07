@@ -394,7 +394,7 @@ NSString * IRWebAPIKitMIMETypeOfExtension (NSString *inExtension) {
 NSString * IRWebAPIRequestURLQueryParametersStringMake (NSDictionary *inQueryParameters, NSString *inSeparator) {
 
 	if ((!inQueryParameters) || ([inQueryParameters count] == 0))
-	return @"";
+		return @"";
 	
 	NSMutableArray *returnedStringParts = [NSMutableArray array];
 
