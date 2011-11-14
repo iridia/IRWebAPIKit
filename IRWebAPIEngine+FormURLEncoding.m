@@ -40,9 +40,9 @@ NSString * const kIRWebAPIEngineRequestContextFormURLEncodingFieldsKey = @"IRWeb
 			if ([sentData length])
 				[sentData appendData:[@"&" dataUsingEncoding:NSUTF8StringEncoding]];
 			
-			[sentData appendData:[IRWebAPIKitStringValue(key) dataUsingEncoding:NSUTF8StringEncoding]];
+			[sentData appendData:[IRWebAPIKitRFC3986EncodedStringMake(key) dataUsingEncoding:NSUTF8StringEncoding]];
 			[sentData appendData:[@"=" dataUsingEncoding:NSUTF8StringEncoding]];
-			[sentData appendData:[IRWebAPIKitStringValue(obj) dataUsingEncoding:NSUTF8StringEncoding]];
+			[sentData appendData:[IRWebAPIKitRFC3986EncodedStringMake(obj) dataUsingEncoding:NSUTF8StringEncoding]];
 			
 		}];
 		
