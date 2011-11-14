@@ -32,6 +32,9 @@ enum {
 - (void) remoteResourcesManager:(IRRemoteResourcesManager *)manager didFinishDownloadingResourceAtURL:(NSURL *)anURL;
 - (void) remoteResourcesManager:(IRRemoteResourcesManager *)manager didFailDownloadingResourceAtURL:(NSURL *)anURL;
 
+@optional
+- (NSURL *) remoteResourcesManager:(IRRemoteResourcesManager *)manager invokedURLForResourceAtURL:(NSURL *)givenURL;
+
 @end
 
 
