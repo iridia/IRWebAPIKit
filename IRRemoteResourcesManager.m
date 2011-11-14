@@ -12,7 +12,7 @@
 NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IRRemoteResourcesManagerDidRetrieveResourceNotification";
 
 
-@interface IRRemoteResourcesManager () <NSCacheDelegate>
+@interface IRRemoteResourcesManager () <NSCacheDelegate, IRRemoteResourceDownloadOperationDelegate>
 
 @property (nonatomic, readwrite, retain) NSOperationQueue *queue;
 @property (nonatomic, readwrite, retain) NSMutableArray *enqueuedOperations;
@@ -39,6 +39,8 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 @synthesize delegate;
 @synthesize cacheDirectoryPath;
+
+@synthesize onRemoteResourceDownloadOperationWillBegin;
 
 + (IRRemoteResourcesManager *) sharedManager {
 
@@ -107,6 +109,8 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 	[queue release];
 	[enqueuedOperations release];
 	[cacheDirectoryPath release];
+	
+	[onRemoteResourceDownloadOperationWillBegin release];
 		
 	[super dealloc];
 
@@ -209,10 +213,19 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 		
 	}];
 	
+	operation.delegate = self;
+	
 	if (enqueuesOperation)
 		[self.enqueuedOperations insertObject:operation atIndex:0];
 	
 	return operation;
+
+}
+
+- (void) remoteResourceDownloadOperationWillBegin:(IRRemoteResourceDownloadOperation *)anOperation {
+
+	if (self.onRemoteResourceDownloadOperationWillBegin)
+		self.onRemoteResourceDownloadOperationWillBegin(anOperation);
 
 }
 
