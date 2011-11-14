@@ -8,6 +8,15 @@
 
 #import "IRWebAPIKit.h"
 
+
+@class IRRemoteResourceDownloadOperation;
+@protocol IRRemoteResourceDownloadOperationDelegate <NSObject>
+
+- (void) remoteResourceDownloadOperationWillBegin:(IRRemoteResourceDownloadOperation *)anOperation;
+//	- (void) remoteResourceDownloadOperationDidEnd:(IRRemoteResourceDownloadOperation *)anOperation successfully:(BOOL)wasCompleted;
+
+@end
+
 @interface IRRemoteResourceDownloadOperation : NSOperation
 
 + (IRRemoteResourceDownloadOperation *) operationWithURL:(NSURL *)aRemoteURL path:(NSString *)aLocalPath prelude:(void(^)(void))aPrelude completion:(void(^)(void))aBlock;
@@ -22,6 +31,8 @@
 @property (nonatomic, readonly, assign, getter=isCancelled) BOOL cancelled;
 @property (nonatomic, readonly, assign) float_t progress; // Convenience
 
+@property (nonatomic, readwrite, assign) id<IRRemoteResourceDownloadOperationDelegate> delegate;
+
 - (void) appendCompletionBlock:(void(^)(void))aBlock;
 - (void) invokeCompletionBlocks;
 
@@ -29,5 +40,11 @@
 
 //	The appended completion blocks will only be invoked if the operation finishes successfully; otherwise, as in cases where [anOperation continuationOperationCancellingCurrentOperation:YES] is invoked,
 //	The blocks will be transferred to the continuation operation, and the original operation will be cancelled.
+
+
+- (NSURLConnection *) underlyingConnection;
+- (NSMutableURLRequest *) underlyingRequest;
+
+//	may be nil if nothing, but usually there after -remoteResourceDownloadOperationWillBegin
 
 @end

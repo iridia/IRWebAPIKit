@@ -8,6 +8,9 @@
 
 #import "IRRemoteResourceDownloadOperation.h"
 
+NSString * const kIRRemoteResourcesDownloadOperation_connectionRequest = @"kIRRemoteResourcesDownloadOperation_connectionRequest";
+
+
 @interface IRRemoteResourceDownloadOperation ()
 
 @property (nonatomic, readwrite, retain) NSString *path;
@@ -38,10 +41,12 @@
 @synthesize actualDispatchQueue;
 @synthesize onMain;
 @synthesize appendedCompletionBlocks;
+@synthesize delegate;
 
 + (IRRemoteResourceDownloadOperation *) operationWithURL:(NSURL *)aRemoteURL path:(NSString *)aLocalPath prelude:(void(^)(void))aPrelude completion:(void(^)(void))aBlock {
 
 	IRRemoteResourceDownloadOperation *returnedOperation = [[[self alloc] init] autorelease];
+	
 	returnedOperation.url = aRemoteURL;
 	returnedOperation.path = aLocalPath;
 	returnedOperation.onMain = aPrelude;
@@ -120,8 +125,24 @@
 	NSParameterAssert(self.fileHandle);
 	
 	[self onMainQueue: ^ {
-		self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:self.url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10] delegate:self];
-		//	[self.connection start];
+	
+		NSMutableURLRequest *usedRequest = [NSMutableURLRequest requestWithURL:self.url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+		NSURLConnection *usedConnection = [[[NSURLConnection alloc] initWithRequest:usedRequest delegate:self startImmediately:NO] autorelease];
+		
+		objc_setAssociatedObject(usedConnection, &kIRRemoteResourcesDownloadOperation_connectionRequest, usedRequest, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+		self.connection = usedConnection;
+		
+		[self.delegate remoteResourceDownloadOperationWillBegin:self];
+		
+		usedConnection = [[[NSURLConnection alloc] initWithRequest:usedRequest delegate:self startImmediately:NO] autorelease];
+		
+		objc_setAssociatedObject(usedConnection, &kIRRemoteResourcesDownloadOperation_connectionRequest, usedRequest, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+		self.connection = usedConnection;
+		
+		self.url = usedRequest.URL;
+		
+		[self.connection start];
+		
 	}];
 	
 }
@@ -330,6 +351,18 @@
 	}
 	
 	return continuationOperation;
+
+}
+
+- (NSURLConnection *) underlyingConnection {
+
+	return self.connection;
+
+}
+
+- (NSMutableURLRequest *) underlyingRequest {
+
+	return objc_getAssociatedObject([self underlyingConnection], &kIRRemoteResourcesDownloadOperation_connectionRequest);
 
 }
 
