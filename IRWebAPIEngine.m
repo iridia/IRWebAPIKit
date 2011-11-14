@@ -565,8 +565,15 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	NSMutableArray *allTransformers = [NSMutableArray array];
+	
 	[allTransformers addObjectsFromArray:self.globalRequestPreTransformers];
-	[allTransformers addObjectsFromArray:[self requestTransformersForMethodNamed:inMethodName]];
+	
+	NSArray *methodSpecificTransformers = [self requestTransformersForMethodNamed:inMethodName];
+	
+	if (methodSpecificTransformers) {
+		[allTransformers addObjectsFromArray:methodSpecificTransformers];
+	}
+	
 	[allTransformers addObjectsFromArray:self.globalRequestPostTransformers];
 	
 	NSDictionary *currentContext = inContext;
