@@ -232,6 +232,23 @@ NSString * const kIRRemoteResourcesDownloadOperation_connectionRequest = @"kIRRe
 
 }
 
+- (NSURLRequest *) connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)aRequest redirectResponse:(NSURLResponse *)aRedirectResponse {
+
+	if (!aRedirectResponse)
+		return aRequest;
+		
+//	if ([self.delegate respondsToSelector:@selector(<#selector#>)]) {
+//	
+//		
+//	
+//	}
+	
+	NSMutableURLRequest *mutatedRequest = [[[self underlyingRequest] mutableCopy] autorelease];
+	mutatedRequest.URL = [aRequest URL];
+	return mutatedRequest;
+
+}
+
 - (BOOL) isConcurrent {
 
 	return YES;
