@@ -617,6 +617,8 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 	
 	) cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
 	
+	[request setHTTPShouldHandleCookies:NO];
+	
 	NSDictionary *headerFields;
 	if ((headerFields = [inContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields]))
 	for (NSString *headerFieldKey in headerFields)
