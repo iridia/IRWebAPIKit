@@ -139,7 +139,8 @@ NSString * const kIRRemoteResourcesDownloadOperation_connectionRequest = @"kIRRe
 		objc_setAssociatedObject(usedConnection, &kIRRemoteResourcesDownloadOperation_connectionRequest, usedRequest, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 		self.connection = usedConnection;
 		
-		self.url = usedRequest.URL;
+		//	Do not mutate the URL
+		//	self.url = usedRequest.URL;
 		
 		[self.connection start];
 		

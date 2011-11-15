@@ -167,10 +167,7 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 	__block __typeof__(self) nrSelf = self;
 	__block IRRemoteResourceDownloadOperation *operation = nil;
-	
-	if ([self.delegate respondsToSelector:@selector(remoteResourcesManager:invokedURLForResourceAtURL:)])
-		anURL = [self.delegate remoteResourcesManager:self invokedURLForResourceAtURL:anURL];
-	
+		
 	operation = [IRRemoteResourceDownloadOperation operationWithURL:anURL path:[self pathForCachedContentsOfRemoteURL:anURL usedProspectiveURL:NULL] prelude: ^ {
 	
 		dispatch_async(dispatch_get_main_queue(), ^ {
@@ -224,6 +221,11 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) remoteResourceDownloadOperationWillBegin:(IRRemoteResourceDownloadOperation *)anOperation {
 
+	if ([self.delegate respondsToSelector:@selector(remoteResourcesManager:invokedURLForResourceAtURL:)]) {
+		NSMutableURLRequest *request = [anOperation underlyingRequest];
+		request.URL = [self.delegate remoteResourcesManager:self invokedURLForResourceAtURL:request.URL];
+	}
+	
 	if (self.onRemoteResourceDownloadOperationWillBegin)
 		self.onRemoteResourceDownloadOperationWillBegin(anOperation);
 
