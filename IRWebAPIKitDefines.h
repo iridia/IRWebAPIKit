@@ -127,6 +127,11 @@ extern NSString * const kIRWebAPIEngineParser;
 //	Expected to be a IRWebAPIResponseParser.  Exposed to allow custom response parsing for “some methods”.
 
 
+extern NSString * const kIRWebAPIEngineIncomingMethodName;
+
+//	The string that was passed to -fireMethodNamed:
+
+
 
 
 
