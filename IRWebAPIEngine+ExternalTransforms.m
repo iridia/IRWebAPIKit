@@ -75,7 +75,6 @@
 						
 						NSRange substringRange = [result rangeAtIndex:i];
 						NSString *substring = [query substringWithRange:substringRange];
-						NSLog(@"substring at range %@ is %@", NSStringFromRange(substringRange), substring);
 						
 						if (i == 1)
 							currentArgumentName = substring;
