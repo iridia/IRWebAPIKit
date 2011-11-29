@@ -421,3 +421,42 @@ NSURL * IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NSDictionary *i
 	return returnedURL;
 
 }
+
+NSDictionary *IRQueryParametersFromString (NSString *query) {
+
+	NSMutableDictionary *mutableArguments = [NSMutableDictionary dictionary];
+	NSRange queryFullRange = (NSRange) {0, [query length] };
+	
+	NSString *queryPairPattern = @"([^=\\?\\&]+)=([^=\\?\\&]+)?";
+	NSRegularExpression *queryPairExpression = [NSRegularExpression regularExpressionWithPattern:queryPairPattern options:0 error:nil];
+	
+	//	([^=\?\&]+)=([^=\?\&]+)?(?=&)
+
+	[queryPairExpression enumerateMatchesInString:query options:0 range:queryFullRange usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+	
+		__block NSString *currentArgumentName = nil;
+		__block NSString *currentArgumentValue = nil;
+		
+		NSUInteger numberOfRanges = result.numberOfRanges;
+		for (NSUInteger i = 0; i < numberOfRanges; i++) {
+			
+			NSRange substringRange = [result rangeAtIndex:i];
+			NSString *substring = [query substringWithRange:substringRange];
+			
+			if (i == 1)
+				currentArgumentName = substring;
+			else if (i == 2)
+				currentArgumentValue = substring;
+		
+		}
+		
+		if (currentArgumentValue)
+			[mutableArguments setObject:currentArgumentValue forKey:currentArgumentName];
+		else
+			[mutableArguments setObject:@"" forKey:currentArgumentName];
+		
+	}];
+	
+	return mutableArguments;
+
+}

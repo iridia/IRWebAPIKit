@@ -57,3 +57,5 @@ extern NSString * IRWebAPIKitMIMETypeOfExtension (NSString *inExtension);
 
 extern NSString * IRWebAPIRequestURLQueryParametersStringMake (NSDictionary *inQueryParameters, NSString *inSeparator);
 extern NSURL * IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NSDictionary *inQueryParametersOrNil);
+extern NSDictionary *IRQueryParametersFromString (NSString *aQueryString);
+
