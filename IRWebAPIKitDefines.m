@@ -18,3 +18,4 @@ NSString * const kIRWebAPIEngineParser = @"kIRWebAPIEngineParser";
 NSString * const kIRWebAPIEngineIncomingMethodName = @"kIRWebAPIEngineIncomingMethodName";
 NSString * const kIRWebAPIEngineResponseContextURLResponseName = @"kIRWebAPIEngineResponseContextURLResponseName";
 NSString * const kIRWebAPIEngineResponseContextOriginalRequestContextName = @"kIRWebAPIEngineResponseContextOriginalRequestContextName";
+NSString * const kIRWebAPIRequestTimeout = @"kIRWebAPIRequestTimeout";

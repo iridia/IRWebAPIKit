@@ -541,6 +541,9 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 	IRWebAPIResponseParser responseParser = [inOptionsOrNil objectForKey:kIRWebAPIEngineParser];
 	responseParser = responseParser ? responseParser : self.parser;
 	
+	NSNumber *timeoutValue = [inOptionsOrNil objectForKey:kIRWebAPIRequestTimeout];
+	timeoutValue = timeoutValue ? timeoutValue : [NSNumber numberWithDouble:60.0];
+	
 	NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 	
 		baseURL, kIRWebAPIEngineRequestHTTPBaseURL,
@@ -550,6 +553,7 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 		httpMethod, kIRWebAPIEngineRequestHTTPMethod,
 		responseParser, kIRWebAPIEngineParser,
 		inMethodName, kIRWebAPIEngineIncomingMethodName,
+		timeoutValue, kIRWebAPIRequestTimeout,
 	
 	nil];
 			
@@ -623,7 +627,7 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 		(NSURL *)[inContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL],
 		[inContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters]
 	
-	) cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+	) cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:[[inContext objectForKey:kIRWebAPIRequestTimeout] doubleValue]];
 	
 	[request setHTTPShouldHandleCookies:NO];
 	

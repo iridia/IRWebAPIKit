@@ -132,6 +132,12 @@ extern NSString * const kIRWebAPIEngineIncomingMethodName;
 //	The string that was passed to -fireMethodNamed:
 
 
+extern NSString * const kIRWebAPIRequestTimeout;
+
+//	+[NSNumber numberWithDouble:].  Default is 60.
+
+
+
 
 
 
