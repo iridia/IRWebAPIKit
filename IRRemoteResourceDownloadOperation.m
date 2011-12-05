@@ -187,7 +187,10 @@ NSString * const kIRRemoteResourcesDownloadOperation_connectionRequest = @"kIRRe
 		
 	[self onOriginalQueue: ^ {
 	
+		[self willChangeValueForKey:@"progress"];
 		self.processedBytes += [data length];
+		[self didChangeValueForKey:@"progress"];
+		
 		[self.fileHandle writeData:data];
 	
 	}];
