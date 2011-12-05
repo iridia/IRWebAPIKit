@@ -10,6 +10,9 @@
 
 NSString * const kIRRemoteResourcesDownloadOperation_connectionRequest = @"kIRRemoteResourcesDownloadOperation_connectionRequest";
 
+NSString * const kIRRemoteResourceDownloadOperationDidReceiveDataNotification = @"IRRemoteResourceDownloadOperationDidReceiveDataNotification";
+NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownloadOperationURL";
+
 
 @interface IRRemoteResourceDownloadOperation ()
 
@@ -192,7 +195,13 @@ NSString * const kIRRemoteResourcesDownloadOperation_connectionRequest = @"kIRRe
 		[self didChangeValueForKey:@"progress"];
 		
 		[self.fileHandle writeData:data];
-	
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:kIRRemoteResourceDownloadOperationDidReceiveDataNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+		
+			self.url, kIRRemoteResourceDownloadOperationURL,
+		
+		nil]];
+			
 	}];
 
 }

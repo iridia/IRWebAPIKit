@@ -13,6 +13,9 @@
 @protocol IRRemoteResourceDownloadOperationDelegate <NSObject>
 
 - (void) remoteResourceDownloadOperationWillBegin:(IRRemoteResourceDownloadOperation *)anOperation;
+
+//	@optional
+//	- (void) remoteResourceDownloadOperation:(IRRemoteResourceDownloadOperation *)anOperation didChangeProgress:(float_t)currentProgress;
 //	- (void) remoteResourceDownloadOperationDidEnd:(IRRemoteResourceDownloadOperation *)anOperation successfully:(BOOL)wasCompleted;
 
 @end
@@ -48,3 +51,7 @@
 //	may be nil if nothing, but usually there after -remoteResourceDownloadOperationWillBegin
 
 @end
+
+
+extern NSString * const kIRRemoteResourceDownloadOperationDidReceiveDataNotification;
+extern NSString * const kIRRemoteResourceDownloadOperationURL;	//	user info key pointing to NSURL
