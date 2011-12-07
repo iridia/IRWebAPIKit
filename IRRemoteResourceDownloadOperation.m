@@ -177,7 +177,9 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 	
 	[self onOriginalQueue: ^ {
 
+		[self willChangeValueForKey:@"progress"];
 		self.totalBytes = response.expectedContentLength;
+		[self didChangeValueForKey:@"progress"];
 		
 	}];
 
@@ -270,7 +272,7 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 
 - (float_t) progress {
 
-	if (!totalBytes)
+	if (totalBytes <= 0)
 		return 0.0f;
 	
 	return (float_t)((double_t)processedBytes / (double_t)totalBytes);
