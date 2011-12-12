@@ -172,6 +172,17 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 
+	if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+	
+		NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+		if (httpResponse.statusCode != 200) {
+		
+			NSLog(@"Abnormal %@ with status: %i", httpResponse, httpResponse.statusCode);
+		
+		}
+	
+	}
+
 	if ([self isCancelled])
 		return;
 	
