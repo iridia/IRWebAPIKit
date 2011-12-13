@@ -177,6 +177,21 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 	
 	[self onOriginalQueue: ^ {
 
+		if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+		
+			NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+			if (httpResponse.statusCode != 200) {
+			
+				[self.fileHandle closeFile];
+				self.fileHandle = nil;
+				
+				[[NSFileManager defaultManager] removeItemAtPath:self.path error:nil];
+				self.path = nil;
+				
+			}
+		
+		}
+
 		[self willChangeValueForKey:@"progress"];
 		self.totalBytes = response.expectedContentLength;
 		[self didChangeValueForKey:@"progress"];
