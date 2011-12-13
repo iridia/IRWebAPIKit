@@ -172,21 +172,25 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 
-	if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-	
-		NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-		if (httpResponse.statusCode != 200) {
-		
-			NSLog(@"Abnormal %@ with status: %i", httpResponse, httpResponse.statusCode);
-		
-		}
-	
-	}
-
 	if ([self isCancelled])
 		return;
 	
 	[self onOriginalQueue: ^ {
+
+		if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+		
+			NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+			if (httpResponse.statusCode != 200) {
+			
+				[self.fileHandle closeFile];
+				self.fileHandle = nil;
+				
+				[[NSFileManager defaultManager] removeItemAtPath:self.path error:nil];
+				self.path = nil;
+				
+			}
+		
+		}
 
 		[self willChangeValueForKey:@"progress"];
 		self.totalBytes = response.expectedContentLength;
