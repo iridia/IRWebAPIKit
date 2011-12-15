@@ -143,13 +143,15 @@ extern NSString * const kIRWebAPIRequestTimeout;
 
 #pragma mark IRWebAPIEngine Response Context Dictionary Keys
 
-extern NSString * const kIRWebAPIEngineResponseContextURLResponseName;
+extern NSString * const kIRWebAPIEngineResponseContextURLResponse;
+extern NSString * const kIRWebAPIEngineResponseContextURLResponseName DEPRECATED_ATTRIBUTE;
 
 //	We send a response context to IRWebAPICallback blocks.
 //	This contains the vanilla NSURLResponse object.
 
 
-extern NSString * const kIRWebAPIEngineResponseContextOriginalRequestContextName;
+extern NSString * const kIRWebAPIEngineResponseContextOriginalRequestContext;
+extern NSString * const kIRWebAPIEngineResponseContextOriginalRequestContextName DEPRECATED_ATTRIBUTE;
 
 //	This key gets the original request context.
 
