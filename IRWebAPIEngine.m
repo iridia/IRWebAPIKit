@@ -312,7 +312,7 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 			[self setInternalDataStore:[NSMutableData data] forConnection:connection];
 			[self setInternalResponseContext:[NSMutableDictionary dictionaryWithObjectsAndKeys:
 			
-				finalizedContext, kIRWebAPIEngineResponseContextOriginalRequestContextName,
+				finalizedContext, kIRWebAPIEngineResponseContextOriginalRequestContext,
 			
 			nil] forConnection:connection];
 			
@@ -348,7 +348,7 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 	dispatch_async(self.sharedDispatchQueue, ^{
 
 		NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
-		[responseContext setObject:response forKey:kIRWebAPIEngineResponseContextURLResponseName];
+		[responseContext setObject:response forKey:kIRWebAPIEngineResponseContextURLResponse];
 	
 	});
 
