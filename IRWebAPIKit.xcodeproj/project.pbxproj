@@ -30,6 +30,8 @@
 		FF45635B12D06A46000239DC /* IRWebAPIKitEntityDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45635A12D06A46000239DC /* IRWebAPIKitEntityDefines.h */; };
 		FF45635D12D06A50000239DC /* IRWebAPIKitEntityDefinesHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45635C12D06A50000239DC /* IRWebAPIKitEntityDefinesHeader.h */; };
 		FF45637812D07653000239DC /* IRWebAPIKitEntityDefinesFooter.h in Headers */ = {isa = PBXBuildFile; fileRef = FF45637712D07653000239DC /* IRWebAPIKitEntityDefinesFooter.h */; };
+		FF460D07149CF80600DB7F0B /* IRWebAPIEngine+FormURLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = FF7EB6891467B876002718DC /* IRWebAPIEngine+FormURLEncoding.m */; };
+		FF460D09149CF80B00DB7F0B /* IRWebAPIEngine+ExternalTransforms.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF5AC731470FFC600512775 /* IRWebAPIEngine+ExternalTransforms.m */; };
 		FF47A29B12A6486900AF729F /* IRWebAPIInterfaceAuthenticating.h in Headers */ = {isa = PBXBuildFile; fileRef = FF47A29A12A6486900AF729F /* IRWebAPIInterfaceAuthenticating.h */; };
 		FF48661612A6329900B75591 /* IRWebAPIGoogleReaderInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FF48661412A6329900B75591 /* IRWebAPIGoogleReaderInterface.h */; };
 		FF48661712A6329900B75591 /* IRWebAPIGoogleReaderInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = FF48661512A6329900B75591 /* IRWebAPIGoogleReaderInterface.m */; };
@@ -685,6 +687,8 @@
 				FF59A3BC1441C9F400BB1FDC /* IRRemoteResourceDownloadOperation.m in Sources */,
 				FF59A3BD1441C9F400BB1FDC /* IRWebAPIInterface.m in Sources */,
 				FF59A3BE1441C9F400BB1FDC /* IRWebAPIInterface+Validators.m in Sources */,
+				FF460D07149CF80600DB7F0B /* IRWebAPIEngine+FormURLEncoding.m in Sources */,
+				FF460D09149CF80B00DB7F0B /* IRWebAPIEngine+ExternalTransforms.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
