@@ -307,7 +307,7 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) enqueueOperationsIfNeeded {
 
-	NSComparator operationQueuePriorityComparator =  ^ (NSOperation *lhs, NSOperation *rhs) {
+	NSComparator operationQueuePriorityComparator = (NSComparator) ^ (NSOperation *lhs, NSOperation *rhs) {
 		return (lhs.queuePriority < rhs.queuePriority) ? NSOrderedDescending :
 			(lhs.queuePriority == rhs.queuePriority) ? NSOrderedSame :
 			(lhs.queuePriority > rhs.queuePriority) ? NSOrderedAscending : NSOrderedSame;
