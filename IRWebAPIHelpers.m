@@ -424,6 +424,9 @@ NSURL * IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NSDictionary *i
 
 NSDictionary *IRQueryParametersFromString (NSString *query) {
 
+	if (!query)
+		return nil;
+
 	NSMutableDictionary *mutableArguments = [NSMutableDictionary dictionary];
 	NSRange queryFullRange = (NSRange) {0, [query length] };
 	
@@ -451,7 +454,7 @@ NSDictionary *IRQueryParametersFromString (NSString *query) {
 		}
 		
 		if (currentArgumentValue)
-			[mutableArguments setObject:currentArgumentValue forKey:currentArgumentName];
+			[mutableArguments setObject:IRWebAPIKitRFC3986DecodedStringMake(currentArgumentValue) forKey:currentArgumentName];
 		else
 			[mutableArguments setObject:@"" forKey:currentArgumentName];
 		
