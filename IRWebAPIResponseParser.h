@@ -12,6 +12,7 @@
 extern IRWebAPIResponseParser IRWebAPIResponseDefaultParserMake (void);
 extern IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake (void);
 extern IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake (void);
+extern IRWebAPIResponseParser IRWebAPIResponseDefaultXMLParserMake ();
 
 
 

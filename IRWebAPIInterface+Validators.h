@@ -6,6 +6,7 @@
 //  Copyright 2011 Iridia Productions. All rights reserved.
 //
 
+#import "IRWebAPIKitDefines.h"
 #import "IRWebAPIInterface.h"
 
 
