@@ -187,7 +187,7 @@ NSString * IRWebAPIStringByDecodingXMLEntities (NSString *inString) {
 
 		}
 
-		NSUInteger charCode;
+		unsigned int charCode;
 		NSString *xForHex = @"";
 		
 		if ([scanner scanString:@"x" intoString:NULL] ? [scanner scanHexInt:&charCode] : [scanner scanInt:(int*)&charCode]) {
@@ -265,7 +265,7 @@ NSString * IRWebAPIKitNonce () {
 	uuid = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, theUUID) autorelease];
 	CFRelease(theUUID);
 	
-	return [NSString stringWithFormat:@"%@-%@-%@", IRWebAPIKitTimestamp(), uuid, [UIDevice currentDevice].uniqueIdentifier];
+	return [NSString stringWithFormat:@"%@-%@", IRWebAPIKitTimestamp(), uuid];
 	
 }
 
@@ -394,7 +394,7 @@ NSString * IRWebAPIKitMIMETypeOfExtension (NSString *inExtension) {
 NSString * IRWebAPIRequestURLQueryParametersStringMake (NSDictionary *inQueryParameters, NSString *inSeparator) {
 
 	if ((!inQueryParameters) || ([inQueryParameters count] == 0))
-	return @"";
+		return @"";
 	
 	NSMutableArray *returnedStringParts = [NSMutableArray array];
 
@@ -419,5 +419,47 @@ NSURL * IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NSDictionary *i
 	
 	
 	return returnedURL;
+
+}
+
+NSDictionary *IRQueryParametersFromString (NSString *query) {
+
+	if (!query)
+		return nil;
+
+	NSMutableDictionary *mutableArguments = [NSMutableDictionary dictionary];
+	NSRange queryFullRange = (NSRange) {0, [query length] };
+	
+	NSString *queryPairPattern = @"([^=\\?\\&]+)=([^=\\?\\&]+)?";
+	NSRegularExpression *queryPairExpression = [NSRegularExpression regularExpressionWithPattern:queryPairPattern options:0 error:nil];
+	
+	//	([^=\?\&]+)=([^=\?\&]+)?(?=&)
+
+	[queryPairExpression enumerateMatchesInString:query options:0 range:queryFullRange usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+	
+		__block NSString *currentArgumentName = nil;
+		__block NSString *currentArgumentValue = nil;
+		
+		NSUInteger numberOfRanges = result.numberOfRanges;
+		for (NSUInteger i = 0; i < numberOfRanges; i++) {
+			
+			NSRange substringRange = [result rangeAtIndex:i];
+			NSString *substring = [query substringWithRange:substringRange];
+			
+			if (i == 1)
+				currentArgumentName = substring;
+			else if (i == 2)
+				currentArgumentValue = substring;
+		
+		}
+		
+		if (currentArgumentValue)
+			[mutableArguments setObject:IRWebAPIKitRFC3986DecodedStringMake(currentArgumentValue) forKey:currentArgumentName];
+		else
+			[mutableArguments setObject:@"" forKey:currentArgumentName];
+		
+	}];
+	
+	return mutableArguments;
 
 }

@@ -38,8 +38,8 @@ extern NSString * IRWebAPIStringByDecodingXMLEntities (NSString *inString);
 
 # pragma mark Randomness and Order
 
-extern NSString * IRWebAPIKitTimestamp ();
-extern NSString * IRWebAPIKitNonce ();
+extern NSString * IRWebAPIKitTimestamp (void);
+extern NSString * IRWebAPIKitNonce (void);
 
 
 # pragma mark Crypto Helpers
@@ -57,3 +57,5 @@ extern NSString * IRWebAPIKitMIMETypeOfExtension (NSString *inExtension);
 
 extern NSString * IRWebAPIRequestURLQueryParametersStringMake (NSDictionary *inQueryParameters, NSString *inSeparator);
 extern NSURL * IRWebAPIRequestURLWithQueryParameters (NSURL *inBaseURL, NSDictionary *inQueryParametersOrNil);
+extern NSDictionary *IRQueryParametersFromString (NSString *aQueryString);
+

@@ -127,18 +127,31 @@ extern NSString * const kIRWebAPIEngineParser;
 //	Expected to be a IRWebAPIResponseParser.  Exposed to allow custom response parsing for “some methods”.
 
 
+extern NSString * const kIRWebAPIEngineIncomingMethodName;
+
+//	The string that was passed to -fireMethodNamed:
+
+
+extern NSString * const kIRWebAPIRequestTimeout;
+
+//	+[NSNumber numberWithDouble:].  Default is 60.
+
+
+
 
 
 
 #pragma mark IRWebAPIEngine Response Context Dictionary Keys
 
-extern NSString * const kIRWebAPIEngineResponseContextURLResponseName;
+extern NSString * const kIRWebAPIEngineResponseContextURLResponse;
+extern NSString * const kIRWebAPIEngineResponseContextURLResponseName DEPRECATED_ATTRIBUTE;
 
 //	We send a response context to IRWebAPICallback blocks.
 //	This contains the vanilla NSURLResponse object.
 
 
-extern NSString * const kIRWebAPIEngineResponseContextOriginalRequestContextName;
+extern NSString * const kIRWebAPIEngineResponseContextOriginalRequestContext;
+extern NSString * const kIRWebAPIEngineResponseContextOriginalRequestContextName DEPRECATED_ATTRIBUTE;
 
 //	This key gets the original request context.
 
