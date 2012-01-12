@@ -297,9 +297,10 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
+				NSDictionary *transformedResopnse = [self responseByTransformingResponse:[NSDictionary dictionary] withRequestContext:responseContext forMethodNamed:inMethodName];
 				
 				if (inFailureHandler)
-				inFailureHandler([NSDictionary dictionary], responseContext, &notifyDelegate, &shouldRetry);
+					inFailureHandler(transformedResopnse, responseContext, &notifyDelegate, &shouldRetry);
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
