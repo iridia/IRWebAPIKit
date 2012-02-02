@@ -9,9 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "IRWebAPIKit.h"
 
-extern IRWebAPIResponseParser IRWebAPIResponseDefaultParserMake ();
-extern IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake ();
-extern IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake ();
+extern IRWebAPIResponseParser IRWebAPIResponseDefaultParserMake (void);
+extern IRWebAPIResponseParser IRWebAPIResponseQueryResponseParserMake (void);
+extern IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake (void);
+extern IRWebAPIResponseParser IRWebAPIResponseDefaultXMLParserMake ();
 
 
 

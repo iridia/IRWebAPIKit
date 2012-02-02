@@ -35,15 +35,13 @@
 		
 		return (NSDictionary *)transformedContext;
 	
-	} copy] retain];
+	} copy] autorelease];
 
 	self.globalResponsePreTransformerBlock = [[^ (NSDictionary *inParsedResponse, NSDictionary *inResponseContext) {
 	
-	//	FIXME: Probably add code to handle possible authentication failure and trigger synchronous, blocking reauthentication?
-	
 		return inParsedResponse;
 	
-	} copy] retain];
+	} copy] autorelease];
 
 }
 

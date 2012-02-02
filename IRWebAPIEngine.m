@@ -297,9 +297,10 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 			
 				BOOL shouldRetry = NO, notifyDelegate = NO;
 				NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
+				NSDictionary *transformedResopnse = [self responseByTransformingResponse:[NSDictionary dictionary] withRequestContext:responseContext forMethodNamed:inMethodName];
 				
 				if (inFailureHandler)
-				inFailureHandler([NSDictionary dictionary], responseContext, &notifyDelegate, &shouldRetry);
+					inFailureHandler(transformedResopnse, responseContext, &notifyDelegate, &shouldRetry);
 				
 				if (shouldRetry) retryHandler();
 				if (notifyDelegate) notifyDelegateHandler();
@@ -312,7 +313,7 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 			[self setInternalDataStore:[NSMutableData data] forConnection:connection];
 			[self setInternalResponseContext:[NSMutableDictionary dictionaryWithObjectsAndKeys:
 			
-				finalizedContext, kIRWebAPIEngineResponseContextOriginalRequestContextName,
+				finalizedContext, kIRWebAPIEngineResponseContextOriginalRequestContext,
 			
 			nil] forConnection:connection];
 			
@@ -348,7 +349,7 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 	dispatch_async(self.sharedDispatchQueue, ^{
 
 		NSMutableDictionary *responseContext = [self internalResponseContextForConnection:connection];
-		[responseContext setObject:response forKey:kIRWebAPIEngineResponseContextURLResponseName];
+		[responseContext setObject:response forKey:kIRWebAPIEngineResponseContextURLResponse];
 	
 	});
 
@@ -383,6 +384,22 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 	
 	});
 
+}
+
+- (BOOL) connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+	
+	return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+	
+}
+
+- (void) connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+	
+	if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])
+		if ([[self.context.baseURL host] isEqualToString:challenge.protectionSpace.host])
+			[challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+	
+  [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+	
 }
 
 
@@ -525,6 +542,9 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 	IRWebAPIResponseParser responseParser = [inOptionsOrNil objectForKey:kIRWebAPIEngineParser];
 	responseParser = responseParser ? responseParser : self.parser;
 	
+	NSNumber *timeoutValue = [inOptionsOrNil objectForKey:kIRWebAPIRequestTimeout];
+	timeoutValue = timeoutValue ? timeoutValue : [NSNumber numberWithDouble:60.0];
+	
 	NSMutableDictionary *transformedContext = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 	
 		baseURL, kIRWebAPIEngineRequestHTTPBaseURL,
@@ -533,6 +553,8 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 		httpBody, kIRWebAPIEngineRequestHTTPBody,
 		httpMethod, kIRWebAPIEngineRequestHTTPMethod,
 		responseParser, kIRWebAPIEngineParser,
+		inMethodName, kIRWebAPIEngineIncomingMethodName,
+		timeoutValue, kIRWebAPIRequestTimeout,
 	
 	nil];
 			
@@ -549,8 +571,15 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	NSMutableArray *allTransformers = [NSMutableArray array];
+	
 	[allTransformers addObjectsFromArray:self.globalRequestPreTransformers];
-	[allTransformers addObjectsFromArray:[self requestTransformersForMethodNamed:inMethodName]];
+	
+	NSArray *methodSpecificTransformers = [self requestTransformersForMethodNamed:inMethodName];
+	
+	if (methodSpecificTransformers) {
+		[allTransformers addObjectsFromArray:methodSpecificTransformers];
+	}
+	
 	[allTransformers addObjectsFromArray:self.globalRequestPostTransformers];
 	
 	NSDictionary *currentContext = inContext;
@@ -599,7 +628,9 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 		(NSURL *)[inContext objectForKey:kIRWebAPIEngineRequestHTTPBaseURL],
 		[inContext objectForKey:kIRWebAPIEngineRequestHTTPQueryParameters]
 	
-	) cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
+	) cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:[[inContext objectForKey:kIRWebAPIRequestTimeout] doubleValue]];
+	
+	[request setHTTPShouldHandleCookies:NO];
 	
 	NSDictionary *headerFields;
 	if ((headerFields = [inContext objectForKey:kIRWebAPIEngineRequestHTTPHeaderFields]))
