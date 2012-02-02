@@ -34,7 +34,7 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 	
 	};
 	
-	NSURL *fileURL = [NSURL fileURLWithPath:[preferredCacheDirectoryPath stringByAppendingPathComponent:IRWebAPIKitNonce()]];	
+	NSURL *fileURL = [[NSURL fileURLWithPath:[preferredCacheDirectoryPath stringByAppendingPathComponent:IRWebAPIKitNonce()]] retain];	
 	return fileURL;
 	
 }
@@ -64,7 +64,7 @@ NSString * const kIRWebAPIEngineLocallocalCacheDirectoryPath = @"kIRWebAPIEngine
 
 	return [[(^ (NSDictionary *inParsedResponse, NSDictionary *inResponseContext) {
 	
-		NSArray *cachedFileURLs = [[inResponseContext objectForKey:kIRWebAPIEngineResponseContextOriginalRequestContextName] objectForKey:kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey];
+		NSArray *cachedFileURLs = [[inResponseContext objectForKey:kIRWebAPIEngineResponseContextOriginalRequestContext] objectForKey:kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey];
 		
 	//	DISPATCH_QUEUE_PRIORITY_BACKGROUND is unrecognized by LLVM 2.0 so we’re using the number it uses
 		dispatch_async(dispatch_get_global_queue(-2, 0), ^ {

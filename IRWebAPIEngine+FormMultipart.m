@@ -27,7 +27,7 @@ NSString * const kIRWebAPIEngineRequestContextFormMultipartFieldsKey = @"kIRWebA
 		
 		
 		NSError *error;
-		NSURL *fileHandleURL = [[self class] newTemporaryFileURL];
+		NSURL *fileHandleURL = [[[self class] newTemporaryFileURL] autorelease];
 		
 		if (![[NSFileManager defaultManager] createFileAtPath:[fileHandleURL path] contents:[NSData data] attributes:nil]) {
 		

@@ -99,7 +99,7 @@
 		
 		}
 		
-		NSArray *places = [inResponseOrNil valueForKey:@"result.places"];
+		//	NSArray *places = [inResponseOrNil valueForKey:@"result.places"];
 		
 		NSLog(@"geo/reverse_geocode response: %@", inResponseOrNil);
 		

@@ -58,7 +58,7 @@
 	
 	}
 	
-	NSURL *cachingFileURL = [[self.engine class] newTemporaryFileURL];
+	NSURL *cachingFileURL = [[[self.engine class] newTemporaryFileURL] autorelease];
 	
 	[imageDataOrNil writeToURL:cachingFileURL atomically:YES];
 	
@@ -123,7 +123,7 @@
 	
 	nil] validator: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext) {
 	
-		NSHTTPURLResponse *response = (NSHTTPURLResponse *)[inResponseContext objectForKey:kIRWebAPIEngineResponseContextURLResponseName];
+		NSHTTPURLResponse *response = (NSHTTPURLResponse *)[inResponseContext objectForKey:kIRWebAPIEngineResponseContextURLResponse];
 		
 		if ([inResponseOrNil objectForKey:@"url"] == nil) {
 		
