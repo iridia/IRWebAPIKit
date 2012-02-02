@@ -307,56 +307,60 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) enqueueOperationsIfNeeded {
 
-	NSComparator operationQueuePriorityComparator = (NSComparator) ^ (NSOperation *lhs, NSOperation *rhs) {
-		return (lhs.queuePriority < rhs.queuePriority) ? NSOrderedDescending :
-			(lhs.queuePriority == rhs.queuePriority) ? NSOrderedSame :
-			(lhs.queuePriority > rhs.queuePriority) ? NSOrderedAscending : NSOrderedSame;
-	};
-	
-	NSArray * (^sorted)(NSArray *) = ^ (NSArray *anArray) {
-		return [anArray sortedArrayUsingComparator:operationQueuePriorityComparator];
-	};
-	
-	NSArray * (^filtered)(NSArray *, BOOL(^)(id, NSDictionary *)) = ^ (NSArray *filteredArray, BOOL(^predicate)(id evaluatedObject, NSDictionary *bindings)) {
-		return [filteredArray filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:predicate]];
-	};
-	
-	NSArray *usableCurrentOperations = filtered(self.queue.operations, ^ (NSOperation *anOperation, NSDictionary *bindings){
-		return (BOOL)![anOperation isCancelled];
-	});
-	
-	NSArray *usableEnqueuedOperations = filtered(self.enqueuedOperations, ^ (NSOperation *anOperation, NSDictionary *bindings){
-		return (BOOL)![anOperation isCancelled];
-	});
-	
-	for (NSOperation *anOperation in usableCurrentOperations)
-		NSParameterAssert(![anOperation isCancelled]);
-	
-	NSArray *sortedCurrentOperations = sorted(self.queue.operations);
-	NSArray *sortedEnqueuedOperations = sorted(usableEnqueuedOperations);
-	NSArray *sortedAllOperations = sorted([sortedCurrentOperations arrayByAddingObjectsFromArray:sortedEnqueuedOperations]);
-	
-	NSArray *legitimateOperations = [sortedAllOperations objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
-		0, MIN(self.queue.maxConcurrentOperationCount, [sortedAllOperations count])
-	}]];
-	
-	NSArray *insertedOperations = filtered(legitimateOperations, ^ (id evaluatedObject, NSDictionary *bindings) {
-		return (BOOL)![sortedCurrentOperations containsObject:evaluatedObject];			
-	});
-	
-	NSArray *postponedOperations = filtered(sortedCurrentOperations, ^ (id evaluatedObject, NSDictionary *bindings) {
-		return (BOOL)![legitimateOperations containsObject:evaluatedObject];
-	});
-	
-	for (NSOperation *anOperation in insertedOperations)
-	if (![self.queue.operations containsObject:anOperation])
-			[self.queue addOperation:anOperation];
-	
-	[self.enqueuedOperations removeObjectsInArray:insertedOperations];
-	
-	[postponedOperations enumerateObjectsUsingBlock: ^ (IRRemoteResourceDownloadOperation *anOperation, NSUInteger idx, BOOL *stop) {
-		[self.enqueuedOperations addObject:[anOperation continuationOperationCancellingCurrentOperation:YES]];
-	}];
+	@autoreleasepool {
+			 
+		NSComparator operationQueuePriorityComparator = (NSComparator) ^ (NSOperation *lhs, NSOperation *rhs) {
+			return (lhs.queuePriority < rhs.queuePriority) ? NSOrderedDescending :
+				(lhs.queuePriority == rhs.queuePriority) ? NSOrderedSame :
+				(lhs.queuePriority > rhs.queuePriority) ? NSOrderedAscending : NSOrderedSame;
+		};
+		
+		NSArray * (^sorted)(NSArray *) = ^ (NSArray *anArray) {
+			return [anArray sortedArrayUsingComparator:operationQueuePriorityComparator];
+		};
+		
+		NSArray * (^filtered)(NSArray *, BOOL(^)(id, NSDictionary *)) = ^ (NSArray *filteredArray, BOOL(^predicate)(id evaluatedObject, NSDictionary *bindings)) {
+			return [filteredArray filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:predicate]];
+		};
+		
+		NSArray *usableCurrentOperations = filtered(self.queue.operations, ^ (NSOperation *anOperation, NSDictionary *bindings){
+			return (BOOL)![anOperation isCancelled];
+		});
+		
+		NSArray *usableEnqueuedOperations = filtered(self.enqueuedOperations, ^ (NSOperation *anOperation, NSDictionary *bindings){
+			return (BOOL)![anOperation isCancelled];
+		});
+		
+		for (NSOperation *anOperation in usableCurrentOperations)
+			NSParameterAssert(![anOperation isCancelled]);
+		
+		NSArray *sortedCurrentOperations = sorted(self.queue.operations);
+		NSArray *sortedEnqueuedOperations = sorted(usableEnqueuedOperations);
+		NSArray *sortedAllOperations = sorted([sortedCurrentOperations arrayByAddingObjectsFromArray:sortedEnqueuedOperations]);
+		
+		NSArray *legitimateOperations = [sortedAllOperations objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
+			0, MIN(self.queue.maxConcurrentOperationCount, [sortedAllOperations count])
+		}]];
+		
+		NSArray *insertedOperations = filtered(legitimateOperations, ^ (id evaluatedObject, NSDictionary *bindings) {
+			return (BOOL)![sortedCurrentOperations containsObject:evaluatedObject];			
+		});
+		
+		NSArray *postponedOperations = filtered(sortedCurrentOperations, ^ (id evaluatedObject, NSDictionary *bindings) {
+			return (BOOL)![legitimateOperations containsObject:evaluatedObject];
+		});
+		
+		for (NSOperation *anOperation in insertedOperations)
+		if (![self.queue.operations containsObject:anOperation])
+				[self.queue addOperation:anOperation];
+		
+		[self.enqueuedOperations removeObjectsInArray:insertedOperations];
+		
+		[postponedOperations enumerateObjectsUsingBlock: ^ (IRRemoteResourceDownloadOperation *anOperation, NSUInteger idx, BOOL *stop) {
+			[self.enqueuedOperations addObject:[anOperation continuationOperationCancellingCurrentOperation:YES]];
+		}];
+
+	}
 
 }
 

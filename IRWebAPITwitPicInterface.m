@@ -58,7 +58,7 @@
 	
 	}
 	
-	NSURL *cachingFileURL = [[self.engine class] newTemporaryFileURL];
+	NSURL *cachingFileURL = [[[self.engine class] newTemporaryFileURL] autorelease];
 	
 	[imageDataOrNil writeToURL:cachingFileURL atomically:YES];
 	

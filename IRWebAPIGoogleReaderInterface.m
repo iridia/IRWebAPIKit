@@ -29,7 +29,7 @@ NSString * const kIRWebAPIGoogleReaderInterfaceBatchSize = @"n";
 
 	IRWebAPIContext *googleReaderContext = [[[IRWebAPIContext alloc] initWithBaseURL:[NSURL URLWithString:@"https://www.google.com"]] autorelease];
 	IRWebAPIEngine *googleReaderEngine = [[[IRWebAPIEngine alloc] initWithContext:googleReaderContext] autorelease];
-	IRWebAPIAuthenticator *googleReaderAuthenticator = [[IRWebAPIGoogleReaderAuthenticator alloc] initWithEngine:googleReaderEngine];
+	IRWebAPIAuthenticator *googleReaderAuthenticator = [[[IRWebAPIGoogleReaderAuthenticator alloc] initWithEngine:googleReaderEngine] autorelease];
 	
 	googleReaderEngine.parser = IRWebAPIResponseDefaultJSONParserMake();
 	
