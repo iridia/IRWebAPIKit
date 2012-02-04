@@ -550,8 +550,6 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL {
 
-	NSLog(@"%s %@", __PRETTY_FUNCTION__, inRemoteURL);
-
 	inRemoteURL = [[inRemoteURL copy] autorelease];
 	
 	dispatch_async(dispatch_get_main_queue(), ^ {
