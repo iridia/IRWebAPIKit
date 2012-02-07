@@ -433,9 +433,19 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 			[self beginSuspendingOperationQueue];
 			
-			[nrSelf performInBackground:^{
+			[nrSelf performInBackground: ^ {
 				
 				[self enqueueOperationsIfNeeded];
+				
+				if ([self.enqueuedOperations containsObject:operation]) {
+				
+					//	Hoist it — This is last come, first serve	
+					
+					[[operation retain] autorelease];
+					[self.enqueuedOperations removeObject:operation];
+					[self.enqueuedOperations insertObject:operation atIndex:0];
+					
+				}
 				
 				dispatch_async(dispatch_get_main_queue(), ^{
 
