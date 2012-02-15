@@ -48,6 +48,8 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 
 + (IRRemoteResourceDownloadOperation *) operationWithURL:(NSURL *)aRemoteURL path:(NSString *)aLocalPath prelude:(void(^)(void))aPrelude completion:(void(^)(void))aBlock {
 
+	NSParameterAssert(aRemoteURL);
+
 	IRRemoteResourceDownloadOperation *returnedOperation = [[[self alloc] init] autorelease];
 	
 	returnedOperation.url = aRemoteURL;

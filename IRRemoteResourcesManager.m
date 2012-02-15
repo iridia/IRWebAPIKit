@@ -376,6 +376,8 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) retrieveResourceAtURL:(NSURL *)anURL usingPriority:(NSOperationQueuePriority)priority forced:(BOOL)forcesReload withCompletionBlock:(void(^)(NSURL *tempFileURLOrNil))aBlock {
 
+	NSParameterAssert(anURL);
+
 	if (![NSThread isMainThread]) {
 	
 		NSParameterAssert(NO);
