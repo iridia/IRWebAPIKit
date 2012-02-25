@@ -380,8 +380,14 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 	if (![NSThread isMainThread]) {
 	
-		NSParameterAssert(NO);
+		dispatch_async(dispatch_get_main_queue(), ^{
+		
+			[self retrieveResourceAtURL:anURL usingPriority:priority forced:forcesReload withCompletionBlock:aBlock];
+			
+		});
 	
+		return;
+		
 	}
 
 	__block __typeof__(self) nrSelf = self;
