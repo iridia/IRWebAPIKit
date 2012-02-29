@@ -429,7 +429,15 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 				NSString *capturedPath = operation.path;
 				[nrSelf performInBackground: ^ {
 				
-					aBlock([NSURL fileURLWithPath:capturedPath]);
+					if ([[NSFileManager defaultManager] fileExistsAtPath:capturedPath]) {
+						
+						aBlock([NSURL fileURLWithPath:capturedPath]);
+						
+					} else {
+						
+						aBlock(nil);
+						
+					}
 					
 				}];
 				
