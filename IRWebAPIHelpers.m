@@ -441,6 +441,9 @@ NSDictionary *IRQueryParametersFromString (NSString *query) {
 		__block NSString *currentArgumentValue = nil;
 		
 		NSUInteger numberOfRanges = result.numberOfRanges;
+		if (!numberOfRanges)
+			return;
+		
 		for (NSUInteger i = 0; i < numberOfRanges; i++) {
 			
 			NSRange substringRange = [result rangeAtIndex:i];
