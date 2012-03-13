@@ -1,15 +1,15 @@
 //
-//  TestIRWebAPIKitStringHelpers.m
+//  IRWebAPIKitTest.m
 //  IRWebAPIKit
 //
-//  Created by Evadne Wu on 1/2/11.
-//  Copyright 2011 Iridia Productions. All rights reserved.
+//  Created by Evadne Wu on 3/13/12.
+//  Copyright (c) 2012 Iridia Productions. All rights reserved.
 //
 
-#import "TestIRWebAPIKitStringHelpers.h"
+#import "IRWebAPIKitTest.h"
+#import "IRWebAPIHelpers.h"
 
-
-@implementation TestIRWebAPIKitStringHelpers
+@implementation IRWebAPIKitTest
 
 - (void) testHTMLEntitiesDecoding {
 
@@ -69,8 +69,47 @@
 
 }
 
+- (void) testQueryDecoding {
+
+	NSDictionary *testData = [NSDictionary dictionaryWithObjectsAndKeys:
+	
+		[NSDictionary dictionaryWithObjectsAndKeys:
+		
+			@"v", @"k",
+		
+		nil], @"k=v",	
+	
+		[NSDictionary dictionaryWithObjectsAndKeys:
+
+			@"v1", @"k1",
+			@"", @"k2",
+
+		nil], @"k1=v1&k2=",
+
+		[NSDictionary dictionaryWithObjectsAndKeys:
+
+			@"v1", @"k1",
+			@"v2", @"k2",
+
+		nil], @"k1=v1&k2=v2",
+
+		[NSDictionary dictionaryWithObjectsAndKeys:
+
+			@"v1", @"k1",
+			@"v2", @"k2",
+			@"v3", @"k3",
+			@"v4", @"k4",
+
+		nil], @"k1=v1&k2=v2&k3=v3&k4=v4",
+
+	nil];
+	
+	[testData enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+		
+		STAssertEqualObjects(IRQueryParametersFromString(key), obj, @"Decoded object from string %@ must match structure %@", key, obj);
+		
+	}];
+	
+}
+
 @end
-
-
-
-
