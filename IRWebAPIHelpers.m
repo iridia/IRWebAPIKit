@@ -447,6 +447,9 @@ NSDictionary *IRQueryParametersFromString (NSString *query) {
 		for (NSUInteger i = 0; i < numberOfRanges; i++) {
 			
 			NSRange substringRange = [result rangeAtIndex:i];
+			if (substringRange.location == NSNotFound)
+				continue;
+			
 			NSString *substring = [query substringWithRange:substringRange];
 			
 			if (i == 1)
