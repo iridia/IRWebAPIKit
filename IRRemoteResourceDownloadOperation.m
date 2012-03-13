@@ -48,6 +48,9 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 
 + (IRRemoteResourceDownloadOperation *) operationWithURL:(NSURL *)aRemoteURL path:(NSString *)aLocalPath prelude:(void(^)(void))aPrelude completion:(void(^)(void))aBlock {
 
+	NSParameterAssert(aRemoteURL);
+	NSParameterAssert(aLocalPath);
+
 	IRRemoteResourceDownloadOperation *returnedOperation = [[[self alloc] init] autorelease];
 	
 	returnedOperation.url = aRemoteURL;
@@ -186,7 +189,6 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 				self.fileHandle = nil;
 				
 				[[NSFileManager defaultManager] removeItemAtPath:self.path error:nil];
-				self.path = nil;
 				
 			}
 		
@@ -251,7 +253,6 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 		[self.fileHandle closeFile];
 		
 		[[NSFileManager defaultManager] removeItemAtPath:self.path error:nil];
-		self.path = nil;
 		
 		if (self.executing) {
 			self.executing = NO;
@@ -378,6 +379,9 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 }
 
 - (IRRemoteResourceDownloadOperation *) continuationOperationCancellingCurrentOperation:(BOOL)cancelsCurrentOperation {
+
+	if (!self.path || !self.url)
+		return nil;
 
 	__block IRRemoteResourceDownloadOperation *continuationOperation = [[[[self class] alloc] init] autorelease];
 	continuationOperation.path = self.path;

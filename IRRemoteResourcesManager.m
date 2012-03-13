@@ -28,6 +28,18 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) notifyUpdatedResourceForRemoteURL:(NSURL *)inRemoteURL;
 
+@property (nonatomic, readwrite, assign) NSInteger operationQueueSuspendingCount;
+- (BOOL) isSuspendingOperationQueue;
+
+- (void) beginSuspendingOperationQueue;
+- (void) endSuspendingOperationQueue;
+
+@property (nonatomic, readonly, retain) NSMutableDictionary *allOperations;
+@property (nonatomic, readonly, assign) dispatch_queue_t allOperationsQueue;
+- (IRRemoteResourceDownloadOperation *) operationWithURL:(NSURL *)anURL;
+- (BOOL) addOperation:(IRRemoteResourceDownloadOperation *)anOperation;
+- (BOOL) removeOperation:(IRRemoteResourceDownloadOperation *)anOperation;
+
 @end
 
 
@@ -41,6 +53,10 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 @synthesize cacheDirectoryPath;
 
 @synthesize onRemoteResourceDownloadOperationWillBegin;
+
+@synthesize allOperations, allOperationsQueue;
+
+@synthesize operationQueueSuspendingCount;
 
 + (IRRemoteResourcesManager *) sharedManager {
 
@@ -62,40 +78,15 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 		return nil;
 		
 	schedulingStrategy = IRPostponeLowerPriorityOperationsStrategy;
-		
-	return self;
-
-}
-
-- (NSOperationQueue *) queue {
-
-	if (queue)
-		return queue;
-	
 	queue = [[NSOperationQueue alloc] init];
 	queue.maxConcurrentOperationCount = 1;
-	
-	return queue;
-
-}
-
-- (dispatch_queue_t) operationQueue {
-
-	if (operationQueue)
-		return operationQueue;
-	
 	operationQueue = dispatch_queue_create("iridia.remoteResourcesManager.operationQueue", DISPATCH_QUEUE_SERIAL);
-	return operationQueue;
-
-}
-
-- (NSMutableArray *) enqueuedOperations {
-
-	if (enqueuedOperations)
-		return enqueuedOperations;
-	
 	enqueuedOperations = [[NSMutableArray array] retain];
-	return enqueuedOperations;
+	
+	allOperations = [[NSMutableDictionary dictionary] retain];
+	allOperationsQueue = dispatch_queue_create("iridia.remoteResourcesManager.operationsManagingQueue", DISPATCH_QUEUE_SERIAL);
+		
+	return self;
 
 }
 
@@ -111,10 +102,145 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 	[cacheDirectoryPath release];
 	
 	[onRemoteResourceDownloadOperationWillBegin release];
+	
+	[allOperations release];
+	
+	if (allOperationsQueue)
+		dispatch_release(allOperationsQueue);
 		
 	[super dealloc];
 
 }
+
+
+
+
+
+- (NSInteger) operationQueueSuspendingCount {
+
+	NSParameterAssert([NSThread isMainThread]);
+	return operationQueueSuspendingCount;
+
+}
+
+- (void) setOperationQueueSuspendingCount:(NSInteger)newOperationQueueSuspendingCount {
+
+	NSParameterAssert([NSThread isMainThread]);
+	
+	if (operationQueueSuspendingCount == newOperationQueueSuspendingCount)
+		return;
+	
+	[self willChangeValueForKey:@"operationQueueSuspendingCount"];
+	
+	if ((operationQueueSuspendingCount == 0) && (newOperationQueueSuspendingCount == 1)) {
+	
+		NSParameterAssert(![self.queue isSuspended]);
+		[self.queue setSuspended:YES];
+	
+	} else if ((operationQueueSuspendingCount == 1) && (newOperationQueueSuspendingCount == 0)) {
+	
+		NSParameterAssert([self.queue isSuspended]);
+		[self.queue setSuspended:NO];
+	
+	}
+	
+	operationQueueSuspendingCount = newOperationQueueSuspendingCount;
+	
+	[self didChangeValueForKey:@"operationQueueSuspendingCount"];
+
+}
+
+- (BOOL) isSuspendingOperationQueue {
+
+	return (BOOL)!!self.operationQueueSuspendingCount;
+
+}
+
+- (void) beginSuspendingOperationQueue {
+
+	NSParameterAssert([NSThread isMainThread]);
+	
+	self.operationQueueSuspendingCount++;
+
+}
+
+- (void) endSuspendingOperationQueue {
+
+	NSParameterAssert([NSThread isMainThread]);
+	NSParameterAssert(self.operationQueueSuspendingCount > 0);
+	
+	self.operationQueueSuspendingCount--;
+
+}
+
+
+
+
+
+- (IRRemoteResourceDownloadOperation *) operationWithURL:(NSURL *)anURL {
+
+	NSParameterAssert(dispatch_get_current_queue() != self.allOperationsQueue);
+	
+	__block IRRemoteResourceDownloadOperation *returnedOperation = nil;
+
+	dispatch_sync(self.allOperationsQueue, ^ {
+		returnedOperation = [self.allOperations objectForKey:[anURL absoluteString]];
+	});
+	
+	return returnedOperation;
+
+}
+
+- (BOOL) addOperation:(IRRemoteResourceDownloadOperation *)anOperation {
+
+	NSParameterAssert(dispatch_get_current_queue() != self.allOperationsQueue);
+	
+	__block BOOL didAdd = NO;
+	
+	dispatch_sync(self.allOperationsQueue, ^{
+	
+		NSString *key = [anOperation.url absoluteString];
+	
+		if ([self.allOperations objectForKey:key]) {
+			return;
+		}
+		
+		[self.allOperations setObject:anOperation forKey:key];
+		
+		didAdd = YES;
+		
+	});
+	
+	return didAdd;
+
+}
+
+- (BOOL) removeOperation:(IRRemoteResourceDownloadOperation *)anOperation {
+
+	NSParameterAssert(dispatch_get_current_queue() != self.allOperationsQueue);
+	
+	__block BOOL didRemove = NO;
+
+	dispatch_sync(self.allOperationsQueue, ^ {
+	
+		NSString *key = [anOperation.url absoluteString];
+	
+		if (![self.allOperations objectForKey:key])
+			return;
+		
+		[self.allOperations removeObjectForKey:key];
+		
+		didRemove = YES;
+		
+	});
+	
+	return didRemove;
+
+}
+
+
+
+
 
 - (void) performInBackground:(void (^)(void))aBlock {
 
@@ -124,10 +250,9 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) performOnMainThread:(void (^)(void))aBlock {
 
-	if ([NSThread isMainThread])
-		aBlock();
-	else
-		dispatch_async(dispatch_get_main_queue(), aBlock);
+	NSParameterAssert(![NSThread isMainThread]);
+	
+	dispatch_async(dispatch_get_main_queue(), aBlock);
 
 }
 
@@ -170,11 +295,7 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 		
 	operation = [IRRemoteResourceDownloadOperation operationWithURL:anURL path:[self pathForCachedContentsOfRemoteURL:anURL usedProspectiveURL:NULL] prelude: ^ {
 	
-		dispatch_async(dispatch_get_main_queue(), ^ {
-			
-			[nrSelf.delegate remoteResourcesManager:nrSelf didBeginDownloadingResourceAtURL:operation.url];
-			
-		});
+		[nrSelf.delegate remoteResourcesManager:nrSelf didBeginDownloadingResourceAtURL:operation.url];
 		
 	} completion: ^ {
 	
@@ -182,32 +303,48 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 		NSString *operationPath = operation.path;
 		NSURL *operationURL = operation.url;
 		
-		[operation retain];
+		if (didFinish) {
 		
-		dispatch_async(dispatch_get_main_queue(), ^ {
+			[operation retain];
 		
-			if (didFinish) {
-			
+			dispatch_async(dispatch_get_main_queue(), ^ {
+	
 				[operation invokeCompletionBlocks];
 				[operation autorelease];
 				
 				[nrSelf notifyUpdatedResourceForRemoteURL:operationURL];
 				[nrSelf.delegate remoteResourcesManager:nrSelf didFinishDownloadingResourceAtURL:operationURL];
 			
-			} else {
+			});
+		
+		} else {
 
+			dispatch_async(dispatch_get_main_queue(), ^ {
+	
 				[nrSelf.delegate remoteResourcesManager:nrSelf didFailDownloadingResourceAtURL:operationURL];
 			
-			}
+			});
+		
+		}
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+		
+			[nrSelf beginSuspendingOperationQueue];
 			
 			[nrSelf performInBackground: ^ {
-				
+			
 				[nrSelf enqueueOperationsIfNeeded];
+
+				dispatch_async(dispatch_get_main_queue(), ^{
+				
+					[nrSelf endSuspendingOperationQueue];
+				
+				});
 				
 			}];
 			
 		});
-		
+			
 	}];
 	
 	operation.delegate = self;
@@ -239,73 +376,114 @@ NSString * const kIRRemoteResourcesManagerDidRetrieveResourceNotification = @"IR
 
 - (void) retrieveResourceAtURL:(NSURL *)anURL usingPriority:(NSOperationQueuePriority)priority forced:(BOOL)forcesReload withCompletionBlock:(void(^)(NSURL *tempFileURLOrNil))aBlock {
 
-	__block __typeof__(self) nrSelf = self;
+	NSParameterAssert(anURL);
 
+	if (![NSThread isMainThread]) {
+	
+		dispatch_async(dispatch_get_main_queue(), ^{
+		
+			[self retrieveResourceAtURL:anURL usingPriority:priority forced:forcesReload withCompletionBlock:aBlock];
+			
+		});
+	
+		return;
+		
+	}
+
+	__block __typeof__(self) nrSelf = self;
+	
 	[nrSelf performInBackground: ^ {
 	
-		[self.queue setSuspended:YES];
-	
-		__block IRRemoteResourceDownloadOperation *operation = nil;
-		BOOL operationRunning = NO, operationEnqueued = NO;
-		
-		void (^pounce)(NSURL *anURLOrNil) = ^ (NSURL *anURLOrNil) {
-			if (aBlock)
-				aBlock(anURLOrNil);
-		};
-		
-		void (^stitch)(void) = ^ {
-			
-			if (!aBlock)
-				return;
-			
-			[operation appendCompletionBlock: ^ {
-				NSString *capturedPath = operation.path;
-				[nrSelf performInBackground: ^ {
-					pounce([NSURL fileURLWithPath:capturedPath]);
-				}];
-			}];
-			
-		};
-	
-		if ((!operation) && (operation = [self runningOperationForURL:anURL])) {
-			operationRunning = !!operation;
-		}
-		
-		if (operationRunning && forcesReload) {
-			IRRemoteResourceDownloadOperation *cancelledOperation = operation;
-			operation = [cancelledOperation continuationOperationCancellingCurrentOperation:YES];
-			[self.enqueuedOperations insertObject:operation atIndex:0];
-			operationRunning = NO;
-			operationEnqueued = YES;
-		}
-		
-		if ((!operation) && (operation = [self enqueuedOperationForURL:anURL])) {
-			operationEnqueued = !!operation;
-		}
+		__block IRRemoteResourceDownloadOperation *operation = [self operationWithURL:anURL];
 		
 		if (!operation) {
 			
 			operation = [self prospectiveOperationForURL:anURL enqueue:YES];
-			operationEnqueued = !!operation;
+			operation.queuePriority = priority;
+			
+			[nrSelf addOperation:operation];
+			[operation appendCompletionBlock:^{
+				[nrSelf removeOperation:operation];
+			}];
+						
+		} else {
+		
+			if (forcesReload && [nrSelf.queue.operations containsObject:operation]) {
+			
+				operation = [operation continuationOperationCancellingCurrentOperation:YES];
+				operation.queuePriority = priority;
+				
+				[nrSelf addOperation:operation];
+				[operation appendCompletionBlock:^{
+					[nrSelf removeOperation:operation];
+				}];
+			
+			}
+		
+		}
+		
+		if (aBlock) {
+		
+			[operation appendCompletionBlock: ^ {
+			
+				NSString *capturedPath = operation.path;
+				
+				if (![[NSFileManager defaultManager] fileExistsAtPath:capturedPath]) {
+				
+					[nrSelf performInBackground:^{
+						aBlock(nil);
+					}];
+					
+					return;
+				
+				}
+				
+				[nrSelf performInBackground: ^ {
+				
+					NSCParameterAssert([[NSFileManager defaultManager] fileExistsAtPath:capturedPath]);
+					aBlock([NSURL fileURLWithPath:capturedPath]);
+										
+				}];
+				
+			}];
 			
 		}
 		
-		[self.queue setSuspended:NO];
-		
-		if (!operation) {
-			pounce(nil);
-			return;
-		}
-		
-		stitch();
-		
-		[self enqueueOperationsIfNeeded];
+		dispatch_async(dispatch_get_main_queue(), ^{
+
+			[self beginSuspendingOperationQueue];
+			
+			[nrSelf performInBackground: ^ {
 				
+				[self enqueueOperationsIfNeeded];
+				
+				if ([self.enqueuedOperations containsObject:operation]) {
+				
+					//	Hoist it — This is last come, first serve	
+					
+					[[operation retain] autorelease];
+					[self.enqueuedOperations removeObject:operation];
+					[self.enqueuedOperations insertObject:operation atIndex:0];
+					
+				}
+				
+				dispatch_async(dispatch_get_main_queue(), ^{
+
+					[self endSuspendingOperationQueue];
+					
+				});
+
+			}];
+					
+		});
+						
 	}];
 
 }
 
 - (void) enqueueOperationsIfNeeded {
+
+	NSParameterAssert([self.queue isSuspended]);
 
 	@autoreleasepool {
 			 
