@@ -240,7 +240,6 @@ NSString * const kIRWebAPIEngineUnderlyingError = @"kIRWebAPIEngineUnderlyingErr
 
 	void (^retryHandler)(void) = ^ {
 	
-	//	FIXME: Actually, the block doesn’t know if it is enqueued or fired
 		[self enqueueAPIRequestNamed:inMethodName withArguments:inArgumentsOrNil options:inOptionsOrNil successHandler:inSuccessHandler failureHandler:inFailureHandler];
 	
 	};
