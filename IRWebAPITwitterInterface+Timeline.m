@@ -84,7 +84,6 @@
 			case IRWebAPITwitterRetweetByUser: return @"1/statuses/retweeted_by_me.json";
 			case IRWebAPITwitterRetweetByFollowers: return @"1/statuses/retweeted_to_me.json";
 			case IRWebAPITwitterRetweetOfUser: return @"1/statuses/retweets_of_me.json";
-			default: return nil;
 		
 		}
 	

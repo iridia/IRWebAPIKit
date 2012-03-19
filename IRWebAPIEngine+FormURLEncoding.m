@@ -52,7 +52,7 @@ NSString * const kIRWebAPIEngineRequestContextFormURLEncodingFieldsKey = @"IRWeb
 		
 		[returnedContext setObject:@"POST" forKey:kIRWebAPIEngineRequestHTTPMethod];
 		
-		return returnedContext;
+		return (NSDictionary *)returnedContext;
 	
 	}) copy] autorelease];
 

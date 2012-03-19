@@ -89,12 +89,12 @@ IRWebAPIResponseParser IRWebAPIResponseDefaultJSONParserMake () {
 	NSDictionary * (^dictionarize)(id<NSObject>) = ^ (id<NSObject> incomingObject) {
 
 		if (!incomingObject)
-			return (NSDictionary *)nil;
+			return (id)nil;
 
 		if (![incomingObject isKindOfClass:[NSDictionary class]])
 			return [NSDictionary dictionaryWithObject:incomingObject forKey:@"response"];
 		
-		return (NSDictionary *)incomingObject;
+		return (id)incomingObject;
 
 	};
 	
