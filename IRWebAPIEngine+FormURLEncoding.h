@@ -10,6 +10,8 @@
 
 extern NSString * const kIRWebAPIEngineRequestContextFormURLEncodingFieldsKey;
 
+NSData * IRWebAPIEngineFormURLEncodedDataWithDictionary (NSDictionary *dictionary);
+
 @interface IRWebAPIEngine (FormURLEncoding)
 
 + (IRWebAPIRequestContextTransformer) defaultFormURLEncodingTransformer;
