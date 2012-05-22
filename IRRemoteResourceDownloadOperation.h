@@ -8,6 +8,14 @@
 
 #import "IRWebAPIKit.h"
 
+#import <TargetConditionals.h>
+
+#if TARGET_OS_IPHONE
+	#import <MobileCoreServices/MobileCoreServices.h>
+#else
+	#import <ApplicationServices/ApplicationServices.h>
+#endif
+
 
 @class IRRemoteResourceDownloadOperation;
 @protocol IRRemoteResourceDownloadOperationDelegate <NSObject>
@@ -24,7 +32,8 @@
 
 + (IRRemoteResourceDownloadOperation *) operationWithURL:(NSURL *)aRemoteURL path:(NSString *)aLocalPath prelude:(void(^)(void))aPrelude completion:(void(^)(void))aBlock;
 
-@property (nonatomic, readonly, retain) NSString *path;
+@property (nonatomic, readonly, copy) NSString *path;
+@property (nonatomic, readonly, copy) NSString *mimeType;
 @property (nonatomic, readonly, retain) NSURL *url;
 @property (nonatomic, readonly, assign) long long processedBytes;
 @property (nonatomic, readonly, assign) long long totalBytes;
