@@ -16,7 +16,8 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 
 @interface IRRemoteResourceDownloadOperation ()
 
-@property (nonatomic, readwrite, retain) NSString *path;
+@property (nonatomic, readwrite, copy) NSString *path;
+@property (nonatomic, readwrite, copy) NSString *mimeType;
 @property (nonatomic, readwrite, retain) NSURL *url;
 @property (nonatomic, readwrite, assign) long long processedBytes;
 @property (nonatomic, readwrite, assign) long long totalBytes;
@@ -39,7 +40,7 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 
 @implementation IRRemoteResourceDownloadOperation
 
-@synthesize path, url, processedBytes, totalBytes, preferredByteOffset, executing, finished, cancelled;
+@synthesize path, mimeType, url, processedBytes, totalBytes, preferredByteOffset, executing, finished, cancelled;
 @synthesize fileHandle, connection;
 @synthesize actualDispatchQueue;
 @synthesize onMain;
@@ -62,6 +63,8 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 }
 
 - (void) dealloc {
+
+	[mimeType release];
 
 	[path release];
 	[url release];
@@ -193,6 +196,11 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 			}
 		
 		}
+		
+		//	Per discussion in Apple documentation, this can be called multiple times
+		
+		[self.fileHandle truncateFileAtOffset:0];
+		self.mimeType = response.MIMEType;
 
 		[self willChangeValueForKey:@"progress"];
 		self.totalBytes = response.expectedContentLength;
@@ -234,6 +242,27 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 	
 		[self.fileHandle closeFile];
 		
+		if (self.mimeType) {
+		
+			//	If there is a MIME type available, rename the underlying file
+			
+			NSFileManager *fm = [NSFileManager defaultManager];
+			
+			NSString *utiType = [(NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)self.mimeType, NULL) autorelease];
+			NSString *pathExtension = [(NSString *)UTTypeCopyPreferredTagWithClass((CFStringRef)utiType, kUTTagClassFilenameExtension) autorelease];
+			NSString *fromPath = self.path;
+			NSString *toPath = [[self.path stringByDeletingPathExtension] stringByAppendingPathExtension:pathExtension];
+			NSError *error = nil;
+			
+			BOOL didMove = [fm moveItemAtPath:fromPath toPath:toPath error:&error];
+			if (!didMove) {
+				NSLog(@"%s: %@ -> %@ Error: %@", __PRETTY_FUNCTION__, fromPath, toPath, error);
+			} else {
+				self.path = toPath;
+			}
+		
+		}
+		
 		if (self.executing) {
 			self.executing = NO;
 			self.finished = YES;
@@ -268,12 +297,6 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 	if (!aRedirectResponse)
 		return aRequest;
 		
-//	if ([self.delegate respondsToSelector:@selector(<#selector#>)]) {
-//	
-//		
-//	
-//	}
-	
 	NSMutableURLRequest *mutatedRequest = [[[self underlyingRequest] mutableCopy] autorelease];
 	mutatedRequest.URL = [aRequest URL];
 	return mutatedRequest;
