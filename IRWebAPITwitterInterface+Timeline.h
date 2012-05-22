@@ -27,8 +27,7 @@ typedef enum {
 
 	IRWebAPITwitterRetweetByUser,		//	Retweets retweeted by current user
 	IRWebAPITwitterRetweetByFollowers,	//	Retweets retweeted by other people
-	IRWebAPITwitterRetweetOfUser,		//	Retweets from other people, that are tweets by current user
-	IRWebAPITwitterRetweetTypeUnknown	//	For assertions
+	IRWebAPITwitterRetweetOfUser		//	Retweets from other people, that are tweets by current user
 
 } IRWebAPITwitterRetweetType;
 

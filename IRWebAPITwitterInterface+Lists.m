@@ -18,16 +18,10 @@
 	[self.engine fireAPIRequestNamed:[NSString stringWithFormat:@"1/%@/lists%@.json", self.authenticator.currentCredentials.identifier, ((^{
 	
 		switch (inListType) {
-		
 			case IRWebAPITwitterListsMadeByUser: return @"";
 			case IRWebAPITwitterListsIncludingUser: return @"/memberships";
 			case IRWebAPITwitterListsSubscribedByUser: return @"/subscriptions";
-		
 		}
-		
-		NSAssert(NO, @"Serious breach of contract: unrecognized IRWebAPITwitterListsType.");
-		
-		return IRWebAPITwitterListsMadeByUser;
 		
 	})())] withArguments:nil options:nil validator:[self defaultNoErrorValidator] successHandler: ^ (NSDictionary *inResponseOrNil, NSDictionary *inResponseContext, BOOL *outNotifyDelegate, BOOL *outShouldRetry) {
 	

@@ -25,14 +25,13 @@ NSString * const kIRWebAPIEngineRequestContextFormMultipartFieldsKey = @"kIRWebA
 		
 		NSMutableDictionary *returnedContext = [[inOriginalContext mutableCopy] autorelease];
 		
-		
 		NSError *error;
 		NSURL *fileHandleURL = [[[self class] newTemporaryFileURL] autorelease];
 		
 		if (![[NSFileManager defaultManager] createFileAtPath:[fileHandleURL path] contents:[NSData data] attributes:nil]) {
 		
 			NSLog(@"Error creating file for URL %@.", fileHandleURL);
-			return returnedContext;
+			return (NSDictionary *)returnedContext;
 		
 		}
 		
@@ -40,7 +39,7 @@ NSString * const kIRWebAPIEngineRequestContextFormMultipartFieldsKey = @"kIRWebA
 		if (!fileHandle) {
 		
 			NSLog(@"Error grabbing file handle for URL %@: %@", fileHandleURL, error);
-			return returnedContext;
+			return (NSDictionary *)returnedContext;
 		
 		}
 		
@@ -163,13 +162,10 @@ NSString * const kIRWebAPIEngineRequestContextFormMultipartFieldsKey = @"kIRWebA
 		[temporaryFileURLs addObject:fileHandleURL];
 		
 		[returnedContext setObject:temporaryFileURLs forKey:kIRWebAPIEngineRequestContextLocalCachingTemporaryFileURLsKey];
-		
-		
 		[returnedContext removeObjectForKey:kIRWebAPIEngineRequestContextFormMultipartFieldsKey];
-		
 		[returnedContext setObject:@"POST" forKey:kIRWebAPIEngineRequestHTTPMethod];
 		
-		return returnedContext;
+		return (NSDictionary *)returnedContext;
 	
 	}) copy] autorelease];
 

@@ -193,7 +193,7 @@ NSString * IRWebAPIStringByDecodingXMLEntities (NSString *inString) {
 		if ([scanner scanString:@"x" intoString:NULL] ? [scanner scanHexInt:&charCode] : [scanner scanInt:(int*)&charCode]) {
 
 			[scanner scanString:@";" intoString:NULL];
-			return (NSString *)[NSString stringWithFormat:@"%C", charCode];
+			return (NSString *)[NSString stringWithFormat:@"%C", (unsigned short)charCode];
     
 		}
 
@@ -251,7 +251,7 @@ NSString * IRWebAPIStringByDecodingXMLEntities (NSString *inString) {
 
 NSString * IRWebAPIKitTimestamp () {
 
-	return [NSString stringWithFormat:@"%d", time(NULL)];
+	return [NSString stringWithFormat:@"%lu", time(NULL)];
 
 }
 

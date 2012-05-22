@@ -33,18 +33,7 @@ NSString * const kIRWebAPIEngineRequestContextFormURLEncodingFieldsKey = @"IRWeb
 		[headerFields setObject:@"8bit" forKey:@"Content-Transfer-Encoding"];
 		[headerFields setObject:@"application/x-www-form-urlencoded" forKey:@"Content-Type"];
 		
-		NSMutableData *sentData = [NSMutableData data];
-		
-		[formNamesToContents enumerateKeysAndObjectsUsingBlock: ^ (id key, id obj, BOOL *stop) {
-		
-			if ([sentData length])
-				[sentData appendData:[@"&" dataUsingEncoding:NSUTF8StringEncoding]];
-			
-			[sentData appendData:[IRWebAPIKitRFC3986EncodedStringMake(key) dataUsingEncoding:NSUTF8StringEncoding]];
-			[sentData appendData:[@"=" dataUsingEncoding:NSUTF8StringEncoding]];
-			[sentData appendData:[IRWebAPIKitRFC3986EncodedStringMake(obj) dataUsingEncoding:NSUTF8StringEncoding]];
-			
-		}];
+		NSData *sentData = IRWebAPIEngineFormURLEncodedDataWithDictionary(formNamesToContents);
 		
 		[returnedContext setObject:sentData forKey:kIRWebAPIEngineRequestHTTPBody];
 		
@@ -52,10 +41,30 @@ NSString * const kIRWebAPIEngineRequestContextFormURLEncodingFieldsKey = @"IRWeb
 		
 		[returnedContext setObject:@"POST" forKey:kIRWebAPIEngineRequestHTTPMethod];
 		
-		return returnedContext;
+		return (NSDictionary *)returnedContext;
 	
 	}) copy] autorelease];
 
 }
 
 @end
+
+
+NSData * IRWebAPIEngineFormURLEncodedDataWithDictionary (NSDictionary *formNamesToContents) {
+
+	NSMutableData *sentData = [NSMutableData data];
+		
+	[formNamesToContents enumerateKeysAndObjectsUsingBlock: ^ (id key, id obj, BOOL *stop) {
+	
+		if ([sentData length])
+			[sentData appendData:[@"&" dataUsingEncoding:NSUTF8StringEncoding]];
+		
+		[sentData appendData:[IRWebAPIKitRFC3986EncodedStringMake(key) dataUsingEncoding:NSUTF8StringEncoding]];
+		[sentData appendData:[@"=" dataUsingEncoding:NSUTF8StringEncoding]];
+		[sentData appendData:[IRWebAPIKitRFC3986EncodedStringMake(obj) dataUsingEncoding:NSUTF8StringEncoding]];
+		
+	}];
+	
+	return sentData;
+
+}
