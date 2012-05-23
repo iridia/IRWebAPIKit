@@ -250,15 +250,20 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 			
 			NSString *utiType = [(NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)self.mimeType, NULL) autorelease];
 			NSString *pathExtension = [(NSString *)UTTypeCopyPreferredTagWithClass((CFStringRef)utiType, kUTTagClassFilenameExtension) autorelease];
-			NSString *fromPath = self.path;
-			NSString *toPath = [[self.path stringByDeletingPathExtension] stringByAppendingPathExtension:pathExtension];
-			NSError *error = nil;
 			
-			BOOL didMove = [fm moveItemAtPath:fromPath toPath:toPath error:&error];
-			if (!didMove) {
-				NSLog(@"%s: %@ -> %@ Error: %@", __PRETTY_FUNCTION__, fromPath, toPath, error);
-			} else {
-				self.path = toPath;
+			if (pathExtension) {
+
+				NSString *fromPath = self.path;
+				NSString *toPath = [[self.path stringByDeletingPathExtension] stringByAppendingPathExtension:pathExtension];
+				NSError *error = nil;
+				
+				BOOL didMove = [fm moveItemAtPath:fromPath toPath:toPath error:&error];
+				if (!didMove) {
+					NSLog(@"%s: %@ -> %@ Error: %@", __PRETTY_FUNCTION__, fromPath, toPath, error);
+				} else {
+					self.path = toPath;
+				}
+			
 			}
 		
 		}
