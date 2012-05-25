@@ -165,6 +165,7 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 	
 	[self onOriginalQueue: ^ {
 		[self.fileHandle closeFile];
+		self.fileHandle = nil;
 	}];
 	
 	if (self.executing) {
@@ -241,6 +242,7 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 	[self onOriginalQueue: ^ {
 	
 		[self.fileHandle closeFile];
+		self.fileHandle = nil;
 		
 		if (self.mimeType) {
 		
@@ -285,6 +287,7 @@ NSString * const kIRRemoteResourceDownloadOperationURL = @"IRRemoteResourceDownl
 	[self onOriginalQueue: ^ {
 	
 		[self.fileHandle closeFile];
+		self.fileHandle = nil;
 		
 		[[NSFileManager defaultManager] removeItemAtPath:self.path error:nil];
 		
